@@ -1,0 +1,21 @@
+.view-container{
+    width: calc(100% - 40px);
+    height: 100%;
+}
+
+.view-content{
+    display: flex;
+    flex-direction: column;
+    padding:20px;
+    width: 100%;
+}
+
+.view-header {
+    padding: 20px;
+    display: flex;
+    border-bottom: solid 1px var(--divider-color);
+}
+
+.view-header .title{
+    color: var(--text-default-color);
+}
