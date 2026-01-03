@@ -110,6 +110,10 @@ onMounted(() => {
   padding: 20px;
 }
 
+.logo-icon{
+  -webkit-user-drag: none;
+}
+
 .logo .title {
   display: flex;
   overflow: hidden;

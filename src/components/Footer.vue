@@ -6,7 +6,7 @@
                     <h4>CWXU - Algo</h4>
                     <p class="description">CWXU - Algo，您的学习帮手。</p>
                     <div class="social-icons">
-                        <a href="https://github.com/" target="_blank" title="GitHub">
+                        <a href="https://github.com/WXUProjects/CWXU-Algo-Frontend" target="_blank" title="GitHub">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
                                 viewBox="0 0 1024 1024">
                                 <path
@@ -45,8 +45,6 @@
                 <p>&copy; {{ currentYear }} zhiyuansofts. 保留所有权利.
                     <br />
                     Designed by ♥<a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>
-                    <br />
-                    Project at <a href="https://github.com/WXUProjects/CWXU-Algo-Frontend" target="_blank">GitHub</a>
                 </p>
                 <div class="build-info">
                     <svg class="git-icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg"
