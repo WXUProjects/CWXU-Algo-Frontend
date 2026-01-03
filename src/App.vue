@@ -1,5 +1,5 @@
 <template>
-  <div class="container" :data-theme="currentTheme">
+  <div class="container">
     <div class="sidebar">
       <div class="logo">
         <img src="/favicon.ico" alt="CWXU- Algo Logo" class="logo-icon">
@@ -20,7 +20,7 @@
             <div class="en">Profile</div>
           </div>
         </router-link>
-        <div class="section" @click="currentTheme = currentTheme === 'dark' ? 'light' : 'dark'">
+        <div class="section" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
           <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="section-icon" />
           <font-awesome-icon v-else icon="fa-solid fa-moon" class="section-icon" />
           <div class="title">
@@ -41,8 +41,32 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const currentTheme = ref<'dark' | 'light'>('light')
+import { ref, onMounted } from 'vue'
+
+// 从本地储存中获取主题
+const getTheme = (): 'dark' | 'light' => {
+  const theme = localStorage.getItem('theme');
+  if (theme) {
+    return theme as 'dark' | 'light';
+  } else {
+    // 如果本地储存中没有，则创建本地储存，默认为light
+    localStorage.setItem('theme', 'light');
+    return 'light';
+  }
+}
+
+// 设置主题
+const setTheme = (theme: 'dark' | 'light') => {
+  localStorage.setItem('theme', theme);
+  currentTheme.value = theme;
+  document.documentElement.setAttribute('data-theme', theme);
+}
+
+const currentTheme = ref<'dark' | 'light'>(getTheme())
+
+onMounted(() => {
+  setTheme(getTheme())
+})
 </script>
 
 <style scoped>
@@ -244,10 +268,14 @@ a.section {
     opacity: 1;
     transform: translateX(0px);
   }
+
+  .title .en {
+    display: none;
+  }
 }
 
-@media (max-width:600px) {
-  .title .en {
+@media (max-width: 500px) {
+  .title .zh {
     display: none;
   }
 }

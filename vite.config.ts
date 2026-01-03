@@ -5,7 +5,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueDevTools from 'vite-plugin-vue-devtools'
 
-// Get git info
+// 获取GIT信息
 let gitHash = ''
 let gitDate = ''
 
@@ -14,14 +14,14 @@ try {
   gitDate = new Date(execSync('git log -1 --format=%cd').toString().trim()).toISOString()
 } catch (e) {
   console.error('Failed to get git info:', e)
-  // Fallback values
   gitHash = 'N/A'
   gitDate = new Date().toISOString()
 }
 
 // https://vite.dev/config/
 export default defineConfig({
-    define: {
+  // 定义GIT相关环境变量
+  define: {
     __GIT_HASH__: JSON.stringify(gitHash),
     __GIT_DATE__: JSON.stringify(gitDate),
   },
@@ -34,6 +34,7 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     },
   },
+  // 指定端口 3000
   server: {
     port: 3000,
   }

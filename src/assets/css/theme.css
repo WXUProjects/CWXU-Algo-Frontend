@@ -8,6 +8,10 @@
 
     --text-default-color: #000000;
     --text-light-color: #333333;
+
+    --text-link-color: #1890ff;
+
+    --input-active-color: #1890ff;
 }
 
 [data-theme="dark"] {
@@ -20,4 +24,8 @@
 
     --text-default-color: #aaaaaa;
     --text-light-color: #777777;
+
+    --text-link-color: #1890ff;
+
+    --input-active-color: #1890ff;
 }
