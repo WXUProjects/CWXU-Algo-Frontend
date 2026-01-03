@@ -45,6 +45,8 @@
                 <p>&copy; {{ currentYear }} zhiyuansofts. 保留所有权利.
                     <br />
                     Designed by ♥<a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>
+                    <br />
+                    Project at <a href="https://github.com/WXUProjects/CWXU-Algo-Frontend" target="_blank">GitHub</a>
                 </p>
                 <div class="build-info">
                     <svg class="git-icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg"
