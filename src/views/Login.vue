@@ -8,16 +8,16 @@
                 <div class="login-title">登录</div>
                 <div class="login-form">
                     <div class="form-item">
-                        <label for="username">用户名</label>
-                        <input type="text" id="username" placeholder="请输入用户名">
+                        <label>账号</label>
+                        <input type="text" v-model="formData.username" placeholder="请输入账号">
                     </div>
                     <div class="form-item">
-                        <label for="password">密码</label>
-                        <input type="password" id="password" placeholder="请输入密码">
+                        <label>密码</label>
+                        <input type="password" v-model="formData.password" placeholder="请输入密码">
                     </div>
                     <div class="form-actions">
                         <div class="to-register">没有账号？<router-link to="/register">立即注册</router-link></div>
-                        <button class="login-btn">登录</button>
+                        <button class="login-btn" @click="handleLogin()" :disabled="wait">登录</button>
                     </div>
                 </div>
                 <div class="login-tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
@@ -29,18 +29,61 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
 import Footer from '@/components/Footer.vue'
 
-// 操作提示信息接口
+const router = useRouter()
+
+// 如果wait为true，则禁用按钮
+const wait = ref<boolean>(false)
+
+// 操作提示信息
 interface OperationTip {
-    type: "success" | "error",
+    type: "success" | "error" | "none",
     message: string
 }
 
-// 操作提示信息
-const operationTip: OperationTip = {
-    type: 'error',
-    message: '密码错误'
+const operationTip = ref<OperationTip>({
+    type: 'none',
+    message: ''
+})
+
+// 提交数据
+interface FormData {
+    username: string,
+    password: string
+}
+
+const formData = ref<FormData>({
+    username: '',
+    password: ''
+})
+
+// 返回数据
+interface ResponseData {
+    success: boolean,
+    message: string,
+    jwtToken: string
+}
+
+// 处理登录
+const handleLogin = async () => {
+    wait.value = true
+    const response = await axios.post<ResponseData>('/api/user/auth/login', formData.value)
+    if (response.data.success) {
+        operationTip.value.type = 'success'
+        operationTip.value.message = response.data.message
+        localStorage.setItem('jwtToken', response.data.jwtToken)
+        setTimeout(() => {
+            router.push('/')
+        }, 1000)
+    } else {
+        operationTip.value.type = 'error'
+        operationTip.value.message = response.data.message
+    }
+    wait.value = false
 }
 </script>
 
@@ -76,6 +119,10 @@ const operationTip: OperationTip = {
     outline: none;
     color: var(--text-default-color);
     border: 1px solid var(--divider-color);
+    /* 如果用户使用自动填充，会显示input:-internal-autofill-selected伪元素，
+    默认白色背景样式，在深色模式下极其不美观，该伪元素又无法自定义，故使用内阴影填充覆盖。
+    另外该伪元素文字样式为黑色，深色模式下观察困难，暂无解决方案（你奶奶滴）。  */
+    box-shadow: 0 0 0px 100px var(--background-color-1) inset;
     background-color: var(--background-color-1);
     border-radius: 2px;
 }
@@ -107,6 +154,15 @@ const operationTip: OperationTip = {
 
 .login-btn:hover {
     background-color: var(--background-color-2);
+}
+
+.login-btn:disabled {
+    background-color: var(--background-color-1);
+    cursor: not-allowed;
+}
+
+.login-btn:disabled:hover{
+    background-color: var(--background-color-1);
 }
 
 .login-tip {
