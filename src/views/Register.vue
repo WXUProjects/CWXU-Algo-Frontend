@@ -99,7 +99,7 @@ const validate = (formData: FormData): boolean => {
         return false;
     }
 
-    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(formData.email)) {
         operationTip.value = {

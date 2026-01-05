@@ -35,10 +35,6 @@
                     <a :href="'https://www.cwxu.edu.cn/'" target="_blank" rel="noopener noreferrer">无锡学院</a>
                 </span>
 
-                <span style="margin-left: 10px;font-size:13.7px;">
-                    <a :href="'local'" target="_blank" rel="noopener noreferrer">123</a>
-                </span>
-
             </div>
             <hr class="footer-divider">
             <div class="footer-bottom">
@@ -185,7 +181,7 @@ a {
 }
 
 a:hover {
-    color: #000;
+    color: var(--text-default-color);
     text-decoration: underline;
 }
 
