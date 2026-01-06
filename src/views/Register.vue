@@ -8,10 +8,6 @@
                 <div class="register-title">注册</div>
                 <div class="register-form">
                     <div class="form-item">
-                        <label>邮箱</label>
-                        <input type="text" v-model="formData.email" placeholder="请输入邮箱">
-                    </div>
-                    <div class="form-item">
                         <label>账号</label>
                         <input type="text" v-model="formData.username" placeholder="请输入账号">
                     </div>
@@ -24,8 +20,12 @@
                         <input type="password" v-model="formData.passwordConfirm" placeholder="请确认密码">
                     </div>
                     <div class="form-item">
-                        <label>昵称</label>
-                        <input type="text" v-model="formData.name" placeholder="起一个昵称，让别人记住你！">
+                        <label>姓名</label>
+                        <input type="text" v-model="formData.name" placeholder="请输入您的姓名">
+                    </div>
+                    <div class="form-item">
+                        <label>邮箱</label>
+                        <input type="text" v-model="formData.email" placeholder="请输入邮箱">
                     </div>
                     <div class="form-actions">
                         <div class="to-register">已有账号？<router-link to="/login">立即登录</router-link></div>
@@ -134,7 +134,7 @@ const handleRegister = async () => {
         setTimeout(() => {
             router.push('/login')
         })
-    }else{
+    } else {
         operationTip.value = {
             type: 'error',
             message: response.data.message
@@ -218,7 +218,7 @@ const handleRegister = async () => {
     cursor: not-allowed;
 }
 
-.register-btn:disabled:hover{
+.register-btn:disabled:hover {
     background-color: var(--background-color-1);
 }
 
