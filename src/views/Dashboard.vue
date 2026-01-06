@@ -61,9 +61,16 @@ import Footer from '@/components/Footer.vue'
     position: relative;
     align-items: center;
     height: 50px;
+    border: 1px solid var(--divider-color);
+    border-bottom: none;
+    border-right: none;
 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+}
+
+.section:last-child {
+    border-right: 1px solid var(--divider-color);
 }
 
 a.section {

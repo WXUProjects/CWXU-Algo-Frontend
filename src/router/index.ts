@@ -54,7 +54,7 @@ const routes = [
   },
   {
     path: '/competition/:id',
-    name: 'Details',
+    name: 'CompetitionDetails',
     component: () => import('@/views/Competition/Details.vue')
   },
   {

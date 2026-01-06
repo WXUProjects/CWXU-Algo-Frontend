@@ -11,7 +11,7 @@
                     </div>
                 </div>
             </div>
-            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title"></RankPlus>
+            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title" class="rank"></RankPlus>
         </div>
         <Footer />
     </div>
@@ -68,9 +68,16 @@ const currentSection = ref(sections.value[0]);
     position: relative;
     align-items: center;
     height: 50px;
+    border:1px solid var(--divider-color);
+    border-bottom: none;
+    border-right: none;
 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
+}
+
+.section:last-child {
+    border-right: 1px solid var(--divider-color);
 }
 
 a.section {
@@ -135,6 +142,12 @@ a.section {
     color: var(--text-light-color);
 
     transition: all 0.2s ease-in-out;
+}
+
+.rank{
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid var(--divider-color);
 }
 
 @media (max-width:860px) {
