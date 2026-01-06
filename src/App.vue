@@ -13,18 +13,25 @@
             <div class="en">Home</div>
           </div>
         </router-link>
-        <router-link to="/profile" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-user" class="section-icon" />
-          <div class="title">
-            <div class="zh">个人资料</div>
-            <div class="en">Profile</div>
-          </div>
-        </router-link>
         <router-link to="/rank" class="section" active-class="active">
           <font-awesome-icon icon="fa-solid fa-trophy" class="section-icon" />
           <div class="title">
             <div class="zh">排行榜</div>
             <div class="en">Rank</div>
+          </div>
+        </router-link>
+        <router-link to="/competition" class="section" active-class="active">
+          <font-awesome-icon icon="fa-solid fa-flag" class="section-icon" />
+          <div class="title">
+            <div class="zh">比赛</div>
+            <div class="en">Competition</div>
+          </div>
+        </router-link>
+        <router-link to="/profile" class="section" active-class="active">
+          <font-awesome-icon icon="fa-solid fa-user" class="section-icon" />
+          <div class="title">
+            <div class="zh">个人资料</div>
+            <div class="en">Profile</div>
           </div>
         </router-link>
         <router-link to="/dashboard" class="section" active-class="active">
@@ -173,7 +180,7 @@ a.section {
   left: 0;
   width: 5px;
   height: 0%;
-  background-color: #000;
+  background-color: var(--section-active-color);
   margin-right: 10px;
 
   transition: height 0.2s ease-in-out;
