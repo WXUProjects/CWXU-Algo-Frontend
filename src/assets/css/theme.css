@@ -16,6 +16,8 @@
     --text-link-color: #1890ff;
 
     --input-active-color: #1890ff;
+
+    --card-icon-background-color: #afafaf;
 }
 
 [data-theme="dark"] {
@@ -32,4 +34,6 @@
     --text-link-color: #1890ff;
 
     --input-active-color: #1890ff;
+
+    --card-icon-background-color: #444444;
 }

@@ -1,5 +1,10 @@
 <template>
     <div class="ACCalendar">
+        <div class="detailContainer" v-show="showDayData"
+            :style="`top:${mousePosition.y}px;left:${mousePosition.x + 20}px`">
+            <div class="date">{{ dayData?.date }}</div>
+            <div class="count">{{ dayData?.count }}</div>
+        </div>
         <div class="title">{{ props.title }}</div>
         <div class="content">
             <div class="calendar">
@@ -24,7 +29,8 @@
                         <div class="monthLable">Dec</div>
                     </div>
                     <div class="dayBlockReserve" v-for="i in mod(fristDay - 1, 7)"></div>
-                    <div class="dayBlock" v-for="day in yearDays">
+                    <div class="dayBlock" v-for="day in yearDays" @mouseenter="handleMouseEnter(day)"
+                        @mouseleave="handleMouseLeave()">
                         <div class="colorBlock" :style="'background-color:' + getBlockColor(day)"></div>
                     </div>
                 </div>
@@ -38,7 +44,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
 
 /**
  * AC热力图
@@ -49,14 +55,14 @@ import { computed, ref } from 'vue'
 
 // 定义props接收父组件传入的数据
 const props = defineProps({
-  data: {
-    type: Array as () => Array<{ date: string; count: number }>,
-    default: () => []
-  },
-  title:{
-    type: String,
-    default: ''
-  }
+    data: {
+        type: Array as () => Array<{ date: string; count: number }>,
+        default: () => []
+    },
+    title: {
+        type: String,
+        default: ''
+    }
 })
 
 // 默认选中年是今年
@@ -123,6 +129,75 @@ const getBlockColor = (day: number) => {
 // 用户点击更改年份
 const changeYear = (year: number) => {
     selectedYear.value = year
+}
+
+// ------ 鼠标事件
+// TODO 优化性能：取消大量监听器，直接使用鼠标位置计算
+interface DayData {
+    date: string,
+    count: number
+}
+
+interface mousePosition {
+    x: number,
+    y: number
+}
+
+// 鼠标悬浮当天数据
+const dayData = ref<DayData | null>(null)
+
+// 是否显示悬浮框
+const showDayData = computed(() => {
+    return dayData.value !== null
+})
+
+// 鼠标位置
+const mousePosition = ref<mousePosition>({ x: 0, y: 0 })
+
+// 节流函数
+const throttle = (fn: Function, delay: number) => {
+    let lastTime = 0
+    return (...args: any[]) => {
+        const now = Date.now()
+        if (now - lastTime >= delay) {
+            fn.apply(this, args)
+            lastTime = now
+        }
+    }
+}
+
+const handleMouseMove = throttle((event: MouseEvent) => {
+    if (!showDayData.value) return
+    mousePosition.value = {
+        x: event.clientX,
+        y: event.clientY
+    }
+}, 200)
+
+onMounted(() => {
+    window.addEventListener('mousemove', handleMouseMove)
+})
+
+onUnmounted(() => {
+    window.removeEventListener('mousemove', handleMouseMove)
+})
+
+// 处理鼠标进入，显示详细数据
+const handleMouseEnter = (day: number) => {
+    // 查找当天数据
+    const dateObj = new Date(selectedYear.value, 0, day)
+    const date = `${dateObj.getFullYear()}-${padZero(dateObj.getMonth() + 1)}-${padZero(dateObj.getDate())}`
+    const count = props.data.find(item => item.date === date)?.count || 0
+
+    dayData.value = {
+        date,
+        count
+    }
+}
+
+// 鼠标离开，隐藏详细数据
+const handleMouseLeave = () => {
+    dayData.value = null
 }
 </script>
 
@@ -231,6 +306,12 @@ const changeYear = (year: number) => {
     background-color: var(--divider-color);
     border-radius: 2px;
     overflow: hidden;
+
+    transition: transform 0.2s ease;
+}
+
+.dayBlock:hover {
+    transform: scale(1.5);
 }
 
 .colorBlock {
@@ -275,6 +356,18 @@ const changeYear = (year: number) => {
 
 .yearSelector .section.selected {
     background-color: var(--divider-color);
+}
+
+.detailContainer {
+    display: block;
+    position: absolute;
+    padding: 10px;
+    background-color: var(--background-color-1);
+    border: 1px solid var(--divider-color);
+    border-radius: 10px;
+    z-index: 10;
+
+    color:var(--text-default-color)
 }
 
 @media (max-width:900px) {

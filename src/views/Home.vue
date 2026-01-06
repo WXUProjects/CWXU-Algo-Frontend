@@ -3024,7 +3024,7 @@ const data = ref([
   left: 10px;
   font-size: 4rem;
   transform: rotate(10deg) scale(2);
-  color: var(--section-default-color);
+  color: var(--card-icon-background-color);
 
   transition: transform 0.3s ease;
 }
