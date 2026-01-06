@@ -30,7 +30,11 @@
         </div>
       </div>
       <Calendar :data="data" :title="'AC热力图 AC-Calendar'"></Calendar>
-      <Calendar :data="data" :title="'AC热力图2 AC-Calendar2'"></Calendar>
+      <div class="ranks">
+        <Rank :data="rankData" :title="'总榜 Career-Rank'" class="rank"></Rank>
+        <Rank :data="rankData" :title="'月榜 Monthly-Rank'" class="rank"></Rank>
+        <Rank :data="rankData" :title="'周榜 Weekly-Rank'" class="rank"></Rank>
+      </div>
     </div>
     <Footer />
   </div>
@@ -40,6 +44,7 @@
 import { ref } from 'vue'
 import Footer from '@/components/Footer.vue'
 import Calendar from '@/components/Calendar.vue';
+import Rank from '@/components/Rank.vue';
 
 const data = ref([
   {
@@ -2979,6 +2984,25 @@ const data = ref([
     "count": 22
   }
 ])
+
+const rankData = ref({
+  "data": [
+    { name: "张三", score: 1400, change: 1 },
+    { name: "李四", score: 1300, change: -1 },
+    { name: "王五", score: 1200, change: 0 },
+    { name: "赵六", score: 1145, change: 0 },
+    { name: "钱七", score: 1000, change: 0 },
+    { name: "孙八", score: 900, change: 1 },
+    { name: "周九", score: 400, change: -1 },
+    { name: "吴十", score: 300, change: 0 },
+    { name: "郑十一", score: 200, change: 0 },
+    { name: "王十二", score: 100, change: 0 }
+  ],
+  "userRank": 4,
+  "userName": '赵六',
+  "userScore": 1145,
+  "totalPage": 1
+})
 </script>
 
 <style scoped>
@@ -3047,6 +3071,17 @@ const data = ref([
 
 .card:hover .icon {
   transform: rotate(10deg) scale(2.1);
+}
+
+.ranks {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 40px;
+}
+
+.rank {
+  width: 300px;
 }
 </style>
 

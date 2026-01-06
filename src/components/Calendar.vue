@@ -47,10 +47,10 @@
 import { computed, ref} from 'vue'
 
 /**
- * AC热力图
+ * 贡献日历
  * 我的想法是直接仿照Github做个差不多一样的
  * 列表示星期
- * 实现方法是获取一整年第一天是星期几，在第一列对应位置开始绘制方格
+ * 实现方法是获取一整年第一天是星期几，在第一列对应位置开始沿着Grid网格绘制方格
 */
 
 // 定义props接收父组件传入的数据
@@ -210,8 +210,7 @@ const changeYear = (year: number) => {
 .dayCharts {
     width: 100%;
     padding: 20px 0 2px 0;
-    overflow-x: auto;
-    overflow-y: hidden;
+    overflow:hidden
 }
 
 .dayCharts::-webkit-scrollbar {
