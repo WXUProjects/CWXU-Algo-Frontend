@@ -1,10 +1,5 @@
 <template>
     <div class="ACCalendar">
-        <div class="detailContainer" v-show="showDayData"
-            :style="`top:${mousePosition.y}px;left:${mousePosition.x + 20}px`">
-            <div class="date">{{ dayData?.date }}</div>
-            <div class="count">{{ dayData?.count }}</div>
-        </div>
         <div class="title">{{ props.title }}</div>
         <div class="content">
             <div class="calendar">
@@ -13,7 +8,7 @@
                     <div class="dayLable">Wed</div>
                     <div class="dayLable">Fri</div>
                 </div>
-                <div class="dayBlocks">
+                <div class="dayCharts">
                     <div class="monthAxis">
                         <div class="monthLable">Jan</div>
                         <div class="monthLable">Feb</div>
@@ -28,10 +23,15 @@
                         <div class="monthLable">Nov</div>
                         <div class="monthLable">Dec</div>
                     </div>
-                    <div class="dayBlockReserve" v-for="i in mod(fristDay - 1, 7)"></div>
-                    <div class="dayBlock" v-for="day in yearDays" @mouseenter="handleMouseEnter(day)"
-                        @mouseleave="handleMouseLeave()">
-                        <div class="colorBlock" :style="'background-color:' + getBlockColor(day)"></div>
+                    <div class="dayGrid">
+                        <div class="dayBlockReserve" v-for="i in mod(fristDay - 1, 7)"></div>
+                        <div class="dayBlock" v-for="day in yearDays">
+                            <div class="detailContainer">
+                                <div class="date">{{ getDateByYearAndDay(selectedYear, day) }}</div>
+                                <div class="count">{{ getCountByYearAndDay(selectedYear, day) }}</div>
+                            </div>
+                            <div class="colorBlock" :style="'background-color:' + getBlockColor(day)"></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -44,13 +44,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed, ref} from 'vue'
 
 /**
  * AC热力图
  * 我的想法是直接仿照Github做个差不多一样的
  * 列表示星期
- * 实现方法是获取一整年第一天是星期几，在第一列对于位置开始绘制方格
+ * 实现方法是获取一整年第一天是星期几，在第一列对应位置开始绘制方格
 */
 
 // 定义props接收父组件传入的数据
@@ -101,12 +101,22 @@ const padZero = (num: number) => {
     return num < 10 ? '0' + num : num.toString()
 }
 
-// 根据天数获取颜色
-const getBlockColor = (day: number) => {
-    // 查找当天数据
+const getDateByYearAndDay = (year: number, day: number) => {
+    const dateObj = new Date(selectedYear.value, 0, day)
+    const date = `${dateObj.getFullYear()}-${padZero(dateObj.getMonth() + 1)}-${padZero(dateObj.getDate())}`
+    return date
+}
+
+const getCountByYearAndDay = (year: number, day: number) => {
     const dateObj = new Date(selectedYear.value, 0, day)
     const date = `${dateObj.getFullYear()}-${padZero(dateObj.getMonth() + 1)}-${padZero(dateObj.getDate())}`
     const count = props.data.find(item => item.date === date)?.count || 0
+    return count
+}
+
+// 根据天数获取颜色
+const getBlockColor = (day: number) => {
+    const count = getCountByYearAndDay(selectedYear.value, day)
 
     // 颜色梯度
     if (count === 0) {
@@ -129,75 +139,6 @@ const getBlockColor = (day: number) => {
 // 用户点击更改年份
 const changeYear = (year: number) => {
     selectedYear.value = year
-}
-
-// ------ 鼠标事件
-// TODO 优化性能：取消大量监听器，直接使用鼠标位置计算
-interface DayData {
-    date: string,
-    count: number
-}
-
-interface mousePosition {
-    x: number,
-    y: number
-}
-
-// 鼠标悬浮当天数据
-const dayData = ref<DayData | null>(null)
-
-// 是否显示悬浮框
-const showDayData = computed(() => {
-    return dayData.value !== null
-})
-
-// 鼠标位置
-const mousePosition = ref<mousePosition>({ x: 0, y: 0 })
-
-// 节流函数
-const throttle = (fn: Function, delay: number) => {
-    let lastTime = 0
-    return (...args: any[]) => {
-        const now = Date.now()
-        if (now - lastTime >= delay) {
-            fn.apply(this, args)
-            lastTime = now
-        }
-    }
-}
-
-const handleMouseMove = throttle((event: MouseEvent) => {
-    if (!showDayData.value) return
-    mousePosition.value = {
-        x: event.clientX,
-        y: event.clientY
-    }
-}, 200)
-
-onMounted(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-})
-
-onUnmounted(() => {
-    window.removeEventListener('mousemove', handleMouseMove)
-})
-
-// 处理鼠标进入，显示详细数据
-const handleMouseEnter = (day: number) => {
-    // 查找当天数据
-    const dateObj = new Date(selectedYear.value, 0, day)
-    const date = `${dateObj.getFullYear()}-${padZero(dateObj.getMonth() + 1)}-${padZero(dateObj.getDate())}`
-    const count = props.data.find(item => item.date === date)?.count || 0
-
-    dayData.value = {
-        date,
-        count
-    }
-}
-
-// 鼠标离开，隐藏详细数据
-const handleMouseLeave = () => {
-    dayData.value = null
 }
 </script>
 
@@ -234,7 +175,7 @@ const handleMouseLeave = () => {
     width: 634px;
     height: 20px;
     top: 0px;
-    left: 0px;
+    right: 0px;
 }
 
 .monthLable {
@@ -252,7 +193,7 @@ const handleMouseLeave = () => {
     flex-direction: column;
     justify-content: space-around;
     width: 40px;
-    height: calc(100% - 32px);
+    height: calc((10px * 7) + (2px * 6));
     top: 20px;
     left: 0;
 }
@@ -266,57 +207,71 @@ const handleMouseLeave = () => {
     color: var(--text-default-color);
 }
 
-.dayBlocks {
-    position: relative;
-    padding-top: 20px;
-    /* 格子宽度*7+格子间距*6 */
-    height: calc((10px * 7) + (2px * 6) + 12px);
-    overflow-x: scroll;
-    display: flex;
-    flex-direction: column;
-    flex-wrap: wrap;
-    justify-content: flex-start;
-    align-content: flex-start;
-    gap: 2px;
+.dayCharts {
+    width: 100%;
+    padding: 20px 0 2px 0;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
-.dayBlocks::-webkit-scrollbar {
+.dayCharts::-webkit-scrollbar {
     height: 10px;
 }
 
-.dayBlocks::-webkit-scrollbar-thumb {
+.dayCharts::-webkit-scrollbar-thumb {
     background-color: var(--divider-color);
     border-radius: 5px;
 }
 
-.dayBlocks::-webkit-scrollbar-track {
+.dayCharts::-webkit-scrollbar-track {
     background-color: var(--background-color);
 }
 
-.dayBlockReserve {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
+.dayGrid {
+    display: grid;
+    grid-template-columns: repeat(53, 10px);
+    grid-template-rows: repeat(7, 10px);
+    grid-auto-flow: column;
+    gap: 2px;
 }
 
 .dayBlock {
-    position: relative;
     width: 10px;
     height: 10px;
-    background-color: var(--divider-color);
     border-radius: 2px;
-    overflow: hidden;
-
-    transition: transform 0.2s ease;
+    background-color: var(--divider-color);
+    cursor: pointer;
 }
 
-.dayBlock:hover {
-    transform: scale(1.5);
+.dayBlock:hover .detailContainer {
+    opacity: 1;
 }
 
 .colorBlock {
     width: 100%;
     height: 100%;
+    border-radius: 2px;
+    transition: transform 0.2s ease-in-out;
+}
+
+.colorBlock:hover {
+    transform: scale(1.5);
+}
+
+.detailContainer {
+    position: absolute;
+    transform: translate(-50px, -70px);
+    width: 100px;
+    padding: 10px;
+    background-color: var(--background-color-1);
+    border: 1px solid var(--divider-color);
+    border-radius: 10px;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+    pointer-events: none;
+
+    color: var(--text-default-color)
 }
 
 .yearSelector {
@@ -356,18 +311,6 @@ const handleMouseLeave = () => {
 
 .yearSelector .section.selected {
     background-color: var(--divider-color);
-}
-
-.detailContainer {
-    display: block;
-    position: absolute;
-    padding: 10px;
-    background-color: var(--background-color-1);
-    border: 1px solid var(--divider-color);
-    border-radius: 10px;
-    z-index: 10;
-
-    color:var(--text-default-color)
 }
 
 @media (max-width:900px) {

@@ -43,6 +43,22 @@ import Calendar from '@/components/Calendar.vue';
 
 const data = ref([
   {
+    "date": "2021-01-01",
+    "count": 3
+  },
+  {
+    "date": "2022-01-01",
+    "count": 3
+  },
+  {
+    "date": "2023-01-01",
+    "count": 3
+  },
+  {
+    "date": "2024-01-01",
+    "count": 3
+  },
+  {
     "date": "2025-01-01",
     "count": 3
   },
@@ -3001,7 +3017,7 @@ const data = ref([
 
 .card .title {
   position: absolute;
-  top:0px;
+  top: 0px;
   left: 10px;
   width: 100%;
   height: 50px;
@@ -3012,15 +3028,15 @@ const data = ref([
 
 .card .data {
   position: absolute;
-  bottom:0px;
+  bottom: 0px;
   right: 10px;
   font-size: 4rem;
   color: var(--text-default-color);
 }
 
-.card .icon{
+.card .icon {
   position: absolute;
-  bottom:10px;
+  bottom: 10px;
   left: 10px;
   font-size: 4rem;
   transform: rotate(10deg) scale(2);
@@ -3029,7 +3045,7 @@ const data = ref([
   transition: transform 0.3s ease;
 }
 
-.card:hover .icon{
+.card:hover .icon {
   transform: rotate(10deg) scale(2.1);
 }
 </style>
