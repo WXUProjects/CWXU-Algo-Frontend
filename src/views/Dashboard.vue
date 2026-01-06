@@ -123,10 +123,22 @@ a.section {
     display: flex;
     align-items: flex-end;
     gap: 10px;
-    margin:0 20px 0 10px;
+    margin: 0 20px 0 10px;
     font-size: 1rem;
     color: var(--text-light-color);
 
     transition: all 0.2s ease-in-out;
+}
+
+@media (max-width:860px) {
+    .en {
+        display: none;
+    }
+}
+
+@media (max-width:500px) {
+    .zh {
+        display: none;
+    }
 }
 </style>
