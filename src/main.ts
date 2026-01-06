@@ -16,12 +16,12 @@ import "@fontsource/noto-sans-sc/400.css"; // Specify weight
 // FontAwesome 图标库
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUser, faHome, faSun, faMoon } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe } from '@fortawesome/free-solid-svg-icons'
 
 // 主题
 import './assets/css/theme.css'
 
-library.add(faUser, faHome, faSun, faMoon)
+library.add(faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe)
 
 const app = createApp(App)
 

@@ -8,20 +8,24 @@
         <div class="title">总览 Overview</div>
         <div class="cards">
           <div class="card">
+            <font-awesome-icon icon="fa-solid fa-trophy" class="icon" />
             <div class="title">生涯 Career</div>
-            <div class="data">0</div>
+            <div class="data">1145</div>
           </div>
           <div class="card">
-            <div class="title">今日 Today</div>
-            <div class="data">0</div>
+            <font-awesome-icon icon="fa-solid fa-sun" class="icon" />
+            <div class="title">今日 Daily</div>
+            <div class="data">14</div>
           </div>
           <div class="card">
-            <div class="title">本周 Week</div>
-            <div class="data">0</div>
+            <font-awesome-icon icon="fa-solid fa-crosshairs" class="icon" />
+            <div class="title">本周 Weekly</div>
+            <div class="data">191</div>
           </div>
           <div class="card">
-            <div class="title">年度 Year</div>
-            <div class="data">0</div>
+            <font-awesome-icon icon="fa-solid fa-globe" class="icon" />
+            <div class="title">年度 Yearly</div>
+            <div class="data">981</div>
           </div>
         </div>
       </div>
@@ -2986,28 +2990,47 @@ const data = ref([
 }
 
 .card {
+  position: relative;
+  height: 120px;
   width: 300px;
   border-radius: 10px;
   border: 1px solid var(--divider-color);
+  overflow: hidden;
+  user-select: none;
 }
 
 .card .title {
+  position: absolute;
+  top:0px;
+  left: 10px;
   width: 100%;
   height: 50px;
   line-height: 50px;
   font-size: 1.5rem;
   color: var(--text-light-color);
-  text-align: center;
 }
 
 .card .data {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 3rem;
-  line-height: 3rem;
-  font-size: 2rem;
+  position: absolute;
+  bottom:0px;
+  right: 10px;
+  font-size: 4rem;
   color: var(--text-default-color);
+}
+
+.card .icon{
+  position: absolute;
+  bottom:10px;
+  left: 10px;
+  font-size: 4rem;
+  transform: rotate(10deg) scale(2);
+  color: var(--section-default-color);
+
+  transition: transform 0.3s ease;
+}
+
+.card:hover .icon{
+  transform: rotate(10deg) scale(2.1);
 }
 </style>
 
