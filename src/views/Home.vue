@@ -2994,10 +2994,11 @@ const rankData = ref({
     { name: "钱七", score: 1000, change: 0 },
     { name: "孙八", score: 900, change: 1 },
     { name: "周九", score: 400, change: -1 },
-    { name: "吴十", score: 300, change: 0 },
+    { name: "吴十", score: 300, change: -1 },
     { name: "郑十一", score: 200, change: 0 },
     { name: "王十二", score: 100, change: 0 }
   ],
+  "scoreUnit": "AC",
   "userRank": 4,
   "userName": '赵六',
   "userScore": 1145,

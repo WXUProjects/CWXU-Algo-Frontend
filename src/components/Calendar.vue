@@ -175,7 +175,7 @@ const changeYear = (year: number) => {
     width: 634px;
     height: 20px;
     top: 0px;
-    right: 0px;
+    left: 40px;
 }
 
 .monthLable {

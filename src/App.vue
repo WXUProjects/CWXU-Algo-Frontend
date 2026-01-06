@@ -20,6 +20,20 @@
             <div class="en">Profile</div>
           </div>
         </router-link>
+        <router-link to="/rank" class="section" active-class="active">
+          <font-awesome-icon icon="fa-solid fa-trophy" class="section-icon" />
+          <div class="title">
+            <div class="zh">排行榜</div>
+            <div class="en">Rank</div>
+          </div>
+        </router-link>
+        <router-link to="/dashboard" class="section" active-class="active">
+          <font-awesome-icon icon="fa-solid fa-gauge-high" class="section-icon" />
+          <div class="title">
+            <div class="zh">后台管理</div>
+            <div class="en">Dashboard</div>
+          </div>
+        </router-link>
         <div class="section" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
           <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="section-icon" />
           <font-awesome-icon v-else icon="fa-solid fa-moon" class="section-icon" />
@@ -109,7 +123,7 @@ onMounted(() => {
   padding: 20px;
 }
 
-.logo-icon{
+.logo-icon {
   -webkit-user-drag: none;
 }
 

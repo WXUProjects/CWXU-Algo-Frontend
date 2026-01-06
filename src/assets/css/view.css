@@ -6,7 +6,7 @@
 .view-content {
     display: flex;
     flex-direction: column;
-    gap: 2rem;
+    gap: 60px;
     padding: 20px;
     width: 100%;
 }

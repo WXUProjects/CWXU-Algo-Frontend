@@ -20,6 +20,37 @@ const routes = [
     path: '/register',
     name: 'Register',
     component: () => import('@/views/Register.vue')
+  },
+  {
+    path: '/rank',
+    name: 'Rank',
+    component: () => import('@/views/Rank.vue')
+  },
+  {
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: () => import('@/views/Dashboard.vue'),
+    redirect: '/dashboard/statistics',
+    children: [{
+      path: 'group',
+      name: 'Group',
+      component: () => import('@/views/Dashboard/Group.vue')
+    },
+    {
+      path: 'member',
+      name: 'Member',
+      component: () => import('@/views/Dashboard/Member.vue')
+    },
+    {
+      path: 'statistics',
+      name: 'Statistics',
+      component: () => import('@/views/Dashboard/Statistics.vue')
+    }]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'NotFound',
+    component: () => import('@/views/NotFound.vue')
   }
 ]
 
