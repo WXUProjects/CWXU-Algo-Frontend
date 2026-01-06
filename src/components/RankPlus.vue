@@ -76,9 +76,6 @@ const pages = computed(() => {
     if (currentPage >= totalPage - 2) return [totalPage - 4, totalPage - 3, totalPage - 2, totalPage - 1, totalPage];
     return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
 })
-
-console.log(pages.value);
-
 </script>
 
 <style>
