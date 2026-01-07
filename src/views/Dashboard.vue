@@ -61,6 +61,7 @@ import BaseLayout from '@/components/BaseLayout.vue'
     border: 1px solid var(--divider-color);
     border-bottom: none;
     border-right: none;
+    padding: 0 10px;
 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
@@ -87,6 +88,7 @@ a.section {
     content: '';
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 0%;
     height: 5px;
     background-color: var(--section-active-color);
@@ -99,6 +101,7 @@ a.section {
     content: '';
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
     height: 5px;
     background-color: var(--section-active-color);
@@ -117,7 +120,6 @@ a.section {
     font-size: 1.5rem;
     width: 1.5rem;
     height: 1.5rem;
-    margin-left: 20px;
     color: var(--section-default-color);
 
     transition: color 0.2s ease-in-out;
@@ -141,7 +143,7 @@ a.section {
 }
 
 @media (max-width:500px) {
-    .zh {
+    .section .title {
         display: none;
     }
 }

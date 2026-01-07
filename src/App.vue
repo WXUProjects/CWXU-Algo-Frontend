@@ -348,7 +348,7 @@ a.section {
 }
 
 @media (max-width: 740px) {
-  .title .zh {
+  .section .title{
     display: none;
   }
 }

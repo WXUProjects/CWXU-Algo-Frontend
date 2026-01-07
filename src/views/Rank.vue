@@ -137,7 +137,7 @@ a.section {
     display: flex;
     align-items: flex-end;
     gap: 10px;
-    margin: 0 20px 0 10px;
+    margin: 0 10px 0 10px;
     font-size: 1rem;
     color: var(--text-light-color);
 
