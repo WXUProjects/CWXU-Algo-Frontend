@@ -26,10 +26,10 @@
                     <div class="dayGrid">
                         <div class="dayBlockReserve" v-for="i in mod(fristDay - 1, 7)"></div>
                         <div class="dayBlock" v-for="day in yearDays">
-                            <div class="detailContainer">
+                            <!-- <div class="detailContainer">
                                 <div class="date">{{ getDateByYearAndDay(selectedYear, day) }}</div>
                                 <div class="count">{{ getCountByYearAndDay(selectedYear, day) }}</div>
-                            </div>
+                            </div> -->
                             <div class="colorBlock" :style="'background-color:' + getBlockColor(day)"></div>
                         </div>
                     </div>
@@ -168,14 +168,11 @@ const changeYear = (year: number) => {
 }
 
 .monthAxis {
-    position: absolute;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     width: 634px;
     height: 20px;
-    top: 0px;
-    left: 40px;
 }
 
 .monthLable {
@@ -208,9 +205,12 @@ const changeYear = (year: number) => {
 }
 
 .dayCharts {
-    width: 100%;
-    padding: 20px 0 2px 0;
-    overflow:hidden
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    max-width: calc(100vw - 100px);
+    padding: 0 0 5px 0;
+    overflow:auto
 }
 
 .dayCharts::-webkit-scrollbar {
@@ -274,12 +274,14 @@ const changeYear = (year: number) => {
 }
 
 .yearSelector {
+    width: 100%;
+    max-width: calc(100vw - 60px);
     height: calc((10px * 7) + (2px * 6) + 20px);
     position: relative;
     display: flex;
     flex-shrink: 0;
     flex-direction: column;
-    padding: 0 5px;
+    padding-bottom: 5px;
     gap: 5px;
     overflow: auto;
 }
@@ -299,6 +301,7 @@ const changeYear = (year: number) => {
 }
 
 .yearSelector .section {
+    flex-shrink: 0;
     width: 80px;
     line-height: 30px;
     text-align: center;

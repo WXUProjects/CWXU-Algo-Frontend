@@ -12,8 +12,7 @@
                     </div>
                 </div>
             </div>
-            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title" class="rank">
-            </RankPlus>
+            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title" class="rank" />
         </div>
     </BaseLayout>
 </template>
@@ -60,6 +59,7 @@ const currentSection = ref(sections.value[0]);
 .sections {
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap-reverse;
 }
 
 .section {
@@ -70,6 +70,7 @@ const currentSection = ref(sections.value[0]);
     border: 1px solid var(--divider-color);
     border-bottom: none;
     border-right: none;
+    text-wrap: nowrap;
 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
@@ -147,17 +148,5 @@ a.section {
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid var(--divider-color);
-}
-
-@media (max-width:860px) {
-    .en {
-        display: none;
-    }
-}
-
-@media (max-width:500px) {
-    .zh {
-        display: none;
-    }
 }
 </style>

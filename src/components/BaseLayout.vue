@@ -40,11 +40,11 @@ onMounted(() => {
 }
 
 .view-content {
+    width: 100%;
     display: flex;
     flex-direction: column;
     gap: 60px;
     padding: 20px;
-    width: 100%;
 }
 
 .view-header {
@@ -68,6 +68,11 @@ onMounted(() => {
 @media (max-width:860px) {
     .sidebarHover {
         transform: translate(0px) !important;
+    }
+
+    .view-content{
+        justify-content: center;
+        align-items: center;
     }
 }
 </style>

@@ -12,26 +12,26 @@
             </div>
         </div>
         <div class="pageNavigation">
-            <div class="pageInput">
-                <label>页面大小：</label>
-                <input type="number" value="10" min="5" max="100" autocomplete="none">
+            <div class="group">
+                <div class="pageButtons">
+                    <button>上一页</button>
+                </div>
+                <div class="pageButtons">
+                    <button v-for="value in pages" :key="value" :class="{ active: value === rankData.currentPage }">{{
+                        value }}</button>
+                </div>
+                <div class="pageButtons">
+                    <button>下一页</button>
+                </div>
             </div>
-            <div class="pageButtons">
-                <button>上一页</button>
+            <div class="group">
+                <div class="pageInput">
+                    <label>跳转：</label>
+                    <input type="number" min="1" :max="rankData.totalPage" :value="rankData.currentPage"
+                        autocomplete="none">
+                </div>
+                <div class="pageSum">共 {{ rankData.totalPage }} 页</div>
             </div>
-            <div class="pageButtons">
-                <button v-for="value in pages" :key="value" :class="{ active: value === rankData.currentPage }">{{
-                    value}}</button>
-            </div>
-            <div class="pageButtons">
-                <button>下一页</button>
-            </div>
-            <div class="pageInput">
-                <label>跳转：</label>
-                <input type="number" min="1" :max="rankData.totalPage" :value="rankData.currentPage"
-                    autocomplete="none">
-            </div>
-            <div class="pageSum">共 {{ rankData.totalPage }} 页</div>
         </div>
     </div>
 </template>
@@ -71,10 +71,10 @@ const rankData = ref({
 const pages = computed(() => {
     const currentPage = rankData.value.currentPage;
     const totalPage = rankData.value.totalPage;
-    if (totalPage <= 5) return Array.from({ length: totalPage }, (_, i) => i + 1);
-    if (currentPage <= 3) return [1, 2, 3, 4, 5];
-    if (currentPage >= totalPage - 2) return [totalPage - 4, totalPage - 3, totalPage - 2, totalPage - 1, totalPage];
-    return [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2];
+    if (totalPage <= 3) return Array.from({ length: totalPage }, (_, i) => i + 1);
+    if (currentPage <= 1) return [1, 2, 3];
+    if (currentPage >= totalPage - 1) return [totalPage - 2, totalPage - 1, totalPage];
+    return [currentPage - 1, currentPage, currentPage + 1];
 })
 </script>
 
@@ -132,13 +132,22 @@ const pages = computed(() => {
 
 .pageNavigation {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    height: 50px;
-    line-height: 50px;
+    width: 100%;
     font-size: 1.2rem;
-    gap: 10px;
     color: var(--text-default-color);
+    gap: 10px;
+}
+
+.group {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
 }
 
 .pageInput input {
@@ -147,6 +156,7 @@ const pages = computed(() => {
     text-align: center;
     border: 1px solid var(--divider-color);
     border-radius: 5px;
+    padding: 5px 10px;
     background-color: var(--background-color-1);
     color: var(--text-default-color);
     outline: none;
@@ -163,10 +173,12 @@ const pages = computed(() => {
 }
 
 .pageButtons button {
+    width: max-content;
     font-size: 1.2rem;
     text-align: center;
     border: 1px solid var(--divider-color);
     border-radius: 5px;
+    padding: 5px 10px;
     background-color: var(--background-color-1);
     color: var(--text-default-color);
     outline: none;
@@ -180,5 +192,18 @@ const pages = computed(() => {
 .pageSum {
     font-size: 1.2rem;
     color: var(--text-default-color);
+}
+
+@media (max-width:860px) {
+    .pageNavigation {
+        flex-direction: column;
+    }
+
+    .pageNavigation {
+        width: 100%;
+        font-size: 1.2rem;
+        color: var(--text-default-color);
+        gap: 10px;
+    }
 }
 </style>

@@ -3004,12 +3004,7 @@ const rankData = ref({
 </script>
 
 <style scoped>
-.overview {
-  width: calc(100% - 20px);
-}
-
 .overview .title {
-  width: 100%;
   height: 100px;
   line-height: 100px;
   font-size: 2rem;
@@ -3023,7 +3018,6 @@ const rankData = ref({
   justify-content: flex-start;
   align-items: center;
   gap: 10px;
-  width: 100%;
   height: 100%;
 }
 
@@ -3073,6 +3067,7 @@ const rankData = ref({
 
 .ranks {
   display: flex;
+  flex: 0;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 40px;
@@ -3080,6 +3075,15 @@ const rankData = ref({
 
 .rank {
   width: 300px;
+}
+
+@media (max-width:860px) {
+  .cards {
+    justify-content: center;
+  }
+  .ranks{
+    justify-content: space-around;
+  }
 }
 </style>
 

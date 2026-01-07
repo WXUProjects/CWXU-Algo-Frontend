@@ -143,7 +143,7 @@ const handleRegister = async () => {
 
 <style scoped>
 .register-box {
-    width: 400px;
+    width: 350px;
     margin: 0 auto;
     border: 1px solid var(--divider-color);
     border-radius: 5px;
@@ -177,6 +177,7 @@ const handleRegister = async () => {
     默认白色背景样式，在深色模式下极其不美观，该伪元素又无法自定义，故使用内阴影填充覆盖。
     另外该伪元素文字样式为黑色，深色模式下观察困难，暂无解决方案（你奶奶滴）。  */
     box-shadow: 0 0 0px 100px var(--background-color-1) inset;
+    padding: 10px 20px;
     background-color: var(--background-color-1);
     border-radius: 2px;
 }
