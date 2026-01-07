@@ -1,22 +1,18 @@
 <template>
-    <div class="view-container">
-        <div class="view-header">
-            <div class="title">比赛 Competition</div>
-        </div>
-        <div class="view-content">
-            <div class="title">热门比赛</div>
-            <div class="title">我参加的比赛</div>
-        </div>
-        <Footer />
-    </div>
+    <BaseLayout>
+        <template #header>
+            比赛 Competition
+        </template>
+        <div class="title">热门比赛</div>
+        <div class="title">我参加的比赛</div>
+    </BaseLayout>
 </template>
 
 <script setup lang="ts">
-import Footer from '@/components/Footer.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 </script>
 
 <style scoped>
-@import url('@/assets/css/view.css');
 
 .title {
     width: 100%;

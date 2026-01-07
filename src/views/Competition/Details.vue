@@ -1,25 +1,22 @@
 <template>
-    <div class="view-container">
-        <div class="view-header">
-            <div class="title">比赛 Competition</div>
+    <BaseLayout>
+        <template #header>
+            比赛 Competition
+        </template>
+        <div>
+            <div class="title">比赛信息</div>
+            <div>id = {{ id }}</div>
         </div>
-        <div class="view-content">
-            <div>
-                <div class="title">比赛信息</div>
-                <div>id = {{ id }}</div>
-            </div>
-            <div>
-                <Rank :data="rankData" title="比赛排行榜"></Rank>
-            </div>
+        <div>
+            <Rank :data="rankData" title="比赛排行榜"></Rank>
         </div>
-        <Footer />
-    </div>
+    </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import Footer from '@/components/Footer.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 import Rank from '@/components/Rank.vue'
 
 // 从url获取id参数
@@ -50,7 +47,6 @@ const rankData = ref({
 </script>
 
 <style scoped>
-@import url('@/assets/css/view.css');
 
 .title {
     width: 100%;

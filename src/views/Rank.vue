@@ -1,25 +1,26 @@
 <template>
-    <div class="view-container">
-        <div class="view-header">
-            <div class="title">排行榜 Rank</div>
-        </div>
-        <div class="view-content" style="gap:0">
+    <BaseLayout>
+        <template #header>
+            排行榜 Rank
+        </template>
+        <div>
             <div class="sections">
-                <div class="section" v-if="currentSection" v-for="item in sections" :class="currentSection.id === item.id ? 'active' : ''" @click="currentSection = item">
+                <div class="section" v-if="currentSection" v-for="item in sections"
+                    :class="currentSection.id === item.id ? 'active' : ''" @click="currentSection = item">
                     <div class="title">
                         <div class="zh">{{ item.title }}</div>
                     </div>
                 </div>
             </div>
-            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title" class="rank"></RankPlus>
+            <RankPlus v-if="currentSection" :api="currentSection.api" :title="currentSection?.title" class="rank">
+            </RankPlus>
         </div>
-        <Footer />
-    </div>
+    </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import Footer from '@/components/Footer.vue';
+import BaseLayout from '@/components/BaseLayout.vue';
 import RankPlus from '@/components/RankPlus.vue';
 
 // 把api直接扔给组件，打算以后内部自己调用，完成榜单的分页查询。
@@ -56,8 +57,6 @@ const currentSection = ref(sections.value[0]);
 </script>
 
 <style scoped>
-@import url('@/assets/css/view.css');
-
 .sections {
     display: flex;
     flex-direction: row;
@@ -68,7 +67,7 @@ const currentSection = ref(sections.value[0]);
     position: relative;
     align-items: center;
     height: 50px;
-    border:1px solid var(--divider-color);
+    border: 1px solid var(--divider-color);
     border-bottom: none;
     border-right: none;
 
@@ -144,7 +143,7 @@ a.section {
     transition: all 0.2s ease-in-out;
 }
 
-.rank{
+.rank {
     width: calc(100% - 20px);
     padding: 10px;
     border: 1px solid var(--divider-color);

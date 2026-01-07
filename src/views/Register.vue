@@ -1,50 +1,47 @@
 <template>
-    <div class="view-container">
-        <div class="view-header">
-            <div class="title">注册 Register</div>
-        </div>
-        <div class="view-content">
-            <div class="register-box">
-                <div class="register-title">注册</div>
-                <div class="register-form">
-                    <div class="form-item">
-                        <label>账号</label>
-                        <input type="text" v-model="formData.username" placeholder="请输入账号">
-                    </div>
-                    <div class="form-item">
-                        <label>密码</label>
-                        <input type="password" v-model="formData.password" placeholder="请输入密码">
-                    </div>
-                    <div class="form-item">
-                        <label>请再次输入密码</label>
-                        <input type="password" v-model="formData.passwordConfirm" placeholder="请确认密码">
-                    </div>
-                    <div class="form-item">
-                        <label>姓名</label>
-                        <input type="text" v-model="formData.name" placeholder="请输入您的姓名">
-                    </div>
-                    <div class="form-item">
-                        <label>邮箱</label>
-                        <input type="text" v-model="formData.email" placeholder="请输入邮箱">
-                    </div>
-                    <div class="form-actions">
-                        <div class="to-register">已有账号？<router-link to="/login">立即登录</router-link></div>
-                        <button class="register-btn" @click="handleRegister()" :disabled="wait">注册</button>
-                    </div>
+    <BaseLayout>
+        <template #header>
+            注册 Register
+        </template>
+        <div class="register-box">
+            <div class="register-title">注册</div>
+            <div class="register-form">
+                <div class="form-item">
+                    <label>账号</label>
+                    <input type="text" v-model="formData.username" placeholder="请输入账号">
                 </div>
-                <div class="register-tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
-                    operationTip.message }}</div>
+                <div class="form-item">
+                    <label>密码</label>
+                    <input type="password" v-model="formData.password" placeholder="请输入密码">
+                </div>
+                <div class="form-item">
+                    <label>请再次输入密码</label>
+                    <input type="password" v-model="formData.passwordConfirm" placeholder="请确认密码">
+                </div>
+                <div class="form-item">
+                    <label>姓名</label>
+                    <input type="text" v-model="formData.name" placeholder="请输入您的姓名">
+                </div>
+                <div class="form-item">
+                    <label>邮箱</label>
+                    <input type="text" v-model="formData.email" placeholder="请输入邮箱">
+                </div>
+                <div class="form-actions">
+                    <div class="to-register">已有账号？<router-link to="/login">立即登录</router-link></div>
+                    <button class="register-btn" @click="handleRegister()" :disabled="wait">注册</button>
+                </div>
             </div>
+            <div class="register-tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
+                operationTip.message }}</div>
         </div>
-        <Footer />
-    </div>
+    </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import Footer from '@/components/Footer.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 
 const router = useRouter()
 
@@ -227,6 +224,3 @@ const handleRegister = async () => {
 }
 </style>
 
-<style>
-@import url('@/assets/css/view.css');
-</style>

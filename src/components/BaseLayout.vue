@@ -1,3 +1,24 @@
+<template>
+    <div class="view-container">
+        <div class="view-header">
+            <div class="title">
+                <slot name="header">
+                    <!-- 调用者提供标题插槽内容 -->
+                </slot>
+            </div>
+        </div>
+        <div class="view-content">
+            <slot></slot>
+        </div>
+        <Footer />
+    </div>
+</template>
+
+<script setup lang="ts">
+import Footer from './Footer.vue'
+</script>
+
+<style scoped>
 .view-container {
     width: calc(100% - 40px);
     height: 100%;
@@ -35,3 +56,4 @@
         transform: translate(0);
     }
 }
+</style>

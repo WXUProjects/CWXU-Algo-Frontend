@@ -1,48 +1,45 @@
 <template>
-  <div class="view-container">
-    <div class="view-header">
-      <div class="title">首页 Home</div>
-    </div>
-    <div class="view-content">
-      <div class="overview">
-        <div class="title">总览 Overview</div>
-        <div class="cards">
-          <div class="card">
-            <font-awesome-icon icon="fa-solid fa-trophy" class="icon" />
-            <div class="title">生涯 Career</div>
-            <div class="data">1145</div>
-          </div>
-          <div class="card">
-            <font-awesome-icon icon="fa-solid fa-sun" class="icon" />
-            <div class="title">今日 Daily</div>
-            <div class="data">14</div>
-          </div>
-          <div class="card">
-            <font-awesome-icon icon="fa-solid fa-crosshairs" class="icon" />
-            <div class="title">本周 Weekly</div>
-            <div class="data">191</div>
-          </div>
-          <div class="card">
-            <font-awesome-icon icon="fa-solid fa-globe" class="icon" />
-            <div class="title">年度 Yearly</div>
-            <div class="data">981</div>
-          </div>
+  <BaseLayout>
+    <template #header>
+      首页 Home
+    </template>
+    <div class="overview">
+      <div class="title">总览 Overview</div>
+      <div class="cards">
+        <div class="card">
+          <font-awesome-icon icon="fa-solid fa-trophy" class="icon" />
+          <div class="title">生涯 Career</div>
+          <div class="data">1145</div>
+        </div>
+        <div class="card">
+          <font-awesome-icon icon="fa-solid fa-sun" class="icon" />
+          <div class="title">今日 Daily</div>
+          <div class="data">14</div>
+        </div>
+        <div class="card">
+          <font-awesome-icon icon="fa-solid fa-crosshairs" class="icon" />
+          <div class="title">本周 Weekly</div>
+          <div class="data">191</div>
+        </div>
+        <div class="card">
+          <font-awesome-icon icon="fa-solid fa-globe" class="icon" />
+          <div class="title">年度 Yearly</div>
+          <div class="data">981</div>
         </div>
       </div>
-      <Calendar :data="data" :title="'AC热力图 AC-Calendar'"></Calendar>
-      <div class="ranks">
-        <Rank :data="rankData" :title="'总榜 Career-Rank'" class="rank"></Rank>
-        <Rank :data="rankData" :title="'月榜 Monthly-Rank'" class="rank"></Rank>
-        <Rank :data="rankData" :title="'周榜 Weekly-Rank'" class="rank"></Rank>
-      </div>
     </div>
-    <Footer />
-  </div>
+    <Calendar :data="data" :title="'AC热力图 AC-Calendar'"></Calendar>
+    <div class="ranks">
+      <Rank :data="rankData" :title="'总榜 Career-Rank'" class="rank"></Rank>
+      <Rank :data="rankData" :title="'月榜 Monthly-Rank'" class="rank"></Rank>
+      <Rank :data="rankData" :title="'周榜 Weekly-Rank'" class="rank"></Rank>
+    </div>
+  </BaseLayout>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import Footer from '@/components/Footer.vue'
+import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
 import Rank from '@/components/Rank.vue';
 
@@ -3086,6 +3083,3 @@ const rankData = ref({
 }
 </style>
 
-<style>
-@import url('@/assets/css/view.css');
-</style>
