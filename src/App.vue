@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="sidebar">
+    <div class="sidebar" @mouseenter="isSidebarHover = true" @mouseleave="isSidebarHover = false">
       <div class="logo">
         <img src="/favicon.ico" alt="CWXU- Algo Logo" class="logo-icon">
         <div class="title">CWXU - Algo</div>
@@ -62,7 +62,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, provide } from 'vue'
+import generateRainbowText from './utils/format'
+
+const text = `
+ ██████╗██╗    ██╗██╗  ██╗██╗   ██╗       █████╗ ██╗      ██████╗  ██████╗
+██╔════╝██║    ██║╚██╗██╔╝██║   ██║      ██╔══██╗██║     ██╔════╝ ██╔═══██╗
+██║     ██║ █╗ ██║ ╚███╔╝ ██║   ██║█████╗███████║██║     ██║  ███╗██║   ██║
+██║     ██║███╗██║ ██╔██╗ ██║   ██║╚════╝██╔══██║██║     ██║   ██║██║   ██║
+╚██████╗╚███╔███╔╝██╔╝ ██╗╚██████╔╝      ██║  ██║███████╗╚██████╔╝╚██████╔╝
+ ╚═════╝ ╚══╝╚══╝ ╚═╝  ╚═╝ ╚═════╝       ╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ `
+
+const info=`
+===================================
+GitHash   ${__GIT_HASH__}
+GitDate   ${__GIT_DATE__}
+-----------------------------------
+Fonts     Jetbrains Mono
+          Noto Sans SC
+Icons     Font Awesome
+-----------------------------------
+Frontend  Aoralsfout
+Backend   srcenchen
+===================================`
+
+const rainbowText = generateRainbowText(text)
+const rainbowInfo = generateRainbowText(info)
+
+console.log(`
+${rainbowText.string}
+
+Welcome to CWXU - Algo
+
+${rainbowInfo.string}
+`, ...rainbowText.format, ...rainbowInfo.format);
+
+// 侧边栏是否被Hover
+const isSidebarHover = ref(false);
+
+// 向子组件提供侧边栏悬停状态
+provide('sidebarHover', isSidebarHover);
 
 // 从本地储存中获取主题
 const getTheme = (): 'dark' | 'light' => {

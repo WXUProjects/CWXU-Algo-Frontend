@@ -1,7 +1,7 @@
 <template>
     <div class="view-container">
         <div class="view-header">
-            <div class="title">
+            <div class="title" :class="{ sidebarHover }" ref="titleRef">
                 <slot name="header">
                     <!-- 调用者提供标题插槽内容 -->
                 </slot>
@@ -15,7 +15,22 @@
 </template>
 
 <script setup lang="ts">
+import { ref, inject, onMounted } from 'vue'
 import Footer from './Footer.vue'
+
+// 从App.vue注入侧边栏悬停状态
+const sidebarHover = inject('sidebarHover', false)
+
+const titleRef = ref<HTMLDivElement | null>(null)
+
+onMounted(() => {
+    setTimeout(() => {
+        if (titleRef.value) {
+            titleRef.value.style.opacity = '1';
+            titleRef.value.style.transform = 'translate(0)';
+        }
+    }, 0)
+})
 </script>
 
 <style scoped>
@@ -43,17 +58,16 @@ import Footer from './Footer.vue'
     color: var(--text-default-color);
     opacity: 0;
     transform: translate(-100px);
-    animation: slide 0.3s ease forwards;
+    transition: all 0.3s ease-in-out;
 }
 
-@keyframes slide {
-    0% {
-        opacity: 0;
-        transform: translate(-100px);
-    }
-    100% {
-        opacity: 1;
-        transform: translate(0);
+.sidebarHover {
+    transform: translate(230px) !important;
+}
+
+@media (max-width:860px) {
+    .sidebarHover {
+        transform: translate(0px) !important;
     }
 }
 </style>

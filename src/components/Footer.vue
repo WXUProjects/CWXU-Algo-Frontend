@@ -38,9 +38,9 @@
             </div>
             <hr class="footer-divider">
             <div class="footer-bottom">
-                <p>&copy; {{ currentYear }} zhiyuansofts. 保留所有权利.
-                    <br />
-                    Designed by ♥<a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>
+                <p><!-- &copy; {{ currentYear }} zhiyuansofts. 保留所有权利. -->
+                    <!-- <br /> -->
+                    ♥Designed by <a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>、<a href="https://github.com/srcenchen" target="_blank">srcenchen</a>.
                 </p>
                 <div class="build-info">
                     <svg class="git-icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg"
