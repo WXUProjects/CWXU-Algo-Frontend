@@ -48,6 +48,7 @@ onMounted(() => {
 }
 
 .view-header {
+    width: 100%;
     padding: 20px;
     display: flex;
     border-bottom: solid 1px var(--divider-color);

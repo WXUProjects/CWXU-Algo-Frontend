@@ -274,7 +274,6 @@ const changeYear = (year: number) => {
 }
 
 .yearSelector {
-    width: 100%;
     max-width: calc(100vw - 60px);
     height: calc((10px * 7) + (2px * 6) + 20px);
     position: relative;

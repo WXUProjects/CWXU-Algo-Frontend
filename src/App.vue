@@ -109,9 +109,14 @@ const getTheme = (): 'dark' | 'light' => {
   if (theme) {
     return theme as 'dark' | 'light';
   } else {
-    // 如果本地储存中没有，则创建本地储存，默认为light
-    localStorage.setItem('theme', 'light');
-    return 'light';
+    // 如果本地储存中没有，则创建本地储存，默认为跟随系统
+    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      localStorage.setItem('theme', 'dark');
+      return 'dark';
+    } else {
+      localStorage.setItem('theme', 'light');
+      return 'light';
+    }
   }
 }
 
@@ -276,8 +281,7 @@ a.section {
 }
 
 .content {
-  display: flex;
-  flex: 1;
+  width: 100%;
   background-color: var(--background-color-1);
   padding-left: 70px;
 }
