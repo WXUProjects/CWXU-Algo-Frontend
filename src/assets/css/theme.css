@@ -1,39 +1,225 @@
 /*
- * 主题的全局颜色样式
+ * 终端科技美学主题
+ * 灵感来自代码编辑器、编程终端和算法可视化
 */
 
 :root {
-    --background-color-1: #ffffff;
-    --background-color-2: #f5f5f5;
-    --divider-color: #e6e6e6;
-    --section-background-color: #e6e6e6;
-    --section-active-color: #000000;
-    --section-default-color: #afafaf;
+    /* 亮色主题 - 模拟日光下的代码编辑器 */
+    --background-color-1: #f8f9fa;
+    --background-color-2: #e9ecef;
+    --divider-color: #ced4da;
+    --section-background-color: rgba(13, 17, 23, 0.05);
+    --section-active-color: #00d0d0;
+    --section-default-color: #6a737d;
 
-    --text-default-color: #000000;
-    --text-light-color: #666666;
+    --text-default-color: #24292e;
+    --text-light-color: #6a737d;
+    --text-code-color: #032f62;
+    --text-terminal: #22863a;
 
-    --text-link-color: #1890ff;
+    --text-link-color: #005cc5;
+    --input-active-color: #0366d6;
 
-    --input-active-color: #1890ff;
+    --card-icon-background-color: #d1d5da;
 
-    --card-icon-background-color: #cccccc;
+    /* 霓虹色系 - 代码高亮 */
+    --neon-cyan: #00d0d0;
+    --neon-green: #00ff00;
+
+    /* 终端效果 */
+    --terminal-bg: rgba(255, 255, 255, 0.95);
+    --terminal-border: #ced4da;
+    --terminal-text: #c9d1d9;
+    --terminal-prompt: #58a6ff;
+    --terminal-output: #79c0ff;
+    --terminal-error: #ff7b72;
+
+    /* 代码高亮 */
+    --code-keyword: #ff7b72;
+    --code-string: #a5d6ff;
+    --code-function: #d2a8ff;
+    --code-number: #79c0ff;
+    --code-comment: #8b949e;
+
+    /* 玻璃态效果 */
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+
+    /* 渐变 */
+    --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
+    --gradient-terminal: linear-gradient(135deg, #00ff00 0%, #00ffff 50%, #0088ff 100%);
 }
 
 [data-theme="dark"] {
-    --background-color-1: #2d2d2d;
-    --background-color-2: #424242;
-    --divider-color: #4b4b4b;
-    --section-background-color: #2e2e2e;
-    --section-active-color: #aaaaaa;
-    --section-default-color: #777777;
+    /* 暗色主题 - 深度终端体验 */
+    --background-color-1: #0d1117;
+    --background-color-2: #161b22;
+    --divider-color: #30363d;
+    --section-background-color: rgba(255, 255, 255, 0.05);
+    --section-active-color: #00ffff;
+    --section-default-color: #8b949e;
 
-    --text-default-color: #aaaaaa;
-    --text-light-color: #777777;
+    --text-default-color: #c9d1d9;
+    --text-light-color: #8b949e;
+    --text-code-color: #79c0ff;
+    --text-terminal: #00ff00;
 
-    --text-link-color: #1890ff;
+    --text-link-color: #58a6ff;
+    --input-active-color: #1f6feb;
 
-    --input-active-color: #1890ff;
+    --card-icon-background-color: #30363d;
 
-    --card-icon-background-color: #444444;
+    /* 增强霓虹效果 */
+    --neon-cyan: #00ffff;
+    --neon-green: #00ff00;
+
+    /* 终端效果增强 */
+    --terminal-bg: rgba(0, 0, 0, 0.9);
+    --terminal-border: #00ffff;
+    --terminal-text: #ffffff;
+    --terminal-prompt: #00ffff;
+    --terminal-output: #00ff00;
+    --terminal-error: #ff0000;
+
+    /* 代码高亮增强 */
+    --code-keyword: #ff7b72;
+    --code-string: #a5d6ff;
+    --code-function: #d2a8ff;
+    --code-number: #79c0ff;
+    --code-comment: #8b949e;
+
+    /* 玻璃态效果 */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(0, 255, 255, 0.2);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    /* 渐变增强 */
+    --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
+    --gradient-terminal: linear-gradient(135deg, #00ff00 0%, #00ffff 50%, #0088ff 100%);
+}
+
+/* 全局终端样式 */
+body {
+    font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+    background-color: var(--background-color-1);
+    color: var(--text-default-color);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* 代码片段样式 */
+.code-snippet {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 4px;
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: auto;
+    position: relative;
+}
+
+.code-snippet::before {
+    content: '▶';
+    color: var(--terminal-prompt);
+    position: absolute;
+    left: 8px;
+    top: 8px;
+}
+
+/* 玻璃态卡片 */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    box-shadow: var(--glass-shadow);
+    transition: all 0.3s ease;
+}
+
+.glass-card:hover {
+    border-color: var(--neon-cyan);
+    box-shadow:
+        0 0 20px rgba(0, 255, 255, 0.3),
+        var(--glass-shadow);
+    transform: translateY(-2px);
+}
+
+/* 终端窗口样式 */
+.terminal-window {
+    background-color: var(--terminal-bg);
+    border: 1px solid var(--terminal-border);
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.terminal-header {
+    background-color: var(--background-color-2);
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--terminal-border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.terminal-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.terminal-dot.red { background-color: #ff5f56; }
+.terminal-dot.yellow { background-color: #ffbd2e; }
+.terminal-dot.green { background-color: #27c93f; }
+
+.terminal-title {
+    color: var(--text-light-color);
+    font-size: 12px;
+    margin-left: auto;
+}
+
+.terminal-content {
+    padding: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--terminal-text);
+}
+
+/* 数据流动画 */
+@keyframes data-stream {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.data-stream {
+    position: relative;
+    overflow: hidden;
+}
+
+.data-stream::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gradient-terminal);
+    animation: data-stream 2s linear infinite;
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .code-snippet {
+        font-size: 12px;
+        padding: 12px;
+    }
+
+    .terminal-content {
+        font-size: 12px;
+        padding: 12px;
+    }
 }

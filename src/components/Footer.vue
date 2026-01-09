@@ -77,7 +77,7 @@ const formattedDate = new Date(gitDate).toLocaleString('zh-CN', {
 
 <style scoped>
 .footer {
-    /* width: 100%; */
+    width: 100%;
     padding: 3rem 20px;
     text-align: left;
     font-size: 14px;

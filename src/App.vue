@@ -1,69 +1,151 @@
 <template>
-  <div class="container">
-    <div class="sidebar" @mouseenter="isSidebarHover = true" @mouseleave="isSidebarHover = false">
-      <div class="logo">
-        <img src="/favicon.ico" alt="CWXU- Algo Logo" class="logo-icon">
-        <div class="title">CWXU - Algo</div>
+  <div class="terminal-container">
+    <!-- 终端侧边栏 -->
+    <div class="terminal-sidebar">
+      <div class="terminal-header">
+        <div class="terminal-dot red"></div>
+        <div class="terminal-dot yellow"></div>
+        <div class="terminal-dot green"></div>
+        <div class="terminal-title">navigation.terminal</div>
       </div>
+
+      <div class="sidebar-logo">
+        <div class="logo-icon">
+          <div class="logo-glitch">CWXU-Algo</div>
+        </div>
+        <div class="logo-status">
+          <div class="status-indicator" :class="{ 'status-online': true }"></div>
+          <span class="status-text">{{ currentTheme === 'dark' ? 'DARK_MODE' : 'LIGHT_MODE' }}</span>
+        </div>
+      </div>
+
       <div class="sections">
-        <router-link to="/" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-house" class="section-icon" />
-          <div class="title">
-            <div class="zh">首页</div>
-            <div class="en">Home</div>
+        <!-- 终端风格导航项 -->
+        <router-link to="/" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-house" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">首页</span>
+              <span class="en">~</span>
+            </div>
+            <div class="item-description">数据总览</div>
           </div>
+          <div class="item-indicator">▶</div>
         </router-link>
-        <router-link to="/rank" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-trophy" class="section-icon" />
-          <div class="title">
-            <div class="zh">排行榜</div>
-            <div class="en">Rank</div>
+
+        <router-link to="/rank" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-trophy" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">排行榜</span>
+              <span class="en">rank</span>
+            </div>
+            <div class="item-description">查看排行数据</div>
           </div>
+          <div class="item-indicator">▶</div>
         </router-link>
-        <router-link to="/competition" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-flag" class="section-icon" />
-          <div class="title">
-            <div class="zh">比赛</div>
-            <div class="en">Competition</div>
+
+        <router-link to="/competition" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-flag" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">比赛</span>
+              <span class="en">COMPETITION</span>
+            </div>
+            <div class="item-description">查看比赛数据</div>
           </div>
+          <div class="item-indicator">▶</div>
         </router-link>
-        <router-link to="/profile" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-user" class="section-icon" />
-          <div class="title">
-            <div class="zh">个人资料</div>
-            <div class="en">Profile</div>
+
+        <router-link to="/profile" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">个人资料</span>
+              <span class="en">profile</span>
+            </div>
+            <div class="item-description">查看/修改个人资料</div>
           </div>
+          <div class="item-indicator">▶</div>
         </router-link>
-        <router-link to="/dashboard" class="section" active-class="active">
-          <font-awesome-icon icon="fa-solid fa-gauge-high" class="section-icon" />
-          <div class="title">
-            <div class="zh">后台管理</div>
-            <div class="en">Dashboard</div>
+
+        <router-link to="/dashboard" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">后台管理</span>
+              <span class="en">dashboard</span>
+            </div>
+            <div class="item-description">管理学生和小组</div>
           </div>
+          <div class="item-indicator">▶</div>
         </router-link>
-        <div class="section" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
-          <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="section-icon" />
-          <font-awesome-icon v-else icon="fa-solid fa-moon" class="section-icon" />
-          <div class="title">
-            <div class="zh">切换主题</div>
-            <div class="en">{{ currentTheme === 'dark' ? 'Light' : 'Dark' }}</div>
+
+        <!-- 主题切换 -->
+        <div class="section terminal-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
+          <div class="item-prefix">></div>
+          <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="item-icon" />
+          <font-awesome-icon v-else icon="fa-solid fa-moon" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">主题</span>
+              <span class="en">{{ currentTheme === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
+            </div>
+            <div class="item-description">切换主题</div>
           </div>
+          <div class="item-indicator">▶</div>
+        </div>
+      </div>
+
+      <!-- 终端状态栏 -->
+      <div class="sidebar-footer">
+        <div class="system-info">
+          <span class="info-item">v1.0.0</span>
+          <span class="info-divider">|</span>
+          <span class="info-item">{{ new Date().getHours().toString().padStart(2, '0') }}:{{ new
+            Date().getMinutes().toString().padStart(2, '0') }}</span>
         </div>
       </div>
     </div>
-    <div class="content">
-      <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" />
-        </transition>
-      </router-view>
+
+    <!-- 主内容区 -->
+    <div class="terminal-content">
+      <!-- <div class="content-header data-stream"> -->
+      <div class="content-header">
+        <div class="header-info">
+          <span class="info-label">></span>
+          <span class="info-value">{{ currentRouteName }}</span>
+        </div>
+      </div>
+
+      <div class="content-main">
+        <router-view v-slot="{ Component }">
+          <transition name="terminal-fade" mode="out-in">
+            <component :is="Component" />
+          </transition>
+        </router-view>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, provide } from 'vue'
+import { ref, onMounted, provide, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
+
+const route = useRoute()
+
+// 获取当前路由名称用于显示
+const currentRouteName = computed(() => {
+  const name = route.name?.toString() || 'home'
+  return name.toUpperCase().replace(/_/g, ' ')
+})
 
 const text = `
  ██████╗██╗    ██╗██╗  ██╗██╗   ██╗       █████╗ ██╗      ██████╗  ██████╗
@@ -73,13 +155,12 @@ const text = `
 ╚██████╗╚███╔███╔╝██╔╝ ██╗╚██████╔╝      ██║  ██║███████╗╚██████╔╝╚██████╔╝
  ╚═════╝ ╚══╝╚══╝ ╚═╝  ╚═╝ ╚═════╝       ╚═╝  ╚═╝╚══════╝ ╚═════╝  ╚═════╝ `
 
-const info=`
+const info = `
 ===================================
 GitHash   ${__GIT_HASH__}
 GitDate   ${__GIT_DATE__}
 -----------------------------------
 Fonts     Jetbrains Mono
-          Noto Sans SC
 Icons     Font Awesome
 -----------------------------------
 Frontend  Aoralsfout
@@ -96,12 +177,6 @@ Welcome to CWXU - Algo
 
 ${rainbowInfo.string}
 `, ...rainbowText.format, ...rainbowInfo.format);
-
-// 侧边栏是否被Hover
-const isSidebarHover = ref(false);
-
-// 向子组件提供侧边栏悬停状态
-provide('sidebarHover', isSidebarHover);
 
 // 从本地储存中获取主题
 const getTheme = (): 'dark' | 'light' => {
@@ -135,225 +210,423 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
+/* 终端风格过渡动画 */
+.terminal-fade-enter-active,
+.terminal-fade-leave-active {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.fade-enter-from,
-.fade-leave-to {
+.terminal-fade-enter-from {
   opacity: 0;
+  transform: translateY(10px);
 }
 
-.container {
+.terminal-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+/* 主容器 */
+.terminal-container {
   display: flex;
+  min-height: 100vh;
+  background-color: var(--background-color-1);
+  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
+  color: var(--text-default-color);
+  overflow: hidden;
 }
 
-.sidebar {
-  position: fixed;
-  top: 0;
+/* 终端侧边栏 */
+.terminal-sidebar {
+  width: 320px;
+  min-width: 320px;
+  background-color: var(--background-color-2);
+  border-right: 1px solid var(--divider-color);
   display: flex;
   flex-direction: column;
-  width: 70px;
-  height: 100vh;
-  background-color: var(--background-color-2);
-  border-right: solid 1px var(--divider-color);
-  user-select: none;
-
-  overflow: hidden;
-  text-wrap: nowrap;
-
-  transition: width 0.3s ease-in-out;
-
+  position: relative;
   z-index: 10;
+  transition: all 0.3s ease;
 }
 
-.sidebar:hover {
-  width: 300px;
-}
-
-.sidebar:hover .section .title {
-  opacity: 1;
-  transform: translateX(0px);
-}
-
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
+/* 侧边栏logo区域 */
+.sidebar-logo {
+  padding: 24px;
+  border-bottom: 1px solid var(--divider-color);
 }
 
 .logo-icon {
-  -webkit-user-drag: none;
-}
-
-.logo .title {
-  display: flex;
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
-  font-size: 1rem;
-  transform: translateX(10px);
-  color: var(--text-default-color);
-}
-
-.sections {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 8px;
 }
 
-.section {
-  display: flex;
+.logo-glitch {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--neon-cyan);
   position: relative;
+  letter-spacing: 1px;
+}
+
+/* 状态指示器 */
+.logo-status {
+  display: flex;
   align-items: center;
-  height: 50px;
-  padding-left: 20px;
+  gap: 10px;
+  margin-top: 16px;
+  padding: 8px 12px;
+  background-color: var(--section-background-color);
+  border-radius: 4px;
+  border: 1px solid var(--divider-color);
+}
 
-  transition: all 0.2s ease-in-out;
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ff5f56;
+}
+
+.status-indicator.status-online {
+  background-color: #27c93f;
+  box-shadow: 0 0 8px #27c93f;
+}
+
+.status-text {
+  font-size: 0.85rem;
+  color: var(--text-light-color);
+  flex-grow: 1;
+}
+
+/* 导航区域 */
+.sections {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+}
+
+/* 终端导航项 */
+.terminal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
   cursor: pointer;
-}
-
-a.section {
-  color: inherit;
   text-decoration: none;
+  color: var(--text-light-color);
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.section.active {
-  background-color: var(--section-background-color);
-}
-
-.section:hover {
-  background-color: var(--section-background-color);
-}
-
-.section::before {
+.terminal-item::before {
   content: '';
   position: absolute;
-  left: 0;
-  width: 5px;
-  height: 0%;
-  background-color: var(--section-active-color);
-  margin-right: 10px;
-
-  transition: height 0.2s ease-in-out;
-}
-
-.section.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 5px;
+  top: 0;
+  left: -100%;
+  width: 100%;
   height: 100%;
-  background-color: var(--section-active-color);
-  margin-right: 10px;
+  background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.1), transparent);
+  transition: left 0.6s ease;
 }
 
-.section.active .section-icon {
-  color: var(--section-active-color);
+.terminal-item:hover::before {
+  left: 100%;
 }
 
-.section.active .title {
+.terminal-item:hover {
+  border-color: var(--neon-cyan);
+  background-color: var(--section-background-color);
+  color: var(--text-default-color);
+  transform: translateX(4px);
+}
+
+.terminal-item.active {
+  border-color: var(--neon-cyan);
+  background-color: var(--section-background-color);
+  color: var(--text-default-color);
+  box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
+}
+
+.terminal-item.active .item-prefix {
+  color: var(--neon-cyan);
+  text-shadow: 0 0 8px var(--neon-cyan);
+}
+
+.terminal-item.active .item-icon {
+  color: var(--neon-cyan);
+  transform: scale(1.1);
+}
+
+.item-prefix {
+  font-size: 0.9rem;
+  color: var(--text-terminal);
+  font-weight: bold;
+  min-width: 24px;
+}
+
+.item-icon {
+  font-size: 1.2rem;
+  color: var(--section-default-color);
+  transition: all 0.2s ease;
+  min-width: 24px;
+  text-align: center;
+}
+
+.item-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.item-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.item-title .zh {
   color: var(--text-default-color);
 }
 
-.section-icon {
-  font-size: 1.5rem;
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--section-default-color);
-
-  transition: color 0.2s ease-in-out;
-}
-
-.section .title {
-  display: flex;
-  align-items: flex-end;
-  gap: 10px;
-  opacity: 0;
-  margin-left: 10px;
-  font-size: 1rem;
-  transform: translateX(-20px);
+.item-title .en {
   color: var(--text-light-color);
-
-  transition: all 0.2s ease-in-out;
+  font-size: 0.85rem;
+  opacity: 0.7;
 }
 
-.content {
-  width: 100%;
-  background-color: var(--background-color-1);
-  padding-left: 70px;
+.item-description {
+  font-size: 0.8rem;
+  color: var(--text-terminal);
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-@media (max-width:860px) {
-  .sidebar {
-    width: 100vw;
-    height: 70px;
-    flex-direction: row;
-    align-items: center;
+.item-indicator {
+  font-size: 1rem;
+  color: var(--neon-cyan);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.terminal-item:hover .item-indicator {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+/* 侧边栏底部 */
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid var(--divider-color);
+  background-color: var(--section-background-color);
+}
+
+.system-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: var(--text-light-color);
+}
+
+.info-item {
+  padding: 4px 8px;
+  background-color: var(--section-background-color);
+  border-radius: 4px;
+  border: 1px solid var(--divider-color);
+}
+
+.info-divider {
+  color: var(--neon-cyan);
+  opacity: 0.5;
+}
+
+/* 主内容区域 */
+.terminal-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.content-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--divider-color);
+  background-color: var(--background-color-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.1rem;
+}
+
+.info-label {
+  color: var(--text-light-color);
+}
+
+.info-value {
+  color: var(--neon-cyan);
+  font-weight: 600;
+}
+
+/* 主要内容区域 */
+.content-main {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* 内容底部终端 */
+.content-footer {
+  margin: 24px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .terminal-sidebar {
+    width: 280px;
+    min-width: 280px;
+  }
+
+  .content-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 860px) {
+  .terminal-container {
+    flex-direction: column;
+  }
+
+  .terminal-sidebar {
+    width: 100%;
+    min-width: 100%;
+    height: auto;
     border-right: none;
-    border-bottom: solid 1px var(--divider-color);
-  }
-
-  .logo .title {
-    display: none;
-  }
-
-  .sidebar:hover {
-    width: 100vw;
+    border-bottom: 1px solid var(--divider-color);
   }
 
   .sections {
-    display: flex;
     flex-direction: row;
+    overflow-x: auto;
+    padding: 12px;
+    gap: 8px;
   }
 
-  .section {
-    padding: 0 10px;
+  .terminal-item {
+    min-width: 200px;
+    flex-shrink: 0;
   }
 
-  .section::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 0%;
-    height: 5px;
-    background-color: var(--section-active-color);
-    margin-right: 10px;
-
-    transition: width 0.2s ease-in-out;
-  }
-
-  .section.active::before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 5px;
-    background-color: var(--section-active-color);
-    margin-right: 10px;
-  }
-
-  .content {
-    padding-top: 70px;
-    padding-left: 0;
-  }
-
-  .section .title {
-    display: flex;
-    opacity: 1;
-    transform: translateX(0px);
-  }
-
-  .title .en {
+  .item-title .en {
     display: none;
+  }
+
+  .item-description {
+    display: none;
+  }
+
+  .sidebar-footer {
+    display: none;
+  }
+
+  .terminal-content {
+    min-height: calc(100vh - 300px);
+  }
+
+  .content-header {
+    padding: 12px 16px;
+  }
+
+  .content-main {
+    padding: 16px;
+  }
+
+  .content-footer {
+    margin: 16px;
   }
 }
 
-@media (max-width: 740px) {
-  .section .title{
+@media (max-width: 640px) {
+  .terminal-item {
+    min-width: 160px;
+    padding: 10px 12px;
+  }
+
+  .item-prefix {
     display: none;
   }
+
+  .item-icon {
+    font-size: 1rem;
+  }
+
+  .item-title .zh {
+    font-size: 0.85rem;
+  }
+
+  .logo-glitch {
+    font-size: 2rem;
+  }
+
+  .logo-subtitle {
+    font-size: 0.8rem;
+  }
+
+  .content-footer {
+    margin: 12px;
+  }
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: var(--background-color-2);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--neon-cyan);
+  border-radius: 3px;
+  opacity: 0.5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  opacity: 0.8;
+}
+
+/* 选择文本样式 */
+::selection {
+  background-color: rgba(0, 255, 255, 0.3);
+  color: var(--text-default-color);
 }
 </style>
