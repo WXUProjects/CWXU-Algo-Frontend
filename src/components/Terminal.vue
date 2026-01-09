@@ -5,7 +5,7 @@
             <div class="terminal-dot yellow"></div>
             <div class="terminal-dot green"></div>
             <div class="terminal-title">
-                <slot name="'header'"></slot>
+                <slot name="header"></slot>
             </div>
         </div>
         <div class="terminal-content">
