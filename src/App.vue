@@ -27,7 +27,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">首页</span>
-              <span class="en">~</span>
+              <span class="en">Home</span>
             </div>
             <div class="item-description">数据总览</div>
           </div>
@@ -40,7 +40,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">排行榜</span>
-              <span class="en">rank</span>
+              <span class="en">Rank</span>
             </div>
             <div class="item-description">查看排行数据</div>
           </div>
@@ -53,7 +53,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">比赛</span>
-              <span class="en">COMPETITION</span>
+              <span class="en">Competition</span>
             </div>
             <div class="item-description">查看比赛数据</div>
           </div>
@@ -66,7 +66,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">个人资料</span>
-              <span class="en">profile</span>
+              <span class="en">Profile</span>
             </div>
             <div class="item-description">查看/修改个人资料</div>
           </div>
@@ -79,7 +79,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">后台管理</span>
-              <span class="en">dashboard</span>
+              <span class="en">Dashboard</span>
             </div>
             <div class="item-description">管理学生和小组</div>
           </div>
@@ -94,7 +94,7 @@
           <div class="item-content">
             <div class="item-title">
               <span class="zh">主题</span>
-              <span class="en">{{ currentTheme === 'dark' ? 'light_mode' : 'dark_mode' }}</span>
+              <span class="en">{{ currentTheme === 'dark' ? 'Light_mode' : 'Dark_mode' }}</span>
             </div>
             <div class="item-description">切换主题</div>
           </div>
