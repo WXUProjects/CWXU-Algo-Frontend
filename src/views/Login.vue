@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            登录 Login
-        </template>
         <div class="login-box">
             <div class="login-title">登录</div>
             <div class="login-form">

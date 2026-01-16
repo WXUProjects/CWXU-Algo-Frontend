@@ -16,7 +16,7 @@ import "@fontsource/noto-sans-sc/400.css"; // Specify weight
 // FontAwesome 图标库
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe, faGaugeHigh, faChartLine, faPeopleGroup, faFlag, } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe, faGaugeHigh, faChartLine, faPeopleGroup, faFlag, faStar, } from '@fortawesome/free-solid-svg-icons'
 
 // 主题
 import './assets/css/theme.css'
@@ -32,7 +32,8 @@ library.add(
     faGaugeHigh,
     faChartLine,
     faPeopleGroup,
-    faFlag
+    faFlag,
+    faStar
 )
 
 const app = createApp(App)

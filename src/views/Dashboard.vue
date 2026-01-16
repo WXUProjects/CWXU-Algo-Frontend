@@ -7,9 +7,6 @@ TODO:
 
 <template>
     <BaseLayout>
-        <template #header>
-            后台管理 Dashboard
-        </template>
         <div>
             <div class="sections">
                 <router-link to="/dashboard/statistics" class="section" active-class="active">

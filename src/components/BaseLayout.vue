@@ -23,6 +23,7 @@ import Footer from './Footer.vue'
     flex-direction: column;
     gap: 60px;
     padding: 20px;
+    color: var(--text-default-color);
 }
 
 @keyframes slideIn {

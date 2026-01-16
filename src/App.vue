@@ -73,6 +73,19 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
+        <router-link to="/star" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-star" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">收藏</span>
+              <span class="en">Star</span>
+            </div>
+            <div class="item-description">查看或管理您的收藏</div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </router-link>
+
         <router-link to="/dashboard" class="section terminal-item" active-class="active">
           <div class="item-prefix">></div>
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />

@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            个人资料 Profile
-        </template>
     </BaseLayout>
 </template>
 

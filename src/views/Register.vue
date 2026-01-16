@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            注册 Register
-        </template>
         <div class="register-box">
             <div class="register-title">注册</div>
             <div class="register-form">

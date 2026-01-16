@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            排行榜 Rank
-        </template>
         <div>
             <div class="sections">
                 <div class="section" v-if="currentSection" v-for="item in sections"

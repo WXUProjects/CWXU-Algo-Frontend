@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            未知页面 Not-Found
-        </template>
         <div class="nf">
             <div class="code">404</div>
             <div class="text">页面未找到</div>

@@ -1,8 +1,5 @@
 <template>
     <BaseLayout>
-        <template #header>
-            比赛 Competition
-        </template>
         <div class="title">热门比赛</div>
         <div class="title">我参加的比赛</div>
     </BaseLayout>
@@ -13,7 +10,6 @@ import BaseLayout from '@/components/BaseLayout.vue'
 </script>
 
 <style scoped>
-
 .title {
     width: 100%;
     height: 50px;
