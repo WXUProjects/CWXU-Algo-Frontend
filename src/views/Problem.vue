@@ -2,6 +2,9 @@
     <BaseLayout>
         <div class="container">
             <div class="pages">
+                <div class="actions">
+                    <button class="btn def" @click="router.push('/problem/upload')">上传题目</button>
+                </div>
                 <table class="item-table">
                     <thead>
                         <tr>
@@ -10,6 +13,7 @@
                             <th>类型</th>
                             <th>难度</th>
                             <th>备注</th>
+                            <th>上传者</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -22,13 +26,15 @@
                         <td>
                             <span class="diff" :style="'background-color:' + colorReflect(Number(item.difficulty))">{{
                                 item.difficulty
-                                }}</span>
+                            }}</span>
                         </td>
                         <td>
                             {{ item.remark }}
                         </td>
+                        <td>{{ item.uploader }}</td>
                         <td>
                             <button class="btn del">删除</button>
+                            <button class="btn def">收藏</button>
                         </td>
                     </tr>
                 </table>
@@ -83,7 +89,7 @@
                                 <span class="filter-checkbox-label">高精度</span>
                             </label>
                             <label class="filter-checkbox">
-                                <input type="checkbox">
+                                <input type="checkbox" checked="true">
                                 <span class="filter-checkbox-label">贪心</span>
                             </label>
                         </div>
@@ -117,6 +123,9 @@
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue'
 import { ref, computed } from 'vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const data = ref({
     currentPage: 1,
@@ -261,6 +270,12 @@ const colorReflect = (diff: number) => {
 .pages {
     flex: 1;
     min-width: 0;
+}
+
+.pages .actions {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row-reverse;
 }
 
 .filter {

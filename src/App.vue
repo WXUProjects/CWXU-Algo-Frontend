@@ -1,21 +1,17 @@
 <template>
   <div class="terminal-container">
-    <!-- 终端侧边栏 -->
+    <!-- 侧边栏 -->
     <div class="terminal-sidebar">
-      <div class="terminal-header">
+      <!-- <div class="terminal-header">
         <div class="terminal-dot red"></div>
         <div class="terminal-dot yellow"></div>
         <div class="terminal-dot green"></div>
         <div class="terminal-title">navigation.terminal</div>
-      </div>
+      </div> -->
 
       <div class="sidebar-logo">
         <div class="logo-icon">
           <div class="logo-glitch">CWXU-Algo</div>
-        </div>
-        <div class="logo-status">
-          <div class="status-indicator" :class="{ 'status-online': true }"></div>
-          <span class="status-text">{{ currentTheme === 'dark' ? 'DARK_MODE' : 'LIGHT_MODE' }}</span>
         </div>
       </div>
 
@@ -56,6 +52,19 @@
               <span class="en">Competition</span>
             </div>
             <div class="item-description">查看比赛数据</div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </router-link>
+
+        <router-link to="/problem" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
+          <font-awesome-icon icon="fa-solid fa-list" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">公共题单</span>
+              <span class="en">Problem</span>
+            </div>
+            <div class="item-description">上传或练习题目</div>
           </div>
           <div class="item-indicator">▶</div>
         </router-link>
@@ -123,6 +132,10 @@
           <span class="info-item">{{ new Date().getHours().toString().padStart(2, '0') }}:{{ new
             Date().getMinutes().toString().padStart(2, '0') }}</span>
         </div>
+        <div class="logo-status">
+          <div class="status-indicator" :class="{ 'status-online': true }"></div>
+          <span class="status-text">{{ currentTheme === 'dark' ? 'DARK_MODE' : 'LIGHT_MODE' }}</span>
+        </div>
       </div>
     </div>
 
@@ -157,7 +170,7 @@ const route = useRoute()
 // 获取当前路由名称用于显示
 const currentRouteName = computed(() => {
   const name = route.name?.toString() || 'home'
-  return name.toUpperCase().replace(/_/g, ' ')
+  return name.replace(/_/g, ' ')
 })
 
 const text = `

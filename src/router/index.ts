@@ -54,13 +54,23 @@ const routes = [
   },
   {
     path: '/competition/:id',
-    name: 'CompetitionDetails',
+    name: 'Competition Details',
     component: () => import('@/views/Competition/Details.vue')
   },
   {
     path: '/star',
     name: 'Star',
     component: () => import("@/views/Star.vue")
+  },
+  {
+    path: '/problem',
+    name: 'Problem',
+    component: () => import("@/views/Problem.vue")
+  },
+  {
+    path: '/problem/upload',
+    name: 'Problem Upload',
+    component: () => import("@/views/Problem/Upload.vue")
   },
   {
     path: '/:pathMatch(.*)*',

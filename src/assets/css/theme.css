@@ -16,6 +16,7 @@
     --text-light-color: #6a737d;
     --text-code-color: #032f62;
     --text-terminal: #22863a;
+    --text-reverse-color: #f5f5f5;
 
     --text-link-color: #005cc5;
     --input-active-color: #0366d6;
@@ -64,6 +65,7 @@
     --text-light-color: #8b949e;
     --text-code-color: #79c0ff;
     --text-terminal: #00ff00;
+    --text-reverse-color: #24292e;
 
     --text-link-color: #58a6ff;
     --input-active-color: #1f6feb;
@@ -209,6 +211,32 @@ body {
     height: 2px;
     background: var(--gradient-terminal);
     animation: data-stream 2s linear infinite;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    border: 1px solid var(--divider-color);
+}
+
+table th,
+table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid var(--divider-color);
+}
+
+table td a {
+    color: var(--text-link-color);
+}
+
+table th {
+    background-color: var(--background-color-1);
+}
+
+table tr:nth-child(even) {
+    background-color: var(--background-color-2);
 }
 
 /* 响应式调整 */
