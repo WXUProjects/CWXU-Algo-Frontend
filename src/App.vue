@@ -1,7 +1,7 @@
 <template>
-  <div class="terminal-container">
+  <div class="container">
     <!-- 侧边栏 -->
-    <div class="terminal-sidebar">
+    <div class="sidebar">
       <!-- <div class="terminal-header">
         <div class="terminal-dot red"></div>
         <div class="terminal-dot yellow"></div>
@@ -18,7 +18,7 @@
       <div class="sections">
         <!-- 终端风格导航项 -->
         <router-link to="/" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-house" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -31,7 +31,7 @@
         </router-link>
 
         <router-link to="/rank" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-trophy" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -44,7 +44,7 @@
         </router-link>
 
         <router-link to="/competition" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-flag" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -57,7 +57,7 @@
         </router-link>
 
         <router-link to="/problem" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-list" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -70,7 +70,7 @@
         </router-link>
 
         <router-link to="/profile" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -83,7 +83,7 @@
         </router-link>
 
         <router-link to="/star" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-star" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -96,7 +96,7 @@
         </router-link>
 
         <router-link to="/dashboard" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -110,7 +110,7 @@
 
         <!-- 主题切换 -->
         <div class="section terminal-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
-          <div class="item-prefix">></div>
+          <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="item-icon" />
           <font-awesome-icon v-else icon="fa-solid fa-moon" class="item-icon" />
           <div class="item-content">
@@ -140,7 +140,7 @@
     </div>
 
     <!-- 主内容区 -->
-    <div class="terminal-content">
+    <div class="content">
       <!-- <div class="content-header data-stream"> -->
       <div class="content-header">
         <div class="header-info">
@@ -151,7 +151,7 @@
 
       <div class="content-main">
         <router-view v-slot="{ Component }">
-          <transition name="terminal-fade" mode="out-in">
+          <transition name="fade" mode="out-in">
             <component :is="Component" />
           </transition>
         </router-view>
@@ -237,23 +237,23 @@ onMounted(() => {
 
 <style scoped>
 /* 终端风格过渡动画 */
-.terminal-fade-enter-active,
-.terminal-fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.terminal-fade-enter-from {
+.fade-enter-from {
   opacity: 0;
   transform: translateY(10px);
 }
 
-.terminal-fade-leave-to {
+.fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
 }
 
 /* 主容器 */
-.terminal-container {
+.container {
   display: flex;
   min-height: 100vh;
   background-color: var(--background-color-1);
@@ -262,15 +262,17 @@ onMounted(() => {
   overflow: hidden;
 }
 
-/* 终端侧边栏 */
-.terminal-sidebar {
+/* 侧边栏 */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
   width: 320px;
-  min-width: 320px;
   background-color: var(--background-color-2);
   border-right: 1px solid var(--divider-color);
   display: flex;
   flex-direction: column;
-  position: relative;
   z-index: 10;
   transition: all 0.3s ease;
 }
@@ -290,7 +292,8 @@ onMounted(() => {
 .logo-glitch {
   font-size: 2.5rem;
   font-weight: 900;
-  color: var(--neon-cyan);
+  /* color: var(--neon-cyan) */
+  color: var(--text-default-color);
   position: relative;
   letter-spacing: 1px;
 }
@@ -368,7 +371,7 @@ onMounted(() => {
 }
 
 .terminal-item:hover {
-  border-color: var(--neon-cyan);
+  /* border-color: var(--neon-cyan); */
   background-color: var(--section-background-color);
   color: var(--text-default-color);
   transform: translateX(4px);
@@ -481,7 +484,8 @@ onMounted(() => {
 }
 
 /* 主内容区域 */
-.terminal-content {
+.content {
+  padding-left: 320px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -517,7 +521,7 @@ onMounted(() => {
 /* 主要内容区域 */
 .content-main {
   flex: 1;
-  padding: 24px;
+  /* padding: 24px; */
   overflow-y: auto;
   position: relative;
 }
@@ -532,26 +536,38 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-  .terminal-sidebar {
+  .sidebar {
     width: 280px;
-    min-width: 280px;
+  }
+
+  .content {
+    padding-left: 280px;
   }
 
   .content-header {
-    flex-direction: column;
-    gap: 12px;
-    align-items: flex-start;
+    display: none;
   }
 }
 
 @media (max-width: 860px) {
-  .terminal-container {
+  .sidebar {
+    position: relative;
+  }
+
+  .content {
+    padding-left: 0px;
+  }
+
+  .sidebar-logo {
+    display: none;
+  }
+
+  .container {
     flex-direction: column;
   }
 
-  .terminal-sidebar {
+  .sidebar {
     width: 100%;
-    min-width: 100%;
     height: auto;
     border-right: none;
     border-bottom: 1px solid var(--divider-color);
@@ -581,7 +597,7 @@ onMounted(() => {
     display: none;
   }
 
-  .terminal-content {
+  .content {
     min-height: calc(100vh - 300px);
   }
 
@@ -590,7 +606,7 @@ onMounted(() => {
   }
 
   .content-main {
-    padding: 16px;
+    /* padding: 16px; */
   }
 
   .content-footer {

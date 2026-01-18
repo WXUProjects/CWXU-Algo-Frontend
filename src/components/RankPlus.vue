@@ -78,7 +78,9 @@ const pages = computed(() => {
 })
 </script>
 
-<style>
+<style scoped>
+@import '@/assets/css/navagation.css';
+
 .title {
     width: 100%;
     height: 50px;
@@ -128,82 +130,5 @@ const pages = computed(() => {
 
 .name {
     flex-grow: 1;
-}
-
-.pageNavigation {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    font-size: 1.2rem;
-    color: var(--text-default-color);
-    gap: 10px;
-}
-
-.group {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    gap: 10px;
-}
-
-.pageInput input {
-    width: 50px;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 1px solid var(--divider-color);
-    border-radius: 5px;
-    padding: 5px 10px;
-    background-color: var(--background-color-1);
-    color: var(--text-default-color);
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.pageInput input:focus {
-    border-color: var(--input-active-color)
-}
-
-.pageButtons {
-    display: flex;
-    gap: 10px;
-}
-
-.pageButtons button {
-    width: max-content;
-    font-size: 1.2rem;
-    text-align: center;
-    border: 1px solid var(--divider-color);
-    border-radius: 5px;
-    padding: 5px 10px;
-    background-color: var(--background-color-1);
-    color: var(--text-default-color);
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-.pageButtons button:hover {
-    border-color: var(--input-active-color)
-}
-
-.pageSum {
-    font-size: 1.2rem;
-    color: var(--text-default-color);
-}
-
-@media (max-width:860px) {
-    .pageNavigation {
-        flex-direction: column;
-    }
-
-    .pageNavigation {
-        width: 100%;
-        font-size: 1.2rem;
-        color: var(--text-default-color);
-        gap: 10px;
-    }
 }
 </style>

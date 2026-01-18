@@ -27,21 +27,6 @@
     --neon-cyan: #00d0d0;
     --neon-green: #00ff00;
 
-    /* 终端效果 */
-    --terminal-bg: rgba(255, 255, 255, 0.95);
-    --terminal-border: #ced4da;
-    --terminal-text: #c9d1d9;
-    --terminal-prompt: #58a6ff;
-    --terminal-output: #79c0ff;
-    --terminal-error: #ff7b72;
-
-    /* 代码高亮 */
-    --code-keyword: #ff7b72;
-    --code-string: #a5d6ff;
-    --code-function: #d2a8ff;
-    --code-number: #79c0ff;
-    --code-comment: #8b949e;
-
     /* 玻璃态效果 */
     --glass-bg: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
@@ -75,21 +60,6 @@
     /* 增强霓虹效果 */
     --neon-cyan: #00ffff;
     --neon-green: #00ff00;
-
-    /* 终端效果增强 */
-    --terminal-bg: rgba(0, 0, 0, 0.9);
-    --terminal-border: #00ffff;
-    --terminal-text: #ffffff;
-    --terminal-prompt: #00ffff;
-    --terminal-output: #00ff00;
-    --terminal-error: #ff0000;
-
-    /* 代码高亮增强 */
-    --code-keyword: #ff7b72;
-    --code-string: #a5d6ff;
-    --code-function: #d2a8ff;
-    --code-number: #79c0ff;
-    --code-comment: #8b949e;
 
     /* 玻璃态效果 */
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -147,48 +117,6 @@ body {
         0 0 20px rgba(0, 255, 255, 0.3),
         var(--glass-shadow);
     transform: translateY(-2px);
-}
-
-/* 终端窗口样式 */
-.terminal-window {
-    background-color: var(--terminal-bg);
-    border: 1px solid var(--terminal-border);
-    border-radius: 8px;
-    overflow: hidden;
-    position: relative;
-}
-
-.terminal-header {
-    background-color: var(--background-color-2);
-    padding: 8px 16px;
-    border-bottom: 1px solid var(--terminal-border);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.terminal-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-}
-
-.terminal-dot.red { background-color: #ff5f56; }
-.terminal-dot.yellow { background-color: #ffbd2e; }
-.terminal-dot.green { background-color: #27c93f; }
-
-.terminal-title {
-    color: var(--text-light-color);
-    font-size: 12px;
-    margin-left: auto;
-}
-
-.terminal-content {
-    padding: 16px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
-    line-height: 1.5;
-    color: var(--terminal-text);
 }
 
 /* 数据流动画 */

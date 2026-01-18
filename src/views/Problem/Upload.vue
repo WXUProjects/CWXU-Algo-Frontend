@@ -144,6 +144,8 @@ const submit = () => {
 }
 
 .form-item-tags input {
+    background-color: var(--background-color-1);
+    color: var(--text-default-color);
     width: calc(100% - 40px);
     border: none;
     outline: none;
@@ -194,7 +196,7 @@ const submit = () => {
     border: 1px solid var(--input-active-color);
 }
 
-.form-item textarea{
+.form-item textarea {
     resize: vertical;
 }
 
