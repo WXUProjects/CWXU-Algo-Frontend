@@ -121,8 +121,13 @@ body {
 
 /* 数据流动画 */
 @keyframes data-stream {
-    0% { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 .data-stream {
@@ -139,6 +144,10 @@ body {
     height: 2px;
     background: var(--gradient-terminal);
     animation: data-stream 2s linear infinite;
+}
+
+a {
+    color: var(--text-link-color);
 }
 
 table {

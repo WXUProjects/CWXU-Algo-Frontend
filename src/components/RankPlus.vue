@@ -81,7 +81,7 @@ const pages = computed(() => {
 <style scoped>
 @import '@/assets/css/navagation.css';
 
-.title {
+.rankContainer>.title {
     width: 100%;
     height: 50px;
     line-height: 50px;

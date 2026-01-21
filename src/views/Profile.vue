@@ -53,7 +53,7 @@
                 </div>
                 <div class="right">
                     <div class="section">
-                        <div class="section-header">
+                        <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
@@ -69,31 +69,58 @@
                                 @click="currentRank = 2">WEEKLY</span> -->
                             </div>
                         </div>
-                        <Calendar :data="data" :title="''" style="width: 100%;"></Calendar>
+                        <div class="content">
+                            <Calendar :data="data" :title="''" style="width: 100%;"></Calendar>
+                        </div>
                     </div>
                     <div class="section">
-                        <div class="section-header">
+                        <div class="header">
+                            <div class="header-title">
+                                <span class="title-icon">
+                                    <font-awesome-icon icon="fa-solid fa-trophy" />
+                                </span>
+                                <span class="title-text">排行 Rank</span>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="ranks">
+                                <div class="rank">
+                                    <div class="title">生涯</div>
+                                    <div class="value">#1</div>
+                                </div>
+                                <div class="rank">
+                                    <div class="title">今日排行</div>
+                                    <div class="value">#1</div>
+                                </div>
+                                <div class="rank">
+                                    <div class="title">本周排行</div>
+                                    <div class="value">#1</div>
+                                </div>
+                                <div class="rank">
+                                    <div class="title">年度排行</div>
+                                    <div class="value">#1</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
                                 </span>
                                 <span class="title-text">动态 Activities</span>
                             </div>
-                            <div class="header-tabs">
-                                <!-- <span class="tab" :class="currentRank === 0 ? 'active' : ''"
-                                @click="currentRank = 0">CAREER</span>
-                            <span class="tab" :class="currentRank === 1 ? 'active' : ''"
-                                @click="currentRank = 1">MONTHLY</span>
-                            <span class="tab" :class="currentRank === 2 ? 'active' : ''"
-                                @click="currentRank = 2">WEEKLY</span> -->
-                            </div>
                         </div>
-                        <div v-if="activities.length != 0" class="activities">
-                            <div class="activity" v-for="activity in activities">
-                                <div class="title">{{ activity.title }}</div>
+                        <div class="content">
+                            <div v-if="activities.length != 0" class="activities">
+                                <div class="activity" v-for="activity in activities">
+                                    <div class="title">{{ activity.title }}</div>
+                                    <div class="time">{{ activity.time }}</div>
+                                </div>
                             </div>
+                            <div v-else>暂无近期活动</div>
                         </div>
-                        <div v-else>暂无近期活动</div>
                     </div>
                 </div>
             </div>
@@ -124,11 +151,11 @@ const user = ref({
 const activities = ref(
     [
         {
-            title: "qwq",
+            title: "在 NowCoder 使用 C++ 解决 example problem1：答案正确",
             time: "2026-01-01 10:00:00"
         },
         {
-            title: "awa",
+            title: "在 NowCoder 使用 C++ 解决 example problem2：答案正确",
             time: "2026-01-01 10:00:00"
         }
     ]
@@ -3079,91 +3106,174 @@ const data = ref([
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
 
-.container>.top {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-}
-
-.container>.top>.left,
-.container>.top>.right {
-    display: flex;
-    flex-direction: column;
-}
-
-.container>.top>.left {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 300px;
-    gap: 20px;
-    /* background-color: aqua; */
-}
-
-.container>.top>.right {
-    flex: 1;
-}
-
-.avatar {
-    position: relative;
-    overflow: hidden;
-    border-radius: 50%;
-    width: 80%;
-    aspect-ratio: 1;
-    border: 1vw solid #fff;
-    box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
-}
-
-.avatar::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    box-shadow: inset 0 0 0 1vw #e5e5e5;
-}
-
-.avatar>img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-}
-
-.left>.info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 80%;
-}
-
-.info>.name {
-    font-size: 2rem;
-    font-weight: bold;
-    width: 100%;
-    border-bottom: 1px solid var(--divider-color);
-}
-
-.info>.details {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-
-    >.item {
+    >.top {
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
+        gap: 20px;
+
+        >.left,
+        >.right {
+            display: flex;
+            flex-direction: column;
+        }
+
+        >.left {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 300px;
+            gap: 20px;
+
+            >.avatar {
+                position: relative;
+                overflow: hidden;
+                border-radius: 50%;
+                width: 80%;
+                aspect-ratio: 1;
+                border: 1vw solid #fff;
+                box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
+
+                &::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                    box-shadow: inset 0 0 0 1vw #e5e5e5;
+                }
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    border-radius: 50%;
+                }
+            }
+
+            >.info {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                width: 80%;
+
+                >.name {
+                    font-size: 2rem;
+                    font-weight: bold;
+                    width: 100%;
+                    border-bottom: 1px solid var(--divider-color);
+                }
+
+                >.details {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+
+                    >.item {
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: space-between;
+                    }
+                }
+            }
+
+            >.actions {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        >.right {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 1000px;
+            gap: 20px;
+        }
+    }
+
+    >.bottom {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
     }
 }
 
-.left>.actions {
+.ranks {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    >.rank {
+        position: relative;
+        min-width: 100px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        >.title {
+            font-size: 1rem;
+        }
+
+        >.value {
+            font-size: 1rem;
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            width: 100%;
+            height: 5px;
+            background-color: var(--neon-cyan);
+        }
+    }
+}
+
+.activities {
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    .activity {
+        position: relative;
+        width: calc(100% - 20px);
+        padding-left: 20px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+
+        >.time {
+            font-size: 0.8rem;
+            color: var(--text-light-color);
+        }
+
+        &::before {
+            content: '';
+            position: absolute;
+            height: calc(100% + 10px);
+            width: 3px;
+            top: -5px;
+            left: 10px;
+            background-color: var(--neon-cyan);
+        }
+
+        &::after{
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            left: 6px;
+            background-color: #fff;
+            border-radius: 50%;
+            border: 3px solid var(--neon-cyan);
+        }
+    }
 }
 
 .btn {
@@ -3177,54 +3287,56 @@ const data = ref([
     font-size: 0.9rem;
     transition: all 0.2s ease;
     user-select: none;
+
+    &.dan:hover {
+        background-color: #f44336;
+        color: white;
+        border-color: #f44336;
+    }
+
+    &.def:hover {
+        background-color: var(--neon-cyan);
+        color: white;
+        border-color: var(--neon-cyan);
+    }
 }
 
-.btn.dan:hover {
-    background-color: #f44336;
-    color: white;
-    border-color: #f44336;
-}
+.section {
+    border: 1px solid var(--divider-color);
+    border-radius: 6px;
 
-.btn.def:hover {
-    background-color: var(--neon-cyan);
-    color: white;
-    border-color: var(--neon-cyan);
-}
+    >.header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 10px;
+        border-bottom: 1px solid var(--divider-color);
+    }
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    margin-bottom: 10px;
-    border-bottom: 1px solid var(--divider-color);
-}
+    >.content {
+        padding: 10px;
+    }
 
-.header-title {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
+    .header-title {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
 
-.title-icon {
-    font-size: 1.3rem;
-}
+    .title-icon {
+        font-size: 1.3rem;
+    }
 
-.title-text {
-    color: var(--text-default-color);
-}
+    .title-text {
+        color: var(--text-default-color);
+    }
 
-.header-actions {
-    display: flex;
-    gap: 16px;
-}
-
-.container>.bottom {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
+    .header-actions {
+        display: flex;
+        gap: 16px;
+    }
 }
 
 @media (max-width:1400px) {
