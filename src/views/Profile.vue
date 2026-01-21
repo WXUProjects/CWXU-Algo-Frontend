@@ -89,11 +89,11 @@
                                     <div class="value">#1</div>
                                 </div>
                                 <div class="rank">
-                                    <div class="title">今日排行</div>
+                                    <div class="title">本周排行</div>
                                     <div class="value">#1</div>
                                 </div>
                                 <div class="rank">
-                                    <div class="title">本周排行</div>
+                                    <div class="title">本月排行</div>
                                     <div class="value">#1</div>
                                 </div>
                                 <div class="rank">
@@ -109,7 +109,7 @@
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
                                 </span>
-                                <span class="title-text">动态 Activities</span>
+                                <span class="title-text">近期动态 Recently-Activities</span>
                             </div>
                         </div>
                         <div class="content">
@@ -119,7 +119,7 @@
                                     <div class="time">{{ activity.time }}</div>
                                 </div>
                             </div>
-                            <div v-else>暂无近期活动</div>
+                            <div v-else>暂无近期动态</div>
                         </div>
                     </div>
                 </div>
@@ -156,6 +156,14 @@ const activities = ref(
         },
         {
             title: "在 NowCoder 使用 C++ 解决 example problem2：答案正确",
+            time: "2026-01-01 10:00:00"
+        },
+        {
+            title: "在 NowCoder 使用 C++ 解决 example problem3：答案错误",
+            time: "2026-01-01 10:00:00"
+        },
+        {
+            title: "在 NowCoder 使用 C++ 解决 example problem3：运行超时",
             time: "2026-01-01 10:00:00"
         }
     ]
@@ -3110,7 +3118,7 @@ const data = ref([
     >.top {
         display: flex;
         flex-direction: row;
-        gap: 20px;
+        justify-content: space-around;
 
         >.left,
         >.right {
@@ -3134,6 +3142,7 @@ const data = ref([
                 aspect-ratio: 1;
                 border: 1vw solid #fff;
                 box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
+                transition: all 0.3s ease;
 
                 &::after {
                     content: '';
@@ -3150,6 +3159,12 @@ const data = ref([
                     width: 100%;
                     height: 100%;
                     border-radius: 50%;
+                    user-select: none;
+                    -webkit-user-drag: none;
+                }
+
+                &:hover {
+                    transform: scale(1.05);
                 }
             }
 
@@ -3187,9 +3202,9 @@ const data = ref([
         }
 
         >.right {
-            margin: 0 auto;
-            width: 100%;
-            max-width: 1000px;
+            /* margin: 0 auto;
+            width: 100%; */
+            max-width: 1200px;
             gap: 20px;
         }
     }
@@ -3260,10 +3275,30 @@ const data = ref([
             width: 3px;
             top: -5px;
             left: 10px;
-            background-color: var(--neon-cyan);
+            background-color: var(--divider-color);
         }
 
-        &::after{
+        &:first-child::before {
+            content: '';
+            position: absolute;
+            height: calc(100% + 15px);
+            width: 3px;
+            top: -10px;
+            left: 10px;
+            background-color: var(--divider-color);
+        }
+
+        &:last-child::before {
+            content: '';
+            position: absolute;
+            height: calc(100% + 15px);
+            width: 3px;
+            bottom: -10px;
+            left: 10px;
+            background-color: var(--divider-color);
+        }
+
+        &::after {
             content: '';
             position: absolute;
             width: 5px;
@@ -3272,6 +3307,8 @@ const data = ref([
             background-color: #fff;
             border-radius: 50%;
             border: 3px solid var(--neon-cyan);
+
+            box-shadow: 0 0 5px var(--neon-cyan);
         }
     }
 }
@@ -3344,6 +3381,7 @@ const data = ref([
         width: 100%;
         flex-direction: column;
         align-items: center;
+        gap: 20px;
     }
 
     .container>.top>.left {

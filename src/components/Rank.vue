@@ -46,7 +46,7 @@ const props = defineProps({
 </script>
 
 <style>
-.rankContainer>.title {
+.rankContainer .title {
     width: 100%;
     height: 50px;
     line-height: 50px;

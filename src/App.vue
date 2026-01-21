@@ -149,6 +149,17 @@
         </div>
       </div>
 
+      <!-- <div class="announcements">
+        <div class="announcement warn">
+          <span class="content">测试警告公告，点击关闭 </span>
+          <span class="close"></span>
+        </div>
+        <div class="announcement info">
+          <span class="content">测试信息公告，点击关闭 </span>
+          <span class="close"></span>
+        </div>
+      </div> -->
+
       <div class="content-main">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
@@ -263,7 +274,7 @@ onMounted(() => {
 }
 
 /* 侧边栏 */
-.sidebar {
+.container>.sidebar {
   position: fixed;
   top: 0;
   left: 0;
@@ -484,7 +495,7 @@ onMounted(() => {
 }
 
 /* 主内容区域 */
-.content {
+.container>.content {
   padding-left: 320px;
   flex: 1;
   display: flex;
@@ -500,6 +511,64 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.content .announcements {
+  display: flex;
+  flex-direction: column;
+
+  .announcement {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    height: auto;
+
+    &.warn {
+      background-color: rgba(255, 0, 0, 0.5);
+    }
+
+    &.info {
+      background-color: rgba(0, 255, 255, 0.5);
+    }
+
+    .close {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 30px;
+      height: 30px;
+      margin-left: 10px;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #ffffff80;
+      }
+
+      &::before {
+        content: '';
+        position: absolute;
+        height: 50%;
+        width: 3px;
+        border-radius: 1.5px;
+        left: 50%;
+        transform: translate(-50%, 0%) rotate(45deg);
+        background-color: #000;
+      }
+
+      &::after {
+        content: '';
+        position: absolute;
+        height: 50%;
+        width: 3px;
+        border-radius: 1.5px;
+        left: 50%;
+        transform: translate(-50%, 0%) rotate(-45deg);
+        background-color: #000;
+      }
+    }
+  }
 }
 
 .header-info {
@@ -566,7 +635,7 @@ onMounted(() => {
     flex-direction: column;
   }
 
-  .sidebar {
+  .container>.sidebar {
     width: 100%;
     height: auto;
     border-right: none;
@@ -597,7 +666,7 @@ onMounted(() => {
     display: none;
   }
 
-  .content {
+  .container>.content {
     min-height: calc(100vh - 300px);
   }
 
