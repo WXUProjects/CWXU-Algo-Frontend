@@ -543,10 +543,6 @@ onMounted(() => {
   .content {
     padding-left: 280px;
   }
-
-  .content-header {
-    display: none;
-  }
 }
 
 @media (max-width: 860px) {
@@ -556,6 +552,10 @@ onMounted(() => {
 
   .content {
     padding-left: 0px;
+  }
+
+  .content-header {
+    display: none;
   }
 
   .sidebar-logo {

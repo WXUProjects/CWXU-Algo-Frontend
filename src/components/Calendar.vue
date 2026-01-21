@@ -1,6 +1,6 @@
 <template>
     <div class="ACCalendar">
-        <div class="title">{{ props.title }}</div>
+        <div class="title" v-if="props.title">{{ props.title }}</div>
         <div class="content">
             <div class="calendar">
                 <div class="dayAxis">
