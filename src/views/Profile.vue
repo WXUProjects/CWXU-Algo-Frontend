@@ -133,7 +133,12 @@
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import axios from 'axios';
+import { routerKey, useRoute } from 'vue-router';
+
+const route = useRoute();
+const id = ref(route.query.id);
 
 const user = ref({
     id: 1,
@@ -168,6 +173,35 @@ const activities = ref(
         }
     ]
 )
+
+// const getUserId(){
+
+// }
+
+interface ResponseData {
+    userId: number;
+    username: string;
+    name: string;
+    email: string;
+    groupid: string;
+    avatar: string
+}
+
+const jwtToken = localStorage.getItem("jwtToken");
+console.log(jwtToken);
+
+// 获取用户信息
+const getUserInfo = async () => {
+    // const response = await axios.get('/v1/user/profile/get-by-id', {
+    //     headers: {
+    //         Authorization: "Bearer " + jwtToken,
+    //     },
+    //     params: {
+    //         userId: id.value
+    //     }
+    // })
+    // console.log(response.data);
+}
 
 const data = ref([
     {
@@ -3107,6 +3141,10 @@ const data = ref([
         "count": 22
     }
 ])
+
+onMounted(() => {
+    getUserInfo()
+})
 </script>
 
 <style scoped>
