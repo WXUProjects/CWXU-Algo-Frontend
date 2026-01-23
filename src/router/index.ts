@@ -1,4 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import JWT from '@/utils/jwt'
+// 可选：守卫用户个人资料路由
+const profileGuard = (to: any, from: any, next: any) => {
+  if (JWT.isValid()) {
+    next()
+  } else {
+    next({
+      name: 'Login',
+      query: { 
+        redirect: to.fullPath 
+      }
+    })
+  }
+}
 
 const routes = [
   {
@@ -9,12 +23,14 @@ const routes = [
   {
     path: '/profile',
     name: 'Profile',
-    component: () => import('@/views/Profile.vue')
+    component: () => import('@/views/Profile.vue'),
+    beforeEnter: profileGuard
   },
   {
     path: '/changeProfile',
     name: 'ChangeProfile',
-    component: () => import('@/views/ChangeProfile.vue')
+    component: () => import('@/views/ChangeProfile.vue'),
+    beforeEnter: profileGuard
   },
   {
     path: '/login',

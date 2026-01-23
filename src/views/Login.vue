@@ -24,13 +24,14 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import axios from 'axios'
 import BaseLayout from '@/components/BaseLayout.vue'
 import JWT from '@/utils/jwt'
 import { hashPassword } from '@/utils/hash'
 
 const router = useRouter()
+const route = useRoute()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
@@ -67,22 +68,23 @@ interface ResponseData {
 // 处理登录
 const handleLogin = async () => {
     wait.value = true
-    
+
     const hashedFormData = {
         ...formData.value,
         password: hashPassword(formData.value.password)
     }
-    
+
     try {
         const response = await axios.post<ResponseData>('/api/user/auth/login', hashedFormData)
         if (response.data.success) {
             operationTip.value.type = 'success'
             operationTip.value.message = response.data.message
-            
+
             JWT.setNewToken(response.data.jwtToken)
 
+            const redirectPath = route.query.redirect as string || '/'
             setTimeout(() => {
-                router.push('/')
+                router.push(redirectPath)
             }, 1000)
         } else {
             operationTip.value.type = 'error'
