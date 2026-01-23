@@ -1,5 +1,6 @@
 <template>
     <BaseLayout>
+        <Confirm ref="confirmRef" :message="'确定要退出登录吗？'" @confirm="logout" />
         <div class="loading" v-if="loading.statue">
             <div>{{ loading.info }}</div>
         </div>
@@ -53,8 +54,8 @@
                         </div>
                     </div>
                     <div class="actions">
-                        <button class="btn def">编辑个人资料</button>
-                        <button class="btn dan">退出登录</button>
+                        <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
+                        <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
                     </div>
                 </div>
                 <div class="right">
@@ -141,10 +142,12 @@ import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
+import Confirm from '@/components/confirm.vue'
 
 const route = useRoute();
+const router = useRouter();
 
 const loading = ref({
     statue: true,
@@ -176,6 +179,8 @@ if (route.query.id) {
         user.value.id = JWT.getUserInfo()?.userId;
     }
 }
+
+const confirmRef = ref()
 
 const activities = ref(
     [
@@ -3157,6 +3162,17 @@ const data = ref([
         "count": 22
     }
 ])
+
+const showLogoutConfirm = () => {
+    confirmRef.value?.show()
+}
+
+const logout = async () => {
+    JWT.clearToken()
+
+    // 跳转到登录页面
+    router.push('/login')
+}
 
 onMounted(() => {
     getUserInfo()
