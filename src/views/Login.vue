@@ -27,6 +27,8 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import BaseLayout from '@/components/BaseLayout.vue'
+import JWT from '@/utils/jwt'
+import { hashPassword } from '@/utils/hash'
 
 const router = useRouter()
 
@@ -65,17 +67,30 @@ interface ResponseData {
 // 处理登录
 const handleLogin = async () => {
     wait.value = true
-    const response = await axios.post<ResponseData>('/api/user/auth/login', formData.value)
-    if (response.data.success) {
-        operationTip.value.type = 'success'
-        operationTip.value.message = response.data.message
-        localStorage.setItem('jwtToken', response.data.jwtToken)
-        setTimeout(() => {
-            router.push('/')
-        }, 1000)
-    } else {
+    
+    const hashedFormData = {
+        ...formData.value,
+        password: hashPassword(formData.value.password)
+    }
+    
+    try {
+        const response = await axios.post<ResponseData>('/api/user/auth/login', hashedFormData)
+        if (response.data.success) {
+            operationTip.value.type = 'success'
+            operationTip.value.message = response.data.message
+            
+            JWT.setNewToken(response.data.jwtToken)
+
+            setTimeout(() => {
+                router.push('/')
+            }, 1000)
+        } else {
+            operationTip.value.type = 'error'
+            operationTip.value.message = response.data.message
+        }
+    } catch (error) {
         operationTip.value.type = 'error'
-        operationTip.value.message = response.data.message
+        operationTip.value.message = '网络错误，请稍后重试'
     }
     wait.value = false
 }
@@ -156,7 +171,7 @@ const handleLogin = async () => {
     cursor: not-allowed;
 }
 
-.login-btn:disabled:hover{
+.login-btn:disabled:hover {
     background-color: var(--background-color-1);
 }
 
@@ -164,4 +179,3 @@ const handleLogin = async () => {
     padding: 0 20px 20px 20px;
 }
 </style>
-

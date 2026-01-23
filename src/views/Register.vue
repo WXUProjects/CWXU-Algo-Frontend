@@ -39,6 +39,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
 import BaseLayout from '@/components/BaseLayout.vue'
+import { hashPassword } from '@/utils/hash'
 
 const router = useRouter()
 
@@ -119,19 +120,31 @@ const handleRegister = async () => {
     wait.value = true;
     if (!validate(formData.value)) return;
 
-    const response = await axios.post<ResponseData>('/api/user/auth/register', formData.value);
-    if (response.data.success) {
-        operationTip.value = {
-            type: 'success',
-            message: response.data.message
+    const hashedFormData = {
+        ...formData.value,
+        password: hashPassword(formData.value.password)
+    }
+
+    try {
+        const response = await axios.post<ResponseData>('/api/user/auth/register', hashedFormData);
+        if (response.data.success) {
+            operationTip.value = {
+                type: 'success',
+                message: response.data.message
+            }
+            setTimeout(() => {
+                router.push('/login')
+            }, 1000)
+        } else {
+            operationTip.value = {
+                type: 'error',
+                message: response.data.message
+            }
         }
-        setTimeout(() => {
-            router.push('/login')
-        })
-    } else {
+    } catch (error) {
         operationTip.value = {
             type: 'error',
-            message: response.data.message
+            message: '网络错误，请稍后重试'
         }
     }
     wait.value = false;
@@ -221,4 +234,3 @@ const handleRegister = async () => {
     padding: 0 20px 20px 20px;
 }
 </style>
-

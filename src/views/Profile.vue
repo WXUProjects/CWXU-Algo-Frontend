@@ -1,13 +1,19 @@
 <template>
     <BaseLayout>
-        <div class="container">
+        <div class="loading" v-if="loading.statue">
+            <div>{{ loading.info }}</div>
+        </div>
+        <div class="container" v-else>
             <div class="top">
                 <div class="left">
                     <div class="avatar">
                         <img :src="user.avatar ? user.avatar : '/images/defaultAvatar.png'" alt="" srcset="">
                     </div>
                     <div class="info">
-                        <div class="name">{{ user.name }}</div>
+                        <div class="name">
+                            <div class="name">{{ user.name }}</div>
+                            <div class="username">{{ user.username }}</div>
+                        </div>
                         <div class="details">
                             <div class="item">
                                 <div class="name">AtCoder</div>
@@ -135,15 +141,23 @@ import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
-import { routerKey, useRoute } from 'vue-router';
+import { useRoute } from 'vue-router';
+import JWT from '../utils/jwt';
 
 const route = useRoute();
-const id = ref(route.query.id);
+
+const loading = ref({
+    statue: true,
+    info: "加载中..."
+});
 
 const user = ref({
-    id: 1,
-    name: "张三",
+    id: 0,
+    name: "",
+    username: "",
     avatar: "",
+    email: "",
+    groupId: 0,
     links: {
         atcoder: "",
         nowcoder: "https://ac.nowcoder.com/acm/contest/profile/978880410",
@@ -152,6 +166,16 @@ const user = ref({
         codeforce: ""
     }
 })
+
+if (route.query.id) {
+    user.value.id = Number(route.query.id);
+} else {
+    if (!JWT.isValid()) {
+        window.location.href = "/login";
+    } else {
+        user.value.id = JWT.getUserInfo()?.userId;
+    }
+}
 
 const activities = ref(
     [
@@ -174,33 +198,25 @@ const activities = ref(
     ]
 )
 
-// const getUserId(){
-
-// }
-
-interface ResponseData {
-    userId: number;
-    username: string;
-    name: string;
-    email: string;
-    groupid: string;
-    avatar: string
-}
-
-const jwtToken = localStorage.getItem("jwtToken");
-console.log(jwtToken);
-
 // 获取用户信息
 const getUserInfo = async () => {
-    // const response = await axios.get('/v1/user/profile/get-by-id', {
-    //     headers: {
-    //         Authorization: "Bearer " + jwtToken,
-    //     },
-    //     params: {
-    //         userId: id.value
-    //     }
-    // })
-    // console.log(response.data);
+    try {
+        const response = await axios.get("/api/user/profile/get-by-id", {
+            params: {
+                userId: user.value.id,
+            }
+        })
+        if (response.status === 200) {
+            loading.value.statue = false;
+            user.value.name = response.data.name;
+            user.value.username = response.data.username;
+            user.value.avatar = response.data.avatar;
+            user.value.email = response.data.email;
+            user.value.groupId = response.data.groupId;
+        }
+    } catch (error: any) {
+        loading.value.info = error.response.data.message;
+    }
 }
 
 const data = ref([
@@ -3210,13 +3226,20 @@ onMounted(() => {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
-                width: 80%;
+                width: 100%;
 
                 >.name {
-                    font-size: 2rem;
-                    font-weight: bold;
                     width: 100%;
                     border-bottom: 1px solid var(--divider-color);
+
+                    >.name {
+                        font-size: 2rem;
+                        font-weight: bold;
+                    }
+
+                    >.username {
+                        font-size: 1.5rem;
+                    }
                 }
 
                 >.details {

@@ -264,12 +264,14 @@
 .tag {
     text-wrap: nowrap;
     margin: 0 5px;
+    color: #000;
     background-color: #18ccff99;
     padding: 1px 2px;
     border-radius: 5px;
 }
 
 .diff {
+    color: #000;
     padding: 1px 2px;
     border-radius: 5px;
 }
