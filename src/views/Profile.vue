@@ -182,33 +182,19 @@ if (route.query.id) {
 
 const confirmRef = ref()
 
-const activities = ref(
-    [
-        {
-            title: "在 NowCoder 使用 C++ 解决 example problem1：答案正确",
-            time: "2026-01-01 10:00:00"
-        },
-        {
-            title: "在 NowCoder 使用 C++ 解决 example problem2：答案正确",
-            time: "2026-01-01 10:00:00"
-        },
-        {
-            title: "在 NowCoder 使用 C++ 解决 example problem3：答案错误",
-            time: "2026-01-01 10:00:00"
-        },
-        {
-            title: "在 NowCoder 使用 C++ 解决 example problem3：运行超时",
-            time: "2026-01-01 10:00:00"
-        }
-    ]
-)
+interface ActivityItem {
+    title: string;
+    time: string;
+}
+
+const activities = ref<ActivityItem[]>([])
 
 interface OJData {
-    data: Array<{ platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username:string }>
+    data: Array<{ platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username: string }>
 }
 
 // 获取链接
-const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce",username: string) => {
+const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username: string) => {
     switch (platform) {
         case "AtCoder":
             return "https://atcoder.jp/users/" + username;
@@ -223,10 +209,28 @@ const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "Code
     };
 }
 
+export interface SubmitResponse {
+    data: SubmitData[];
+    [property: string]: any;
+}
+
+export interface SubmitData {
+    contest: string;
+    id: number;
+    lang: string;
+    platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce";
+    problem: string;
+    status: string;
+    submitId: string;
+    time: string;
+    userId: string;
+    [property: string]: any;
+}
+
 // 获取用户绑定OJ
 const getUserOJ = async () => {
     try {
-        const response = await axios.get<OJData>("/api/core/spider/get-by-id", {
+        const response = await axios.get<SubmitResponse>("/api/core/spider/get-by-id", {
             params: {
                 userId: user.value.id,
             }
@@ -234,6 +238,44 @@ const getUserOJ = async () => {
         if (response.status === 200) {
             response.data.data.forEach(item => {
                 user.value.links[item.platform] = getLink(item.platform, item.username);
+            });
+        }
+    } catch (error: any) {
+        loading.value.info = error.response.data.message;
+    }
+}
+
+const getSubmitInfo = async () => {
+    try {
+        const response = await axios.get<SubmitResponse>("/api/core/submit-log/get-by-id", {
+            params: {
+                userId: user.value.id,
+                limit: 10,
+                cursor: -1
+            }
+        })
+        if (response.status === 200) {
+            console.log(response.data.data);
+
+            response.data.data.forEach(item => {
+                const platfrom = item.platform;
+                const lang = item.lang;
+                const contest = item.contest;
+                const problem = item.problem;
+                const status = item.status;
+                const time = new Date(Number(item.time) * 1000).toLocaleString('sv-SE', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false
+                });
+                activities.value.push({
+                    title: `在 ${platfrom} 使用 ${lang} 解决 ${problem || contest}：${status}`,
+                    time: time
+                });
             });
         }
     } catch (error: any) {
@@ -262,6 +304,7 @@ const getUserInfo = async () => {
     }
 
     getUserOJ();
+    getSubmitInfo();
 }
 
 const data = ref([

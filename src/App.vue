@@ -56,6 +56,19 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
+        <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
+          <!-- <div class="item-prefix">></div> -->
+          <font-awesome-icon icon="fa-solid fa-comment"" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">论坛</span>
+              <span class="en">BBS</span>
+            </div>
+            <div class="item-description">进入论坛</div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </a>
+
         <router-link to="/problem" class="section terminal-item" active-class="active">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-list" class="item-icon" />
