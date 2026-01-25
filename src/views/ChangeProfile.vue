@@ -2,7 +2,7 @@
     <BaseLayout>
         <div class="editProfile">
             <div class="avatar">
-                <img :src="userInfo?.avatar ? userInfo.avatar : '/images/defaultAvatar.png'" alt=""></img>
+                <img :src="formData?.avatar ? formData.avatar : '/images/defaultAvatar.png'" alt=""></img>
             </div>
             <div class="info">
                 <div class="title">修改个人资料</div>
@@ -29,11 +29,35 @@
 import BaseLayout from '@/components/BaseLayout.vue';
 import axios from 'axios';
 import JWT from '@/utils/jwt';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import Vaildate from '@/utils/vaildate';
 const router = useRouter();
-const userInfo = JWT.getUserInfo();
+
+const userId = JWT.getUserInfo()?.userId;
+
+const formData = ref({
+    userId: userId,
+    name: "",
+    email: "",
+    avatar: ""
+})
+
+const getUserInfo = async () => {
+    try {
+        const response = await axios.get("/api/user/profile/get-by-id", {
+            params: {
+                userId: userId,
+            }
+        })
+        if (response.status === 200) {
+            formData.value.name = response.data.name;
+            formData.value.avatar = response.data.avatar;
+            formData.value.email = response.data.email;
+        }
+    } catch (error) {
+    }
+}
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
@@ -52,12 +76,6 @@ const handleCancel = () => {
     router.push('/profile')
 }
 
-const formData = ref({
-    userId: userInfo?.userId,
-    name: userInfo?.name,
-    email: userInfo?.email,
-    avatar: userInfo?.avatar
-})
 const handleConfirm = async () => {
     wait.value = true
     if (!Vaildate.checkEmali(formData.value.email)) {
@@ -86,6 +104,10 @@ const handleConfirm = async () => {
     }
     wait.value = false
 }
+
+onMounted(() => {
+    getUserInfo();
+})
 </script>
 <style scoped>
 .editProfile {
@@ -156,7 +178,7 @@ const handleConfirm = async () => {
             gap: 10px;
         }
 
-        >.desc{
+        >.desc {
             font-size: 14px;
             color: var(--text-light-color);
         }
