@@ -19,36 +19,36 @@
                             <div class="item">
                                 <div class="name">AtCoder</div>
                                 <div class="link">
-                                    <div v-if="!user.links.atcoder">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.atcoder">主页</a>
+                                    <div v-if="!user.links.AtCoder">未绑定</div>
+                                    <a v-else target="_blank" :href="user.links.AtCoder">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">NowCoder</div>
                                 <div class="link">
-                                    <div v-if="!user.links.nowcoder">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.nowcoder">主页</a>
+                                    <div v-if="!user.links.NowCoder">未绑定</div>
+                                    <a v-else target="_blank" :href="user.links.NowCoder">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">LeetCode</div>
                                 <div class="link">
-                                    <div v-if="!user.links.leetcode">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.leetcode">主页</a>
+                                    <div v-if="!user.links.LeetCode">未绑定</div>
+                                    <a v-else target="_blank" :href="user.links.LeetCode">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">LuoGu</div>
                                 <div class="link">
-                                    <div v-if="!user.links.luogu">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.luogu">主页</a>
+                                    <div v-if="!user.links.LuoGu">未绑定</div>
+                                    <a v-else target="_blank" :href="user.links.LuoGu">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">CodeForce</div>
                                 <div class="link">
-                                    <div v-if="!user.links.codeforce">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.codeforce">主页</a>
+                                    <div v-if="!user.links.CodeForce">未绑定</div>
+                                    <a v-else target="_blank" :href="user.links.CodeForce">主页</a>
                                 </div>
                             </div>
                         </div>
@@ -162,11 +162,11 @@ const user = ref({
     email: "",
     groupId: 0,
     links: {
-        atcoder: "",
-        nowcoder: "https://ac.nowcoder.com/acm/contest/profile/978880410",
-        leetcode: "",
-        luogu: "",
-        codeforce: ""
+        AtCoder: "",
+        NowCoder: "",
+        LeetCode: "",
+        LuoGu: "",
+        CodeForce: ""
     }
 })
 
@@ -203,6 +203,44 @@ const activities = ref(
     ]
 )
 
+interface OJData {
+    data: Array<{ platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username:string }>
+}
+
+// 获取链接
+const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce",username: string) => {
+    switch (platform) {
+        case "AtCoder":
+            return "https://atcoder.jp/users/" + username;
+        case "NowCoder":
+            return "https://ac.nowcoder.com/acm/contest/profile/" + username;
+        case "LeetCode":
+            return "https://leetcode.cn/u/" + username;
+        case "LuoGu":
+            return "https://www.luogu.com.cn/user/" + username;
+        case "CodeForce":
+            return "https://codeforces.com/profile/" + username;
+    };
+}
+
+// 获取用户绑定OJ
+const getUserOJ = async () => {
+    try {
+        const response = await axios.get<OJData>("/api/core/spider/get-by-id", {
+            params: {
+                userId: user.value.id,
+            }
+        })
+        if (response.status === 200) {
+            response.data.data.forEach(item => {
+                user.value.links[item.platform] = getLink(item.platform, item.username);
+            });
+        }
+    } catch (error: any) {
+        loading.value.info = error.response.data.message;
+    }
+}
+
 // 获取用户信息
 const getUserInfo = async () => {
     try {
@@ -222,6 +260,8 @@ const getUserInfo = async () => {
     } catch (error: any) {
         loading.value.info = error.response.data.message;
     }
+
+    getUserOJ();
 }
 
 const data = ref([
