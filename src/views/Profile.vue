@@ -63,7 +63,7 @@
                             </div> -->
                         </div>
                     </div>
-                    <div class="actions">
+                    <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
                         <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
                         <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
                     </div>
