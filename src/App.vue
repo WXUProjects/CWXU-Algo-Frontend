@@ -17,7 +17,7 @@
 
       <div class="sections">
         <!-- 终端风格导航项 -->
-        <router-link to="/" class="section terminal-item" active-class="active">
+        <router-link to="/" class="section terminal-item" active-class="active" v-if="isLogin">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-house" class="item-icon" />
           <div class="item-content">
@@ -82,7 +82,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/profile" class="section terminal-item" active-class="active">
+        <router-link to="/profile" class="section terminal-item" active-class="active" v-if="isLogin">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
           <div class="item-content">
@@ -95,7 +95,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/star" class="section terminal-item" active-class="active">
+        <router-link to="/star" class="section terminal-item" active-class="active" v-if="isLogin">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-star" class="item-icon" />
           <div class="item-content">
@@ -108,7 +108,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/dashboard" class="section terminal-item" active-class="active">
+        <router-link to="/dashboard" class="section terminal-item" active-class="active" v-if="isLogin">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
@@ -135,6 +135,33 @@
           </div>
           <div class="item-indicator">▶</div>
         </div>
+
+        <router-link to="/login" class="section terminal-item" active-class="active" v-if="!isLogin">
+          <!-- <div class="item-prefix">></div> -->
+          <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">登录账号</span>
+              <span class="en">Login</span>
+            </div>
+            <div class="item-description"></div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </router-link>
+
+        <router-link to="/register" class="section terminal-item" active-class="active" v-if="!isLogin">
+          <!-- <div class="item-prefix">></div> -->
+          <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">注册账号</span>
+              <span class="en">register</span>
+            </div>
+            <div class="item-description"></div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </router-link>
+
       </div>
 
       <!-- 终端状态栏 -->
@@ -185,11 +212,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, provide, computed } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
+import { useUserStore } from '@/stores/user'
 
 const route = useRoute()
+
+const userStore = useUserStore()
+const isLogin = computed(() => userStore.isLogin)
 
 // 获取当前路由名称用于显示
 const currentRouteName = computed(() => {
@@ -688,9 +719,9 @@ onMounted(() => {
     padding: 12px 16px;
   }
 
-  .content-main {
-    /* padding: 16px; */
-  }
+  /* .content-main {
+    padding: 16px;
+  } */
 
   .content-footer {
     margin: 16px;

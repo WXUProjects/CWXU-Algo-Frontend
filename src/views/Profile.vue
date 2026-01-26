@@ -143,9 +143,11 @@ import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
+import { useUserStore } from '@/stores/user';
 
 const route = useRoute();
 const router = useRouter();
+const userStore = useUserStore();
 
 const loading = ref({
     statue: true,
@@ -3267,6 +3269,7 @@ const showLogoutConfirm = () => {
 
 const logout = async () => {
     JWT.clearToken()
+    userStore.setLoginStatus(false)
 
     // 跳转到登录页面
     router.push('/login')
@@ -3536,6 +3539,17 @@ onMounted(() => {
 
     >.content {
         padding: 10px;
+        overflow: auto;
+
+        &::-webkit-scrollbar{
+            width: 5px;
+            height: 5px;
+        }
+
+        &::-webkit-scrollbar-thumb{ 
+            background-color: var(--divider-color);
+            border-radius: 5px;
+        }
     }
 
     .header-title {

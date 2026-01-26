@@ -29,9 +29,11 @@ import axios from 'axios'
 import BaseLayout from '@/components/BaseLayout.vue'
 import JWT from '@/utils/jwt'
 import { hashPassword } from '@/utils/hash'
+import { useUserStore } from '@/stores/user'
 
 const router = useRouter()
 const route = useRoute()
+const userStore = useUserStore()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
@@ -79,6 +81,8 @@ const handleLogin = async () => {
         if (response.data.success) {
             operationTip.value.type = 'success'
             operationTip.value.message = response.data.message
+            
+            userStore.setLoginStatus(true)
 
             JWT.setNewToken(response.data.jwtToken)
 

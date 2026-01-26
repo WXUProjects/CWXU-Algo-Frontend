@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import JWT from '@/utils/jwt'
-// 可选：守卫用户个人资料路由
-const profileGuard = (to: any, from: any, next: any) => {
+// 登录守卫路由
+const loginGuard = (to: any, from: any, next: any) => {
   if (JWT.isValid()) {
     next()
   } else {
@@ -18,19 +18,20 @@ const routes = [
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/views/Home.vue')
+    component: () => import('@/views/Home.vue'),
+    beforeEnter: loginGuard
   },
   {
     path: '/profile',
     name: 'Profile',
     component: () => import('@/views/Profile.vue'),
-    beforeEnter: profileGuard
+    beforeEnter: loginGuard
   },
   {
     path: '/changeProfile',
     name: 'ChangeProfile',
     component: () => import('@/views/ChangeProfile.vue'),
-    beforeEnter: profileGuard
+    beforeEnter: loginGuard
   },
   {
     path: '/allActivities',
@@ -56,6 +57,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/Dashboard.vue'),
+    beforeEnter: loginGuard,
     redirect: '/dashboard/statistics',
     children: [{
       path: 'group',
@@ -86,7 +88,8 @@ const routes = [
   {
     path: '/star',
     name: 'Star',
-    component: () => import("@/views/Star.vue")
+    component: () => import("@/views/Star.vue"),
+    beforeEnter: loginGuard
   },
   {
     path: '/problem',
@@ -96,7 +99,8 @@ const routes = [
   {
     path: '/problem/upload',
     name: 'Problem Upload',
-    component: () => import("@/views/Problem/Upload.vue")
+    component: () => import("@/views/Problem/Upload.vue"),
+    beforeEnter: loginGuard
   },
   {
     path: '/:pathMatch(.*)*',
