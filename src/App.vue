@@ -58,7 +58,7 @@
 
         <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
           <!-- <div class="item-prefix">></div> -->
-          <font-awesome-icon icon="fa-solid fa-comment"" class="item-icon" />
+          <font-awesome-icon icon="fa-solid fa-comment"" class=" item-icon" />
           <div class="item-content">
             <div class="item-title">
               <span class="zh">论坛</span>
@@ -261,7 +261,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-/* 终端风格过渡动画 */
+/* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -619,12 +619,12 @@ onMounted(() => {
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
-  .sidebar {
-    width: 280px;
+  .container>.content {
+    padding-left: 320px;
   }
 
-  .content {
-    padding-left: 280px;
+  .sidebar {
+    width: 280px;
   }
 }
 
@@ -633,7 +633,7 @@ onMounted(() => {
     position: relative;
   }
 
-  .content {
+  .container>.content {
     padding-left: 0px;
   }
 
