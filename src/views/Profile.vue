@@ -19,38 +19,48 @@
                             <div class="item">
                                 <div class="name">AtCoder</div>
                                 <div class="link">
-                                    <div v-if="!user.links.AtCoder && jwtUserInfo?.userId != user.id">未绑定</div>
-                                    <a v-else target="_blank" :href="user.links.AtCoder">主页</a>
+                                    <div v-if="!user.links.AtCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links.AtCoder && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=AtCoder">去绑定</router-link>
+                                    <a v-else-if="user.links.AtCoder" target="_blank" :href="user.links.AtCoder">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">NowCoder</div>
                                 <div class="link">
-                                    <div v-if="!user.links.NowCoder">未绑定</div>
+                                    <div v-if="!user.links.NowCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links.NowCoder && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=NowCoder">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.NowCoder">主页</a>
                                 </div>
                             </div>
-                            <div class="item">
+                            <!-- <div class="item">
                                 <div class="name">LeetCode</div>
                                 <div class="link">
-                                    <div v-if="!user.links.LeetCode">未绑定</div>
+                                    <div v-if="!user.links.LeetCode && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links.LeetCode && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=LeetCode">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.LeetCode">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">LuoGu</div>
                                 <div class="link">
-                                    <div v-if="!user.links.LuoGu">未绑定</div>
+                                    <div v-if="!user.links.LuoGu && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links.LuoGu && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=LuoGu">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.LuoGu">主页</a>
                                 </div>
                             </div>
                             <div class="item">
                                 <div class="name">CodeForce</div>
                                 <div class="link">
-                                    <div v-if="!user.links.CodeForce">未绑定</div>
+                                    <div v-if="!user.links.CodeForce && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links.CodeForce && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=CodeForce">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.CodeForce">主页</a>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
                     <div class="actions">
@@ -111,7 +121,8 @@
                                 <span class="title-text">近期动态 Recently-Activities</span>
                             </div>
                             <div class="header-tabs">
-                                <span class="tab" @click="router.push(`/allActivities?id=${user.userId}&name=${user.name}`)">查看所有动态</span>
+                                <span class="tab"
+                                    @click="router.push(`/allActivities?id=${user.userId}&name=${user.name}`)">查看所有动态</span>
                             </div>
                         </div>
                         <div class="content">
@@ -3541,12 +3552,12 @@ onMounted(() => {
         padding: 10px;
         overflow: auto;
 
-        &::-webkit-scrollbar{
+        &::-webkit-scrollbar {
             width: 5px;
             height: 5px;
         }
 
-        &::-webkit-scrollbar-thumb{ 
+        &::-webkit-scrollbar-thumb {
             background-color: var(--divider-color);
             border-radius: 5px;
         }

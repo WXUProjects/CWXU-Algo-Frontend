@@ -90,19 +90,19 @@ const ojData = ref({
 })
 
 switch (oj) {
-    case "atcoder":
+    case "AtCoder":
         ojData.value.platform = "AtCoder"
         break;
     // case "luogu":
     //     ojData.value.platform = "LuoGu"
     //     break;
-    case "nowcoder":
+    case "NowCoder":
         ojData.value.platform = "NowCoder"
         break;
-    // case "codeforces":
+    // case "CodeForces":
     //     ojData.value.platform = "CodeForce"
     //     break;
-    // case "leetcode":
+    // case "LeetCode":
     //     ojData.value.platform = "LeetCode"
     //     break;
     default:
