@@ -215,6 +215,7 @@ Icons     Font Awesome
 -----------------------------------
 Frontend  Aoralsfout
 Backend   srcenchen
+          hyhgfrgh
 ===================================`
 
 const rainbowText = generateRainbowText(text)

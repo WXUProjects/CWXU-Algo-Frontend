@@ -19,7 +19,7 @@
                             <div class="item">
                                 <div class="name">AtCoder</div>
                                 <div class="link">
-                                    <div v-if="!user.links.AtCoder">未绑定</div>
+                                    <div v-if="!user.links.AtCoder && jwtUserInfo?.userId != user.id">未绑定</div>
                                     <a v-else target="_blank" :href="user.links.AtCoder">主页</a>
                                 </div>
                             </div>
@@ -67,14 +67,6 @@
                                 </span>
                                 <span class="title-text">AC热力图 AC-ACTIVITY</span>
                             </div>
-                            <div class="header-tabs">
-                                <!-- <span class="tab" :class="currentRank === 0 ? 'active' : ''"
-                                @click="currentRank = 0">CAREER</span>
-                            <span class="tab" :class="currentRank === 1 ? 'active' : ''"
-                                @click="currentRank = 1">MONTHLY</span>
-                            <span class="tab" :class="currentRank === 2 ? 'active' : ''"
-                                @click="currentRank = 2">WEEKLY</span> -->
-                            </div>
                         </div>
                         <div class="content">
                             <Calendar :data="data" :title="''" style="width: 100%;"></Calendar>
@@ -118,11 +110,17 @@
                                 </span>
                                 <span class="title-text">近期动态 Recently-Activities</span>
                             </div>
+                            <div class="header-tabs">
+                                <span class="tab" @click="router.push(`/allActivities?id=${user.userId}&name=${user.name}`)">查看所有动态</span>
+                            </div>
                         </div>
                         <div class="content">
                             <div v-if="activities.length != 0" class="activities">
                                 <div class="activity" v-for="activity in activities">
-                                    <div class="title">{{ activity.title }}</div>
+                                    <div class="title">
+                                        <span>{{ activity.title }}</span>
+                                        <a :href="activity.link" target="_blank">{{ activity.status }}</a>
+                                    </div>
                                     <div class="time">{{ activity.time }}</div>
                                 </div>
                             </div>
@@ -154,47 +152,66 @@ const loading = ref({
     info: "加载中..."
 });
 
-const user = ref({
-    id: 0,
-    name: "",
-    username: "",
+const jwtUserInfo = JWT.getUserInfo();
+
+interface User {
+    avatar: string;
+    email: string;
+    groupId: string;
+    name: string;
+    spiders: Spider[];
+    links: Links;
+    userId: number;
+    username: string;
+    [property: string]: any;
+}
+
+type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce";
+
+interface Spider {
+    platform: platform;
+    username: string;
+    [property: string]: any;
+}
+
+interface Links {
+    AtCoder: string;
+    NowCoder: string;
+    LuoGu: string;
+    CodeForce: string;
+    LeetCode: string;
+}
+
+const user = ref<User>({
     avatar: "",
     email: "",
-    groupId: 0,
+    groupId: "",
+    name: "",
+    spiders: [],
     links: {
         AtCoder: "",
         NowCoder: "",
-        LeetCode: "",
         LuoGu: "",
-        CodeForce: ""
-    }
+        CodeForce: "",
+        LeetCode: ""
+    },
+    userId: 0,
+    username: ""
 })
-
-if (route.query.id) {
-    user.value.id = Number(route.query.id);
-} else {
-    if (!JWT.isValid()) {
-        window.location.href = "/login";
-    } else {
-        user.value.id = JWT.getUserInfo()?.userId;
-    }
-}
 
 const confirmRef = ref()
 
 interface ActivityItem {
     title: string;
+    status: string;
+    link: string;
     time: string;
 }
 
 const activities = ref<ActivityItem[]>([])
 
-interface OJData {
-    data: Array<{ platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username: string }>
-}
-
 // 获取链接
-const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce", username: string) => {
+const getLink = (platform: platform, username: string) => {
     switch (platform) {
         case "AtCoder":
             return "https://atcoder.jp/users/" + username;
@@ -209,16 +226,16 @@ const getLink = (platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "Code
     };
 }
 
-export interface SubmitResponse {
+interface SubmitResponse {
     data: SubmitData[];
     [property: string]: any;
 }
 
-export interface SubmitData {
+interface SubmitData {
     contest: string;
     id: number;
     lang: string;
-    platform: "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce";
+    platform: platform
     problem: string;
     status: string;
     submitId: string;
@@ -227,21 +244,14 @@ export interface SubmitData {
     [property: string]: any;
 }
 
-// 获取用户绑定OJ
-const getUserOJ = async () => {
-    try {
-        const response = await axios.get<SubmitResponse>("/api/core/spider/get-by-id", {
-            params: {
-                userId: user.value.id,
-            }
-        })
-        if (response.status === 200) {
-            response.data.data.forEach(item => {
-                user.value.links[item.platform] = getLink(item.platform, item.username);
-            });
-        }
-    } catch (error: any) {
-        loading.value.info = error.response.data.message;
+const getSubmitLink = (platform: platform, contest: string, submitId: string) => {
+    switch (platform) {
+        case "AtCoder":
+            return `https://atcoder.jp/contests/${contest}/submissions/${submitId}`;
+        case "NowCoder":
+            return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
+        default:
+            return "";
     }
 }
 
@@ -249,14 +259,12 @@ const getSubmitInfo = async () => {
     try {
         const response = await axios.get<SubmitResponse>("/api/core/submit-log/get-by-id", {
             params: {
-                userId: user.value.id,
+                userId: user.value.userId,
                 limit: 10,
                 cursor: -1
             }
         })
         if (response.status === 200) {
-            console.log(response.data.data);
-
             response.data.data.forEach(item => {
                 const platfrom = item.platform;
                 const lang = item.lang;
@@ -273,7 +281,9 @@ const getSubmitInfo = async () => {
                     hour12: false
                 });
                 activities.value.push({
-                    title: `在 ${platfrom} 使用 ${lang} 解决 ${problem || contest}：${status}`,
+                    title: `在 ${platfrom} 使用 ${lang} 解决 ${problem || contest}：`,
+                    status: status,
+                    link: getSubmitLink(platfrom, contest, item.submitId),
                     time: time
                 });
             });
@@ -286,24 +296,29 @@ const getSubmitInfo = async () => {
 // 获取用户信息
 const getUserInfo = async () => {
     try {
-        const response = await axios.get("/api/user/profile/get-by-id", {
+        const response = await axios.get<User>("/api/user/profile/get-by-id", {
             params: {
-                userId: user.value.id,
+                userId: user.value.userId,
             }
         })
         if (response.status === 200) {
             loading.value.statue = false;
-            user.value.name = response.data.name;
-            user.value.username = response.data.username;
-            user.value.avatar = response.data.avatar;
-            user.value.email = response.data.email;
-            user.value.groupId = response.data.groupId;
+            user.value = response.data;
+            user.value.links = {
+                AtCoder: "",
+                NowCoder: "",
+                LuoGu: "",
+                CodeForce: "",
+                LeetCode: ""
+            };
+            response.data.spiders.forEach((item: Spider) => {
+                user.value.links[item.platform] = getLink(item.platform, item.username);
+            });
         }
     } catch (error: any) {
         loading.value.info = error.response.data.message;
     }
 
-    getUserOJ();
     getSubmitInfo();
 }
 
@@ -3258,6 +3273,15 @@ const logout = async () => {
 }
 
 onMounted(() => {
+    if (route.query.id) {
+        user.value.userId = Number(route.query.id);
+    } else {
+        if (!JWT.isValid()) {
+            window.location.href = "/login";
+        } else {
+            user.value.userId = JWT.getUserInfo()?.userId;
+        }
+    }
     getUserInfo()
 })
 </script>
@@ -3520,6 +3544,32 @@ onMounted(() => {
         gap: 12px;
         font-size: 1.1rem;
         font-weight: 600;
+    }
+
+    .header-tabs {
+        display: flex;
+        gap: 12px;
+
+        .tab {
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: var(--section-background-color);
+            color: var(--text-light-color);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+
+            &:hover {
+                color: var(--text-default-color);
+                background-color: var(--divider-color);
+            }
+
+            &.active {
+                background-color: var(--neon-cyan);
+                color: var(--background-color-1);
+                font-weight: 500;
+            }
+        }
     }
 
     .title-icon {

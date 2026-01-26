@@ -33,6 +33,11 @@ const routes = [
     beforeEnter: profileGuard
   },
   {
+    path: '/allActivities',
+    name: 'AllActivities',
+    component: () => import('@/views/AllActivities.vue')
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('@/views/Login.vue')
