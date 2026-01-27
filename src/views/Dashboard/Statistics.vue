@@ -51,7 +51,7 @@ const getUserCount = async () => {
     try{
         const response = await axios.get("/api/user/profile/list",{
             params: {
-                page: 1,
+                pageNum: 1,
                 pageSize: 1
             }
         });
