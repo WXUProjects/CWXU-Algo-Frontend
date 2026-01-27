@@ -85,6 +85,8 @@ const getSubmitLink = (platform: platform, contest: string, submitId: string) =>
             return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
         case "LuoGu":
             return `https://www.luogu.com.cn/record/${submitId}`;
+        case "CodeForce":
+            return `https://codeforces.com/contest/${contest}/submission/${submitId}`;
         default:
             return "";
     }

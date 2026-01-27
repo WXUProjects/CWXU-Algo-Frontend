@@ -57,7 +57,7 @@
                         <div class="pageButtons">
                             <button v-for="value in pages" :key="value"
                                 :class="value === data.currentPage ? 'active' : ''"
-                                @click="getData(value)"
+                                @click="value === data.currentPage ? null : getData(value)"
                                 >{{ value }}</button>
                         </div>
                         <div class="pageButtons" v-if="data.currentPage != data.totalPage">

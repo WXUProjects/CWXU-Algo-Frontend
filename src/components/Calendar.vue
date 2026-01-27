@@ -4,28 +4,28 @@
         <div class="content">
             <div class="calendar">
                 <div class="dayAxis">
-                    <div class="dayLable">Mon</div>
-                    <div class="dayLable">Wed</div>
-                    <div class="dayLable">Fri</div>
+                    <div class="dayLable">周一</div>
+                    <div class="dayLable">周三</div>
+                    <div class="dayLable">周五</div>
                 </div>
                 <div class="dayCharts">
                     <div class="monthAxis">
-                        <div class="monthLable">Jan</div>
-                        <div class="monthLable">Feb</div>
-                        <div class="monthLable">Mar</div>
-                        <div class="monthLable">Apr</div>
-                        <div class="monthLable">May</div>
-                        <div class="monthLable">Jun</div>
-                        <div class="monthLable">Jul</div>
-                        <div class="monthLable">Aug</div>
-                        <div class="monthLable">Sep</div>
-                        <div class="monthLable">Oct</div>
-                        <div class="monthLable">Nov</div>
-                        <div class="monthLable">Dec</div>
+                        <div class="monthLable">一月</div>
+                        <div class="monthLable">二月</div>
+                        <div class="monthLable">三月</div>
+                        <div class="monthLable">四月</div>
+                        <div class="monthLable">五月</div>
+                        <div class="monthLable">六月</div>
+                        <div class="monthLable">七月</div>
+                        <div class="monthLable">八月</div>
+                        <div class="monthLable">九月</div>
+                        <div class="monthLable">十月</div>
+                        <div class="monthLable">十一月</div>
+                        <div class="monthLable">十二月</div>
                     </div>
                     <div class="dayGrid">
                         <div class="dayBlockReserve" v-for="i in mod(fristDay - 1, 7)"></div>
-                        <div class="dayBlock" v-for="day in yearDays">
+                        <div class="dayBlock" v-for="day in yearDays" @mouseenter="setInfo(day)">
                             <!-- <div class="detailContainer">
                                 <div class="date">{{ getDateByYearAndDay(selectedYear, day) }}</div>
                                 <div class="count">{{ getCountByYearAndDay(selectedYear, day) }}</div>
@@ -40,11 +40,15 @@
                     v-for="value in yearArray">{{ value }}</div>
             </div>
         </div>
+        <div class="detailContainer">
+            <span class="date">{{ info.date }}</span>
+            <span class="count">{{ info.count }}</span>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref} from 'vue'
+import { computed, ref } from 'vue'
 
 /**
  * 贡献日历
@@ -87,6 +91,15 @@ const yearArray = computed(() => {
     })
     return Array.from(years).reverse()
 })
+
+const setInfo = (day: number) => {
+    info.value = {
+        date: getDateByYearAndDay(selectedYear.value, day),
+        count: getCountByYearAndDay(selectedYear.value, day)
+    }
+}
+
+const info = ref<{ date: string; count: number }>({ date: '', count: 0 })
 
 // 每年第一天星期几（1,2,3,4,5,6,0）
 const fristDay = computed(() => new Date(selectedYear.value, 0, 2).getDay());
@@ -176,11 +189,11 @@ const changeYear = (year: number) => {
 }
 
 .monthLable {
-    width: 30px;
+    width: 50px;
     height: 20px;
     line-height: 20px;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: var(--text-default-color);
 }
 
@@ -196,11 +209,11 @@ const changeYear = (year: number) => {
 }
 
 .dayLable {
-    width: 30px;
+    width: 40px;
     height: 10px;
     line-height: 10px;
     text-align: center;
-    font-size: 1rem;
+    font-size: 0.8rem;
     color: var(--text-default-color);
 }
 
@@ -210,7 +223,7 @@ const changeYear = (year: number) => {
     position: relative;
     max-width: calc(100vw - 100px);
     padding: 0 0 5px 0;
-    overflow:auto
+    overflow: auto
 }
 
 .dayCharts::-webkit-scrollbar {
@@ -258,16 +271,9 @@ const changeYear = (year: number) => {
 }
 
 .detailContainer {
-    position: absolute;
-    transform: translate(-50px, -70px);
-    width: 100px;
-    padding: 10px;
+    display: flex;
+    gap: 10px;
     background-color: var(--background-color-1);
-    border: 1px solid var(--divider-color);
-    border-radius: 10px;
-    z-index: 10;
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
     pointer-events: none;
 
     color: var(--text-default-color)

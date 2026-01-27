@@ -52,7 +52,7 @@
                                     <a v-else target="_blank" :href="user.links.LuoGu">主页</a>
                                 </div>
                             </div>
-                            <!-- <div class="item">
+                            <div class="item">
                                 <div class="name">CodeForce</div>
                                 <div class="link">
                                     <div v-if="!user.links.CodeForce && jwtUserInfo?.userId != user.userId">未绑定</div>
@@ -60,7 +60,7 @@
                                         to="/changeProfile?oj=CodeForce">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.CodeForce">主页</a>
                                 </div>
-                            </div> -->
+                            </div>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -272,6 +272,8 @@ const getSubmitLink = (platform: platform, contest: string, submitId: string) =>
             return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
         case "LuoGu":
             return `https://www.luogu.com.cn/record/${submitId}`;
+        case "CodeForce":
+            return `https://codeforces.com/contest/${contest}/submission/${submitId}`;
         default:
             return "";
     }
