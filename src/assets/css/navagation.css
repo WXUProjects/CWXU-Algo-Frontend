@@ -57,6 +57,10 @@
     border-color: var(--input-active-color)
 }
 
+.pageButtons button.active {
+    border-color: var(--input-active-color)
+}
+
 .pageSum {
     font-size: 1.2rem;
     color: var(--text-default-color);

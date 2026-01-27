@@ -65,9 +65,9 @@ const routes = [
       component: () => import('@/views/Dashboard/Group.vue')
     },
     {
-      path: 'member',
-      name: 'Member',
-      component: () => import('@/views/Dashboard/Member.vue')
+      path: 'user',
+      name: 'User',
+      component: () => import('@/views/Dashboard/User.vue')
     },
     {
       path: 'statistics',

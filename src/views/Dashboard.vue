@@ -23,11 +23,11 @@ TODO:
                         <div class="en">Group</div>
                     </div>
                 </router-link>
-                <router-link to="/dashboard/member" class="section" active-class="active">
+                <router-link to="/dashboard/user" class="section" active-class="active">
                     <font-awesome-icon icon="fa-solid fa-user" class="section-icon" />
                     <div class="title">
-                        <div class="zh">成员管理</div>
-                        <div class="en">Member</div>
+                        <div class="zh">用户管理</div>
+                        <div class="en">User</div>
                     </div>
                 </router-link>
             </div>

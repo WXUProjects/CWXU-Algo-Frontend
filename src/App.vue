@@ -791,7 +791,7 @@ onMounted(() => {
   }
 }
 
-/* 滚动条样式
+/* 滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -810,7 +810,7 @@ onMounted(() => {
 
 ::-webkit-scrollbar-thumb:hover {
   opacity: 0.8;
-} */
+}
 
 /* 选择文本样式 */
 ::selection {
