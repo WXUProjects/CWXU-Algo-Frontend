@@ -254,7 +254,7 @@ const getHeatmapData = async () => {
     const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
       params: {
         userId: user.userId,
-        startDate: "2023-01-01",
+        startDate: "20230101",
         endDate: date,
         isAc: true
       }
