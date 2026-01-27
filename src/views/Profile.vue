@@ -26,7 +26,7 @@
                                 </div>
                             </div>
                             <div class="item">
-                                <div class="name">NowCoder</div>
+                                <div class="name">牛客</div>
                                 <div class="link">
                                     <div v-if="!user.links.NowCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.NowCoder && jwtUserInfo?.userId == user.userId"
@@ -35,7 +35,7 @@
                                 </div>
                             </div>
                             <!-- <div class="item">
-                                <div class="name">LeetCode</div>
+                                <div class="name">力扣</div>
                                 <div class="link">
                                     <div v-if="!user.links.LeetCode && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.LeetCode && jwtUserInfo?.userId == user.userId"
@@ -44,7 +44,7 @@
                                 </div>
                             </div> -->
                             <div class="item">
-                                <div class="name">LuoGu</div>
+                                <div class="name">洛谷</div>
                                 <div class="link">
                                     <div v-if="!user.links.LuoGu && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.LuoGu && jwtUserInfo?.userId == user.userId"

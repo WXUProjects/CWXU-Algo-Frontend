@@ -42,10 +42,10 @@
                         <div class="selected">{{ ojData.platform }}</div>
                         <div class="options">
                             <div class="option" @click="ojData.platform = 'AtCoder'">AtCoder</div>
-                            <div class="option" @click="ojData.platform = 'LuoGu'">LuoGu</div>
+                            <div class="option" @click="ojData.platform = 'LuoGu'">洛谷</div>
                             <div class="option" @click="ojData.platform = 'NowCoder'">牛客</div>
                             <!-- <div class="option" @click="ojData.platform = 'CodeForce'">CodeForce</div> -->
-                            <!-- <div class="option" @click="ojData.platform = 'LeetCode'">LeetCode</div> -->
+                            <!-- <div class="option" @click="ojData.platform = 'LeetCode'">力扣</div> -->
                         </div>
                     </div>
                 </div>
