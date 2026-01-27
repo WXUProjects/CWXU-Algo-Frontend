@@ -1,6 +1,6 @@
 <template>
     <div class="rankContainer">
-        <div class="title">{{ props.title }}</div>
+        <div class="title" v-if="props.title">{{ props.title }}</div>
         <div class="rankList">
             <div v-for="(item, index) in rankData.data" :key="index" class="rankItem itemHover">
                 <div class="rank">#{{ index + 1 }}</div>

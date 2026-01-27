@@ -187,6 +187,9 @@
           <span class="info-label">></span>
           <span class="info-value">{{ currentRouteName }}</span>
         </div>
+        <div class="header-tabs">
+          <div class="tab" @click="router.back()">返回</div>
+        </div>
       </div>
 
       <!-- <div class="announcements">
@@ -216,6 +219,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
+import router from './router'
 
 const route = useRoute()
 
@@ -556,6 +560,33 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  .header-tabs {
+    display: flex;
+    gap: 12px;
+
+    .tab {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background-color: var(--section-background-color);
+      color: var(--text-light-color);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+
+      &:hover {
+        color: var(--text-default-color);
+        background-color: var(--divider-color);
+      }
+
+      &.active {
+        background-color: var(--neon-cyan);
+        color: var(--background-color-1);
+        font-weight: 500;
+      }
+    }
+  }
 }
 
 .content .announcements {
@@ -636,7 +667,7 @@ onMounted(() => {
 .content-main {
   flex: 1;
   /* padding: 24px; */
-  overflow-y: auto;
+  overflow-y: none;
   position: relative;
 }
 
@@ -666,6 +697,7 @@ onMounted(() => {
 
   .container>.content {
     padding-left: 0px;
+    padding-top: 67px;
   }
 
   .content-header {
@@ -759,7 +791,7 @@ onMounted(() => {
   }
 }
 
-/* 滚动条样式 */
+/* 滚动条样式
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -778,7 +810,7 @@ onMounted(() => {
 
 ::-webkit-scrollbar-thumb:hover {
   opacity: 0.8;
-}
+} */
 
 /* 选择文本样式 */
 ::selection {

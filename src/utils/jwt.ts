@@ -1,8 +1,13 @@
 import { jwtDecode } from 'jwt-decode';
 
 export interface JwtPayload {
-  exp?: number;
-  [key: string]: any;
+  exp: number;
+  nbf: number;
+  userId: number;
+  username: string;
+  name: string;
+  roleIds: string;
+  // [key: string]: any;
 }
 
 export default class JWT {

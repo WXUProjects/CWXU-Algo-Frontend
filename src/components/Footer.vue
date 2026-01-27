@@ -4,7 +4,7 @@
             <div class="footer-main-content">
                 <div class="footer-column">
                     <h4>CWXU - Algo</h4>
-                    <p class="description">CWXU - Algo，您的学习帮手。</p>
+                    <p class="description">CWXU - Algo，无锡学院算法协会监测平台。</p>
                     <div class="social-icons">
                         <a href="https://github.com/WXUProjects/CWXU-Algo-Frontend" target="_blank" title="GitHub">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -35,12 +35,18 @@
                     <a :href="'https://www.cwxu.edu.cn/'" target="_blank" rel="noopener noreferrer">无锡学院</a>
                 </span>
 
+                <span style="margin-left: 10px;font-size:13.7px;">
+                    <a :href="'http://bbs.algo.zhiyuansofts.cn/'" target="_blank" rel="noopener noreferrer">无锡学院算法协会论坛</a>
+                </span>
+
             </div>
             <hr class="footer-divider">
             <div class="footer-bottom">
                 <p><!-- &copy; {{ currentYear }} zhiyuansofts. 保留所有权利. -->
                     <!-- <br /> -->
-                    ♥ Designed by <a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>、<a href="https://github.com/srcenchen" target="_blank">srcenchen</a>、<a href="https://github.com/hyhgfrgh" target="_blank">hyhgfrgh</a>.
+                    ♥ Designed by <a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>、<a
+                        href="https://github.com/srcenchen" target="_blank">srcenchen</a>、<a
+                        href="https://github.com/hyhgfrgh" target="_blank">hyhgfrgh</a>.
                 </p>
                 <div class="build-info">
                     <svg class="git-icon" width="16" height="16" xmlns="http://www.w3.org/2000/svg"
