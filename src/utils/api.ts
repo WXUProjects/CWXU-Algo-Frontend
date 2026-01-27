@@ -142,6 +142,8 @@ export default class API {
                     return stdRes;
                 }
 
+                request.password = hashPassword(request.password);
+
                 try {
                     const response = await axios.post<UserAuthRegisterResponse>('/api/user/auth/register', request);
                     stdRes.message = response.data.message || "注册成功";
