@@ -48,15 +48,20 @@ export interface List {
 const userCount = ref(0);
 
 const getUserCount = async () => {
-    // try{
-    //     const response = await axios.get("/api/user/profile/list",{});
+    try{
+        const response = await axios.get("/api/user/profile/list",{
+            params: {
+                page: 1,
+                pageSize: 1
+            }
+        });
 
-    //     if (response.status === 200) {
-    //         userCount.value = response.data.list.length;
-    //     }
-    // }catch (error) {
-    //     console.error(error);
-    // }
+        if (response.status === 200) {
+            userCount.value = response.data.total;
+        }
+    }catch (error) {
+        console.error(error);
+    }
 }
 
 onMounted(() => {

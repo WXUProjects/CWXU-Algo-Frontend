@@ -87,6 +87,7 @@ const router = useRouter();
 
 interface Response {
     list: User[];
+    total: number;
     totalPage: number;
     currentPage: number;
 }
@@ -124,6 +125,7 @@ const getData = async (page: number) => {
         if (response.status === 200) {
             data.value = response.data;
             data.value.currentPage = page;
+            data.value.totalPage = Math.ceil(data.value.total / 20);
         }
         
     } catch (error) {
