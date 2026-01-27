@@ -58,7 +58,7 @@
 
         <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
           <!-- <div class="item-prefix">></div> -->
-          <font-awesome-icon icon="fa-solid fa-comment"" class=" item-icon" />
+          <font-awesome-icon icon="fa-solid fa-comment" class=" item-icon" />
           <div class="item-content">
             <div class="item-title">
               <span class="zh">论坛</span>
@@ -211,7 +211,7 @@
         </router-view>
       </div>
     </div>
-    <ToastNotification />
+    <!-- <ToastNotification /> -->
   </div>
 </template>
 
@@ -221,7 +221,7 @@ import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
 import router from './router'
-import ToastNotification from './components/ToastNotification.vue'
+// import ToastNotification from './components/ToastNotification.vue'
 
 const route = useRoute()
 

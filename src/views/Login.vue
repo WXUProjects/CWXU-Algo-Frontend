@@ -23,36 +23,22 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import axios from 'axios'
+import Toast from '@/utils/toast'
+import API from '@/utils/api'
 import BaseLayout from '@/components/BaseLayout.vue'
-import JWT from '@/utils/jwt'
 import { hashPassword } from '@/utils/hash'
-import { useUserStore } from '@/stores/user'
+import type { UserAuthLoginRequest as FormData} from '@/utils/api'
 
 const router = useRouter()
 const route = useRoute()
-const userStore = useUserStore()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
-
-// 提交数据
-interface FormData {
-    username: string,
-    password: string
-}
 
 const formData = ref<FormData>({
     username: '',
     password: ''
 })
-
-// 返回数据
-interface ResponseData {
-    success: boolean,
-    message: string,
-    jwtToken: string
-}
 
 // 处理登录
 const handleLogin = async () => {
@@ -63,31 +49,16 @@ const handleLogin = async () => {
         password: hashPassword(formData.value.password)
     }
 
-    try {
-        const response = await axios.post<ResponseData>('/api/user/auth/login', hashedFormData)
-        if (response.data.success) {
-            userStore.setLoginStatus(true)
+    const response = await API.user.auth.login(hashedFormData);
+    Toast.stdResponse(response);
 
-            JWT.setNewToken(response.data.jwtToken)
-
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message , type: 'success' }
-            }));
-
-            const redirectPath = route.query.redirect as string || '/'
-            setTimeout(() => {
-                router.push(redirectPath)
-            }, 1000)
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '登录失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '登录失败', type: 'error' }
-        }));
+    if (response.success) {
+        const redirectPath = route.query.redirect as string || '/'
+        setTimeout(() => {
+            router.push(redirectPath)
+        }, 1000)
     }
+
     wait.value = false
 }
 </script>

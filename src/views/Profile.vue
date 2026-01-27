@@ -164,6 +164,8 @@ import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
+import API from '@/utils/api';
+import Toast from '@/utils/toast';
 
 const route = useRoute();
 const router = useRouter();
@@ -234,21 +236,6 @@ interface ActivityItem {
 
 const activities = ref<ActivityItem[]>([])
 
-// 获取链接
-const getLink = (platform: platform, username: string) => {
-    switch (platform) {
-        case "AtCoder":
-            return "https://atcoder.jp/users/" + username;
-        case "NowCoder":
-            return "https://ac.nowcoder.com/acm/contest/profile/" + username;
-        case "LeetCode":
-            return "https://leetcode.cn/u/" + username;
-        case "LuoGu":
-            return "https://www.luogu.com.cn/user/" + username;
-        case "CodeForces":
-            return "https://CodeForces.com/profile/" + username;
-    };
-}
 
 interface SubmitResponse {
     data: SubmitData[];
@@ -330,36 +317,16 @@ const getSubmitInfo = async () => {
 
 // 获取用户信息
 const getUserInfo = async () => {
-    try {
-        const response = await axios.get<User>("/api/user/profile/get-by-id", {
-            params: {
-                userId: user.value.userId,
-            }
-        })
-        if (response.status === 200) {
-            loading.value.statue = false;
-            user.value = response.data;
-            user.value.links = {
-                AtCoder: "",
-                NowCoder: "",
-                LuoGu: "",
-                CodeForces: "",
-                LeetCode: ""
-            };
-            response.data.spiders.forEach((item: Spider) => {
-                user.value.links[item.platform] = getLink(item.platform, item.username);
-            });
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '获取用户信息失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        loading.value.info = error.response.data.message;
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '获取用户信息失败', type: 'error' }
-        }));
+    const response = await API.user.profile.getById(user.value.userId.toString());
+    
+    if (response.success) {
+        user.value = response.data;
+        loading.value.statue = false;
+    }else{
+        loading.value.info = response.message;
     }
+
+    Toast.stdResponse(response,false);
 
     getSubmitInfo();
     getHeatmapData();

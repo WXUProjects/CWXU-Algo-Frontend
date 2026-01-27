@@ -3,14 +3,14 @@ import type { App } from 'vue'
 
 interface ToastOptions {
   message: string
-  type?: 'success' | 'warning' | 'error' | 'info'
+  type?: 'success' | 'warn' | 'error' | 'info'
   duration?: number
 }
 
 const ToastPlugin = {
   install(app: App) {
     const toast = {
-      show(message: string, type: 'success' | 'warning' | 'error' | 'info' = 'info', duration: number = 5000) {
+      show(message: string, type: 'success' | 'warn' | 'error' | 'info' = 'info', duration: number = 5000) {
         // 触发自定义事件
         const event = new CustomEvent('show-toast', {
           detail: { message, type, duration }
@@ -22,8 +22,8 @@ const ToastPlugin = {
         this.show(message, 'success', duration)
       },
 
-      warning(message: string, duration: number = 5000) {
-        this.show(message, 'warning', duration)
+      warn(message: string, duration: number = 5000) {
+        this.show(message, 'warn', duration)
       },
 
       error(message: string, duration: number = 5000) {

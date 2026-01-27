@@ -35,99 +35,44 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 import BaseLayout from '@/components/BaseLayout.vue'
 import { hashPassword } from '@/utils/hash'
+import type { UserAuthRegisterRequest as FormData} from '@/utils/api'
+import Toast from '@/utils/toast'
+import API from '@/utils/api'
 
 const router = useRouter()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
 
-// 表单数据
-interface FormData {
-    email: string,
-    username: string,
-    password: string,
-    passwordConfirm: string,
-    name: string
-}
-
 const formData = ref<FormData>({
     email: '',
+    groupId: '1',
     username: '',
     password: '',
     passwordConfirm: '',
     name: ''
 })
 
-// 返回数据
-interface ResponseData {
-    success: boolean,
-    message: string
-}
-
-// 信息校验函数(校验并在前端显示操作提示信息)
-const validate = (formData: FormData): boolean => {
-    // 空值校验
-    // 邮箱格式校验
-    // 密码一致性校验
-
-    if (formData.email === '' || formData.username === '' || formData.password === '' || formData.passwordConfirm === '' || formData.name === '') {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '请填写完整信息', type: 'error' }
-        }));
-        return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (!emailRegex.test(formData.email)) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '邮箱格式错误', type: 'error' }
-        }));
-        return false;
-    }
-
-    if (formData.password !== formData.passwordConfirm) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '两次输入密码不一致', type: 'error' }
-        }));
-        return false;
-    }
-
-    return true;
-}
-
 // 处理注册
 const handleRegister = async () => {
     wait.value = true;
-    if (!validate(formData.value)) return;
 
     const hashedFormData = {
         ...formData.value,
         password: hashPassword(formData.value.password)
     }
 
-    try {
-        const response = await axios.post<ResponseData>('/api/user/auth/register', hashedFormData);
-        if (response.data.success) {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message, type: 'success' }
-            }));
-            setTimeout(() => {
-                router.push('/login')
-            }, 1000)
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '注册失败', type: 'error' }
-            }));
-        }
-    } catch (error) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '网络错误，请稍后重试', type: 'error' }
-        }));
+    const response = await API.user.auth.register(hashedFormData);
+    Toast.stdResponse(response);
+
+    if (response.success) {
+        setTimeout(() => {
+            router.push('/login')
+        }, 1000)
     }
+
     wait.value = false;
 }
 </script>

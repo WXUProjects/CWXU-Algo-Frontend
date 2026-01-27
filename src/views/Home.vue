@@ -143,7 +143,7 @@
             <button @click="test('success')">success</button>
             <button @click="test('error')">error</button>
             <button @click="test('info')">info</button>
-            <button @click="test('warning')">warning</button>
+            <button @click="test('warn')">warn</button>
           </div>
         </div>
 
