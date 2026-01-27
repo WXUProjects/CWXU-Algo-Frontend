@@ -133,19 +133,17 @@ const getBlockColor = (day: number) => {
 
     // 颜色梯度
     if (count === 0) {
-        return 'rgba(0, 200, 0, 0)'
+        return 'rgba(0, 160, 0, 0)'
     } else if (count <= 1) {
-        return 'rgba(0, 200, 0, 0.1)'
-    } else if (count < 5) {
-        return 'rgba(0, 200, 0, 0.3)'
-    } else if (count < 10) {
-        return 'rgba(0, 200, 0, 0.5)'
-    } else if (count < 15) {
-        return 'rgba(0, 200, 0, 0.7)'
-    } else if (count < 20) {
-        return 'rgba(0, 200, 0, 0.9)'
+        return 'rgba(0, 160, 0, 0.2)'
+    } else if (count <= 2) {
+        return 'rgba(0, 160, 0, 0.4)'
+    } else if (count <= 6) {
+        return 'rgba(0, 160, 0, 0.6)'
+    } else if (count <= 12) {
+        return 'rgba(0, 160, 0, 0.8)'
     } else {
-        return 'rgba(0, 200, 0, 1)'
+        return 'rgba(0, 160, 0, 1)'
     }
 }
 

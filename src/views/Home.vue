@@ -138,13 +138,6 @@
               <Calendar v-if="currentCalendar === 1" :data="acData"></Calendar>
             </div>
           </div>
-          <div>
-            <div>测试toast通知</div>
-            <button @click="test('success')">success</button>
-            <button @click="test('error')">error</button>
-            <button @click="test('info')">info</button>
-            <button @click="test('warn')">warn</button>
-          </div>
         </div>
 
         <!-- 右侧：排行榜 -->

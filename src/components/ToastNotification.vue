@@ -91,6 +91,7 @@ defineExpose({
   padding: 12px 16px;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #ccc;
   backdrop-filter: blur(2px);
   margin-bottom: 10px;
 }
@@ -126,25 +127,25 @@ defineExpose({
 .toast.success {
   background-color: #4caf5090;
   color: white;
-  border-left: 4px solid #388e3c;
+  /* border-left: 4px solid #388e3c; */
 }
 
 .toast.warn {
   background-color: #ff980090;
-  color: white;
-  border-left: 4px solid #f57c00;
+  color: black;
+  /* border-left: 4px solid #f57c00; */
 }
 
 .toast.error {
   background-color: #f4433690;
   color: white;
-  border-left: 4px solid #d32f2f;
+  /* border-left: 4px solid #d32f2f; */
 }
 
 .toast.info {
   background-color: #2196f390;
   color: white;
-  border-left: 4px solid #1976d2;
+  /* border-left: 4px solid #1976d2; */
 }
 
 .toast-content {
