@@ -19,8 +19,6 @@
                     <button @click="handleConfirm" :disabled="wait">确认</button>
                     <button @click="handleCancel">返回</button>
                 </div>
-                <div class="tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
-                    operationTip.message }}</div>
             </div>
         </div>
         <div class="addOj">
@@ -28,12 +26,12 @@
                 <div class="title">绑定OJ账号</div>
                 <div class="desc">
                     目前仅支持以下平台绑定：AtCoder, 牛客。<br>
-                    <!-- 目前仅支持以下平台绑定：AtCoder, LuoGu, NowCoder, CodeForce, LeetCode。<br> -->
+                    <!-- 目前仅支持以下平台绑定：AtCoder, LuoGu, NowCoder, CodeForces, LeetCode。<br> -->
                     如何填写用户名？<br>
                     AtCoder:填写用户名，例如您的主页是https://atcoder.jp/users/AoralsFout，那么你就填AoralsFout<br>
                     LuoGu: 填写您的用户名(非用户编号)<br>
                     牛客: 填写您的用户id，例如您的主页是https://ac.nowcoder.com/acm/contest/profile/978880410，那么你就填978880410<br>
-                    CodeForce: 填写您的用户名，例如您的主页是https://codeforces.com/profile/AoralsFout，那么你就填AoralsFout<br>
+                    CodeForces: 填写您的用户名，例如您的主页是https://CodeForces.com/profile/AoralsFout，那么你就填AoralsFout<br>
                     <!-- LeetCode: 填写您的用户id，例如您的主页是https://leetcode.cn/u/musing-i2hodesdmx/，那么你就填musing-i2hodesdmx -->
                 </div>
                 <div class="item">
@@ -44,7 +42,7 @@
                             <div class="option" @click="ojData.platform = 'AtCoder'">AtCoder</div>
                             <div class="option" @click="ojData.platform = 'LuoGu'">洛谷</div>
                             <div class="option" @click="ojData.platform = 'NowCoder'">牛客</div>
-                            <div class="option" @click="ojData.platform = 'CodeForce'">CodeForce</div>
+                            <div class="option" @click="ojData.platform = 'CodeForces'">CodeForces</div>
                             <!-- <div class="option" @click="ojData.platform = 'LeetCode'">力扣</div> -->
                         </div>
                     </div>
@@ -56,8 +54,6 @@
                 <div class="actions">
                     <button @click="handleOjConfirm" :disabled="wait">确认</button>
                 </div>
-                <div class="tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
-                    operationTip.message }}</div>
             </div>
         </div>
     </BaseLayout>
@@ -100,7 +96,7 @@ switch (oj) {
         ojData.value.platform = "NowCoder"
         break;
     case "CodeForces":
-        ojData.value.platform = "CodeForce"
+        ojData.value.platform = "CodeForces"
         break;
     // case "LeetCode":
     //     ojData.value.platform = "LeetCode"
@@ -120,24 +116,21 @@ const getUserInfo = async () => {
             formData.value.name = response.data.name;
             formData.value.avatar = response.data.avatar;
             formData.value.email = response.data.email;
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '获取用户信息失败', type: 'error' }
+            }));
         }
-    } catch (error) {
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '获取用户信息失败', type: 'error' }
+        }));
     }
 }
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
 
-// 操作提示信息
-interface OperationTip {
-    type: "success" | "error" | "none",
-    message: string
-}
-
-const operationTip = ref<OperationTip>({
-    type: 'none',
-    message: ''
-})
 const handleCancel = () => {
     router.push('/profile')
 }
@@ -145,8 +138,9 @@ const handleCancel = () => {
 const handleConfirm = async () => {
     wait.value = true
     if (!Vaildate.checkEmali(formData.value.email)) {
-        operationTip.value.type = 'error'
-        operationTip.value.message = '邮箱格式错误'
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '邮箱格式错误', type: 'error' }
+        }));
         wait.value = false
         return
     }
@@ -157,16 +151,18 @@ const handleConfirm = async () => {
             }
         })
         if (response.status === 200) {
-            operationTip.value.type = 'success'
-            operationTip.value.message = response.data.message
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message, type: 'success' }
+            }));
         } else {
-            operationTip.value.type = 'error'
-            operationTip.value.message = response.data.message
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '资料更新失败', type: 'error' }
+            }));
         }
-    } catch (error) {
-        console.error(error);
-        operationTip.value.type = 'error'
-        operationTip.value.message = '网络错误，请稍后重试'
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '资料更新失败', type: 'error' }
+        }));
     }
     wait.value = false
 }
@@ -180,16 +176,18 @@ const handleOjConfirm = async () => {
             }
         })
         if (response.status === 200) {
-            operationTip.value.type = 'success'
-            operationTip.value.message = response.data.message
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message, type: 'success' }
+            }));
         } else {
-            operationTip.value.type = 'error'
-            operationTip.value.message = response.data.message
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '绑定OJ失败', type: 'error' }
+            }));
         }
-    } catch (error) {
-        console.error(error);
-        operationTip.value.type = 'error'
-        operationTip.value.message = '网络错误，请稍后重试'
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '绑定OJ失败', type: 'error' }
+        }));
     }
     wait.value = false
 }
@@ -317,11 +315,6 @@ onMounted(() => {
             flex-direction: row-reverse;
             gap: 10px;
         }
-    }
-
-    .tip {
-        font-size: 14px;
-        margin-top: 10px;
     }
 }
 </style>

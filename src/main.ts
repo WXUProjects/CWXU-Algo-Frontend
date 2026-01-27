@@ -3,6 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import ToastPlugin from './plugins/toast'
 
 // JetBrains Mono 字体
 import "@fontsource/jetbrains-mono"; // Defaults to weight 400
@@ -44,5 +45,6 @@ const app = createApp(App)
 app.component('font-awesome-icon', FontAwesomeIcon)
 app.use(createPinia())
 app.use(router)
+app.use(ToastPlugin)
 
 app.mount('#app')

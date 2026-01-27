@@ -48,8 +48,8 @@ export interface List {
 const userCount = ref(0);
 
 const getUserCount = async () => {
-    try{
-        const response = await axios.get("/api/user/profile/list",{
+    try {
+        const response = await axios.get("/api/user/profile/list", {
             params: {
                 pageNum: 1,
                 pageSize: 1
@@ -58,9 +58,15 @@ const getUserCount = async () => {
 
         if (response.status === 200) {
             userCount.value = response.data.total;
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '获取用户数量失败', type: 'error' }
+            }));
         }
-    }catch (error) {
-        console.error(error);
+    } catch (error) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '获取用户数量失败', type: 'error' }
+        }));
     }
 }
 

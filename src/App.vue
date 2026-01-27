@@ -211,6 +211,7 @@
         </router-view>
       </div>
     </div>
+    <ToastNotification />
   </div>
 </template>
 
@@ -220,6 +221,7 @@ import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
 import router from './router'
+import ToastNotification from './components/ToastNotification.vue'
 
 const route = useRoute()
 

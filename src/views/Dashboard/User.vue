@@ -57,8 +57,7 @@
                         <div class="pageButtons">
                             <button v-for="value in pages" :key="value"
                                 :class="value === data.currentPage ? 'active' : ''"
-                                @click="value === data.currentPage ? null : getData(value)"
-                                >{{ value }}</button>
+                                @click="value === data.currentPage ? null : getData(value)">{{ value }}</button>
                         </div>
                         <div class="pageButtons" v-if="data.currentPage != data.totalPage">
                             <button @click="getData(data.currentPage + 1)">下一页</button>
@@ -126,10 +125,16 @@ const getData = async (page: number) => {
             data.value = response.data;
             data.value.currentPage = page;
             data.value.totalPage = Math.ceil(data.value.total / 20);
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: '获取用户列表失败', type: 'error' }
+            }));
         }
-        
-    } catch (error) {
-        console.error(error);
+
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '获取用户列表失败', type: 'error' }
+        }));
     }
 };
 
@@ -244,7 +249,7 @@ onMounted(() => {
         height: 50px;
         overflow: hidden;
 
-        >img{
+        >img {
             width: 100%;
             height: 100%;
             -webkit-user-drag: none;

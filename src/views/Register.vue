@@ -28,8 +28,6 @@
                     <button class="register-btn" @click="handleRegister()" :disabled="wait">注册</button>
                 </div>
             </div>
-            <div class="register-tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
-                operationTip.message }}</div>
         </div>
     </BaseLayout>
 </template>
@@ -45,17 +43,6 @@ const router = useRouter()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
-
-// 操作提示信息
-interface OperationTip {
-    type: "success" | "error" | "none",
-    message: string
-}
-
-const operationTip = ref<OperationTip>({
-    type: 'none',
-    message: ''
-})
 
 // 表单数据
 interface FormData {
@@ -87,28 +74,25 @@ const validate = (formData: FormData): boolean => {
     // 密码一致性校验
 
     if (formData.email === '' || formData.username === '' || formData.password === '' || formData.passwordConfirm === '' || formData.name === '') {
-        operationTip.value = {
-            type: 'error',
-            message: '请填写完整信息'
-        }
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '请填写完整信息', type: 'error' }
+        }));
         return false;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(formData.email)) {
-        operationTip.value = {
-            type: 'error',
-            message: '邮箱格式错误'
-        }
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '邮箱格式错误', type: 'error' }
+        }));
         return false;
     }
 
     if (formData.password !== formData.passwordConfirm) {
-        operationTip.value = {
-            type: 'error',
-            message: '两次输入的密码不一致'
-        }
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '两次输入密码不一致', type: 'error' }
+        }));
         return false;
     }
 
@@ -128,24 +112,21 @@ const handleRegister = async () => {
     try {
         const response = await axios.post<ResponseData>('/api/user/auth/register', hashedFormData);
         if (response.data.success) {
-            operationTip.value = {
-                type: 'success',
-                message: response.data.message
-            }
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message, type: 'success' }
+            }));
             setTimeout(() => {
                 router.push('/login')
             }, 1000)
         } else {
-            operationTip.value = {
-                type: 'error',
-                message: response.data.message
-            }
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '注册失败', type: 'error' }
+            }));
         }
     } catch (error) {
-        operationTip.value = {
-            type: 'error',
-            message: '网络错误，请稍后重试'
-        }
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: '网络错误，请稍后重试', type: 'error' }
+        }));
     }
     wait.value = false;
 }
@@ -228,9 +209,5 @@ const handleRegister = async () => {
 
 .register-btn:disabled:hover {
     background-color: var(--background-color-1);
-}
-
-.register-tip {
-    padding: 0 20px 20px 20px;
 }
 </style>

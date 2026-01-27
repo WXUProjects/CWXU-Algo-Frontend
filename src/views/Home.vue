@@ -138,6 +138,13 @@
               <Calendar v-if="currentCalendar === 1" :data="ACData"></Calendar>
             </div>
           </div>
+          <div>
+            <div>测试toast通知</div>
+            <button @click="test('success')">success</button>
+            <button @click="test('error')">error</button>
+            <button @click="test('info')">info</button>
+            <button @click="test('warning')">warning</button>
+          </div>
         </div>
 
         <!-- 右侧：排行榜 -->
@@ -196,6 +203,12 @@ interface HeatmapData {
 const submitData = ref<HeatmapData[]>([])
 const ACData = ref<HeatmapData[]>([])
 
+const test = (type: string) => {
+  window.dispatchEvent(new CustomEvent('show-toast', {
+    detail: { message: type, type, duration: 3000 }
+  }))
+}
+
 const getHeatmapData = async () => {
   const user = JWT.getUserInfo();
   if (!user) return;
@@ -226,9 +239,15 @@ const getHeatmapData = async () => {
     if (response.status === 200) {
       submitData.value = response.data.data.filter(item => item.count > 0);
       console.log(submitData.value);
+    } else {
+      window.dispatchEvent(new CustomEvent('show-toast', {
+        detail: { message: response.data.message || '请求热力图失败' , type: 'error' }
+      }));
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    window.dispatchEvent(new CustomEvent('show-toast', {
+      detail: { message: error.response.data.message || '请求热力图失败' , type: 'error' }
+    }));
   }
 
   try {
@@ -251,9 +270,15 @@ const getHeatmapData = async () => {
     if (response.status === 200) {
       ACData.value = response.data.data.filter(item => item.count > 0);
       console.log(ACData.value);
+    } else {
+      window.dispatchEvent(new CustomEvent('show-toast', {
+        detail: { message: response.data.message || '请求热力图失败' , type: 'error' }
+      }));
     }
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    window.dispatchEvent(new CustomEvent('show-toast', {
+      detail: { message: error.response.data.message || '请求热力图失败' , type: 'error' }
+    }));
   }
 }
 

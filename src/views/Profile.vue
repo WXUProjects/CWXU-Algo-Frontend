@@ -53,17 +53,19 @@
                                 </div>
                             </div>
                             <div class="item">
-                                <div class="name">CodeForce</div>
+                                <div class="name">CodeForces</div>
                                 <div class="link">
-                                    <div v-if="!user.links.CodeForce && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link v-else-if="!user.links.CodeForce && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=CodeForce">去绑定</router-link>
-                                    <a v-else target="_blank" :href="user.links.CodeForce">主页</a>
+                                    <div v-if="!user.links.CodeForces && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link
+                                        v-else-if="!user.links.CodeForces && jwtUserInfo?.userId == user.userId"
+                                        to="/changeProfile?oj=CodeForces">去绑定</router-link>
+                                    <a v-else target="_blank" :href="user.links.CodeForces">主页</a>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
+                        <button class="btn def" @click="updateLog()">更新OJ数据</button>
                         <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
                         <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
                     </div>
@@ -78,8 +80,10 @@
                                 <span class="title-text">热力图 Heatmap</span>
                             </div>
                             <div class="header-tabs">
-                                <span class="tab" @click="currentCalendar = 0" :class="currentCalendar === 0 ? 'active':''">提交热力图</span>
-                                <span class="tab" @click="currentCalendar = 1" :class="currentCalendar === 1 ? 'active':''">AC热力图</span>
+                                <span class="tab" @click="currentCalendar = 0"
+                                    :class="currentCalendar === 0 ? 'active' : ''">提交热力图</span>
+                                <span class="tab" @click="currentCalendar = 1"
+                                    :class="currentCalendar === 1 ? 'active' : ''">AC热力图</span>
                             </div>
                         </div>
                         <div class="content">
@@ -186,7 +190,7 @@ interface User {
     [property: string]: any;
 }
 
-type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce";
+type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
 
 interface Spider {
     platform: platform;
@@ -198,7 +202,7 @@ interface Links {
     AtCoder: string;
     NowCoder: string;
     LuoGu: string;
-    CodeForce: string;
+    CodeForces: string;
     LeetCode: string;
 }
 
@@ -212,7 +216,7 @@ const user = ref<User>({
         AtCoder: "",
         NowCoder: "",
         LuoGu: "",
-        CodeForce: "",
+        CodeForces: "",
         LeetCode: ""
     },
     userId: 0,
@@ -241,8 +245,8 @@ const getLink = (platform: platform, username: string) => {
             return "https://leetcode.cn/u/" + username;
         case "LuoGu":
             return "https://www.luogu.com.cn/user/" + username;
-        case "CodeForce":
-            return "https://codeforces.com/profile/" + username;
+        case "CodeForces":
+            return "https://CodeForces.com/profile/" + username;
     };
 }
 
@@ -272,8 +276,8 @@ const getSubmitLink = (platform: platform, contest: string, submitId: string) =>
             return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
         case "LuoGu":
             return `https://www.luogu.com.cn/record/${submitId}`;
-        case "CodeForce":
-            return `https://codeforces.com/contest/${contest}/submission/${submitId}`;
+        case "CodeForces":
+            return `https://CodeForces.com/contest/${contest}/submission/${submitId}`;
         default:
             return "";
     }
@@ -311,9 +315,16 @@ const getSubmitInfo = async () => {
                     time: time
                 });
             });
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '获取动态失败', type: 'error' }
+            }));
         }
     } catch (error: any) {
         loading.value.info = error.response.data.message;
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '获取动态失败', type: 'error' }
+        }));
     }
 }
 
@@ -332,15 +343,22 @@ const getUserInfo = async () => {
                 AtCoder: "",
                 NowCoder: "",
                 LuoGu: "",
-                CodeForce: "",
+                CodeForces: "",
                 LeetCode: ""
             };
             response.data.spiders.forEach((item: Spider) => {
                 user.value.links[item.platform] = getLink(item.platform, item.username);
             });
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '获取用户信息失败', type: 'error' }
+            }));
         }
     } catch (error: any) {
         loading.value.info = error.response.data.message;
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '获取用户信息失败', type: 'error' }
+        }));
     }
 
     getSubmitInfo();
@@ -382,9 +400,15 @@ const getHeatmapData = async () => {
         if (response.status === 200) {
             submitData.value = response.data.data.filter(item => item.count > 0);
             console.log(submitData.value);
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '请求热力图失败', type: 'error' }
+            }));
         }
-    } catch (error) {
-        console.error(error);
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
+        }));
     }
 
     try {
@@ -407,9 +431,42 @@ const getHeatmapData = async () => {
         if (response.status === 200) {
             acData.value = response.data.data.filter(item => item.count > 0);
             console.log(acData.value);
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '请求热力图失败', type: 'error' }
+            }));
         }
-    } catch (error) {
-        console.error(error);
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
+        }));
+    }
+}
+
+const updateLog = async () => {
+    try {
+        const response = await axios.post("/api/core/spider/update",
+            {
+                userId: jwtUserInfo?.userId
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${JWT.token}`
+                }
+            })
+        if (response.status === 200) {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message, type: 'success' }
+            }));
+        } else {
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '请求更新数据失败', type: 'error' }
+            }));
+        }
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '请求更新数据失败', type: 'error' }
+        }));
     }
 }
 

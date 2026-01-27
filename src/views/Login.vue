@@ -16,8 +16,6 @@
                     <button class="login-btn" @click="handleLogin()" :disabled="wait">登录</button>
                 </div>
             </div>
-            <div class="login-tip" :style="operationTip.type === 'success' ? 'color: green' : 'color: red'">{{
-                operationTip.message }}</div>
         </div>
     </BaseLayout>
 </template>
@@ -37,17 +35,6 @@ const userStore = useUserStore()
 
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
-
-// 操作提示信息
-interface OperationTip {
-    type: "success" | "error" | "none",
-    message: string
-}
-
-const operationTip = ref<OperationTip>({
-    type: 'none',
-    message: ''
-})
 
 // 提交数据
 interface FormData {
@@ -79,24 +66,27 @@ const handleLogin = async () => {
     try {
         const response = await axios.post<ResponseData>('/api/user/auth/login', hashedFormData)
         if (response.data.success) {
-            operationTip.value.type = 'success'
-            operationTip.value.message = response.data.message
-            
             userStore.setLoginStatus(true)
 
             JWT.setNewToken(response.data.jwtToken)
+
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message , type: 'success' }
+            }));
 
             const redirectPath = route.query.redirect as string || '/'
             setTimeout(() => {
                 router.push(redirectPath)
             }, 1000)
         } else {
-            operationTip.value.type = 'error'
-            operationTip.value.message = response.data.message
+            window.dispatchEvent(new CustomEvent('show-toast', {
+                detail: { message: response.data.message || '登录失败', type: 'error' }
+            }));
         }
-    } catch (error) {
-        operationTip.value.type = 'error'
-        operationTip.value.message = '网络错误，请稍后重试'
+    } catch (error: any) {
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '登录失败', type: 'error' }
+        }));
     }
     wait.value = false
 }
@@ -179,9 +169,5 @@ const handleLogin = async () => {
 
 .login-btn:disabled:hover {
     background-color: var(--background-color-1);
-}
-
-.login-tip {
-    padding: 0 20px 20px 20px;
 }
 </style>

@@ -233,8 +233,4 @@ const submit = () => {
 .btn:disabled:hover {
     background-color: var(--background-color-1);
 }
-
-.tip {
-    padding: 0 20px 20px 20px;
-}
 </style>

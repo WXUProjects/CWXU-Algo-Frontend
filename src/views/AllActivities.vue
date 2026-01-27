@@ -75,7 +75,7 @@ const observer = ref<IntersectionObserver | null>(null);
 const loadMoreRef = ref<HTMLElement | null>(null);
 const cursor = ref<number>(-1);
 
-type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForce";
+type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
 
 const getSubmitLink = (platform: platform, contest: string, submitId: string) => {
     switch (platform) {
@@ -85,8 +85,8 @@ const getSubmitLink = (platform: platform, contest: string, submitId: string) =>
             return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
         case "LuoGu":
             return `https://www.luogu.com.cn/record/${submitId}`;
-        case "CodeForce":
-            return `https://codeforces.com/contest/${contest}/submission/${submitId}`;
+        case "CodeForces":
+            return `https://CodeForces.com/contest/${contest}/submission/${submitId}`;
         default:
             return "";
     }
@@ -152,7 +152,9 @@ const getNewSubmit = async (currentCursor: number) => {
             noMoreData.value = true;
         }
     } catch (error: any) {
-        console.error(error);
+        window.dispatchEvent(new CustomEvent('show-toast', {
+            detail: { message: error.response.data.message || '获取动态失败' , type: 'error' }
+        }));
     } finally {
         loading.value = false;
     }
