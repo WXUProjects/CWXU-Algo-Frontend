@@ -319,15 +319,15 @@ const getSubmitInfo = async () => {
 // 获取用户信息
 const getUserInfo = async () => {
     const response = await API.user.profile.getById(user.value.userId.toString());
-    
+
     if (response.success) {
         user.value = response.data;
         loading.value.statue = false;
-    }else{
+    } else {
         loading.value.info = response.message;
     }
 
-    Toast.stdResponse(response,false);
+    Toast.stdResponse(response, false);
 
     getSubmitInfo();
     getHeatmapData();
@@ -341,6 +341,10 @@ interface HeatmapData {
 const submitData = ref<HeatmapData[]>([])
 const acData = ref<HeatmapData[]>([])
 
+const padZero = (num: number): string => {
+    return num < 10 ? '0' + num : num.toString();
+}
+
 const getHeatmapData = async () => {
     interface HeatmapResponse {
         code: string;
@@ -349,19 +353,13 @@ const getHeatmapData = async () => {
     }
 
     try {
+        const dateObj = new Date();
+        const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
         const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
             params: {
                 userId: user.value.userId,
                 startDate: "2023-01-01",
-                endDate: new Date().toLocaleString('sv-SE', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                }),
+                endDate: date,
                 isAc: false
             }
         })
@@ -380,19 +378,13 @@ const getHeatmapData = async () => {
     }
 
     try {
+        const dateObj = new Date();
+        const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
         const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
             params: {
                 userId: user.value.userId,
                 startDate: "2023-01-01",
-                endDate: new Date().toLocaleString('sv-SE', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                }),
+                endDate: date,
                 isAc: true
             }
         })

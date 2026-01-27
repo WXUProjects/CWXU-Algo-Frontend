@@ -209,6 +209,10 @@ const test = (type: string) => {
   }))
 }
 
+const padZero = (num: number): string => {
+  return num < 10 ? '0' + num : num.toString();
+}
+
 const getHeatmapData = async () => {
   const user = JWT.getUserInfo();
   if (!user) return;
@@ -220,19 +224,13 @@ const getHeatmapData = async () => {
   }
 
   try {
+    const dateObj = new Date();
+    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
     const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
       params: {
         userId: user.userId,
-        startDate: "2023-01-01",
-        endDate: new Date().toLocaleString('sv-SE', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        }),
+        startDate: "20230101",
+        endDate: date,
         isAc: false
       }
     })
@@ -240,30 +238,24 @@ const getHeatmapData = async () => {
       submitData.value = response.data.data.filter(item => item.count > 0);
     } else {
       window.dispatchEvent(new CustomEvent('show-toast', {
-        detail: { message: response.data.message || '请求热力图失败' , type: 'error' }
+        detail: { message: response.data.message || '请求热力图失败', type: 'error' }
       }));
     }
   } catch (error: any) {
     console.error(error);
     window.dispatchEvent(new CustomEvent('show-toast', {
-      detail: { message: error.response.data.message || '请求热力图失败' , type: 'error' }
+      detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
     }));
   }
 
   try {
+        const dateObj = new Date();
+    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
     const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
       params: {
         userId: user.userId,
         startDate: "2023-01-01",
-        endDate: new Date().toLocaleString('sv-SE', {
-          year: 'numeric',
-          month: '2-digit',
-          day: '2-digit',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: false
-        }),
+        endDate: date,
         isAc: true
       }
     })
@@ -271,13 +263,13 @@ const getHeatmapData = async () => {
       ACData.value = response.data.data.filter(item => item.count > 0);
     } else {
       window.dispatchEvent(new CustomEvent('show-toast', {
-        detail: { message: response.data.message || '请求热力图失败' , type: 'error' }
+        detail: { message: response.data.message || '请求热力图失败', type: 'error' }
       }));
     }
   } catch (error: any) {
     console.error(error);
     window.dispatchEvent(new CustomEvent('show-toast', {
-      detail: { message: error.response.data.message || '请求热力图失败' , type: 'error' }
+      detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
     }));
   }
 }

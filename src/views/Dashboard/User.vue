@@ -78,7 +78,8 @@
 </template>
 
 <script setup lang="ts">
-import axios from 'axios';
+import API from '@/utils/api';
+import Toast from '@/utils/toast';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -100,7 +101,12 @@ interface User {
     username: string;
 }
 
-const data = ref<Response>();
+const data = ref<Response>({
+    list: [],
+    total: 0,
+    totalPage: 0,
+    currentPage: 1
+});
 
 const pages = computed(() => {
     if (!data.value) return [];
@@ -114,21 +120,13 @@ const pages = computed(() => {
 
 const getData = async (page: number) => {
     try {
-        const response = await axios.get<Response>('/api/user/profile/list', {
-            params: {
-                pageNum: page,
-                pageSize: 20
-            }
-        });
+        const response = await API.user.profile.list(page);
+        Toast.stdResponse(response,false);
 
-        if (response.status === 200) {
+        if (response.success) {
             data.value = response.data;
             data.value.currentPage = page;
             data.value.totalPage = Math.ceil(data.value.total / 20);
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: '获取用户列表失败', type: 'error' }
-            }));
         }
 
     } catch (error: any) {

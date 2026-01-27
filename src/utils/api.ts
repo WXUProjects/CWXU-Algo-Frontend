@@ -83,6 +83,23 @@ export interface UserProfileUpdateResponse {
     [property: string]: any;
 }
 
+export interface UserProfileListResponse {
+    list: List[];
+    total: string;
+    totalPage: string;
+    [property: string]: any;
+}
+
+export interface List {
+    avatar: string;
+    groupId: string;
+    lastSubmit: string;
+    name: string;
+    userId: string;
+    username: string;
+    [property: string]: any;
+}
+
 const userStore = useUserStore()
 
 export default class API {
@@ -230,6 +247,31 @@ export default class API {
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取用户信息失败";
+                    return stdRes;
+                }
+            },
+            list: async (page: number): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+                try {
+                    const response = await axios.get<UserProfileListResponse>('/api/user/profile/list', {
+                        params: {
+                            pageNum: page,
+                            pageSize: 20
+                        }
+                    });
+                    stdRes.message = response.data.message || "获取用户列表成功";
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.data = response.data;
+                    }
+                    return stdRes;
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取用户列表失败";
                     return stdRes;
                 }
             }
