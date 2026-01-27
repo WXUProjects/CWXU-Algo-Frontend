@@ -64,16 +64,18 @@ import axios from 'axios';
 import JWT from '@/utils/jwt';
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
-import Vaildate from '@/utils/vaildate';
+import API from '@/utils/api';
+import type { UserProfileUpdateRequest as FormData } from '@/utils/api';
+import Toast from '@/utils/toast';
 
 const router = useRouter();
 const route = useRoute();
 
-const userId = JWT.getUserInfo()?.userId;
+const userId = JWT.getUserInfo()?.userId || 0;
 const oj = route.query.oj;
 
-const formData = ref({
-    userId: userId,
+const formData = ref<FormData>({
+    userId: "",
     name: "",
     email: "",
     avatar: ""
@@ -106,25 +108,20 @@ switch (oj) {
 }
 
 const getUserInfo = async () => {
-    try {
-        const response = await axios.get("/api/user/profile/get-by-id", {
-            params: {
-                userId: userId,
-            }
-        })
-        if (response.status === 200) {
-            formData.value.name = response.data.name;
+    const jwtUser = JWT.getUserInfo();
+    if (jwtUser !== null) {
+        const response = await API.user.profile.getById(jwtUser.userId.toString());
+
+        if (response.success) {
             formData.value.avatar = response.data.avatar;
+            formData.value.name = response.data.name;
             formData.value.email = response.data.email;
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '获取用户信息失败', type: 'error' }
-            }));
+            formData.value.userId = response.data.userId;
         }
-    } catch (error: any) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '获取用户信息失败', type: 'error' }
-        }));
+
+        Toast.stdResponse(response, false);
+    }else{
+        Toast.warn("请先登录");
     }
 }
 
@@ -137,34 +134,14 @@ const handleCancel = () => {
 
 const handleConfirm = async () => {
     wait.value = true
-    if (!Vaildate.checkEmali(formData.value.email)) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '邮箱格式错误', type: 'error' }
-        }));
-        wait.value = false
-        return
-    }
-    try {
-        const response = await axios.post('/api/user/profile/update', formData.value, {
-            headers: {
-                Authorization: `Bearer ${JWT.token}`
-            }
-        })
-        if (response.status === 200) {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message, type: 'success' }
-            }));
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '资料更新失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '资料更新失败', type: 'error' }
-        }));
-    }
+
+    const response = await API.user.profile.update(formData.value);
+    Toast.stdResponse(response);
+
     wait.value = false
+
+    // 重新获取用户信息
+    getUserInfo();
 }
 
 const handleOjConfirm = async () => {

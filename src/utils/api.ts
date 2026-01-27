@@ -186,23 +186,45 @@ export default class API {
                     return stdRes;
                 }
             },
-            // update: async (request: UserProfileUpdateRequest): Promise<stdResponse> => { 
-            //     const stdRes: stdResponse = {
-            //         message: "",
-            //         success: false,
-            //         data: null
-            //     }
+            update: async (request: UserProfileUpdateRequest): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
 
-            //     if (!JWT.isValid()) {
-            //         stdRes.message = "用户未登录";
-            //         return stdRes;
-            //     }
+                if (!JWT.isValid()) {
+                    stdRes.message = "用户未登录";
+                    return stdRes;
+                }
 
-            //     if (!Vaildate.checkEmali(request.email)) {
-            //         stdRes.message = "请输入有效邮箱";
-            //         return stdRes;
-            //     }
-            // }
+                if (!Vaildate.checkEmali(request.email)) {
+                    stdRes.message = "请输入有效邮箱";
+                    return stdRes;
+                }
+
+                if (request.email === '' || request.name === '' || request.avatar === '') {
+                    stdRes.message = "输入不能为空";
+                    return stdRes;
+                }
+
+                try {
+                    const response = await axios.post<UserProfileGetByIdResponse>("/v1/user/profile/update", request,{
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    stdRes.message = response.data.message || "获取用户信息成功";
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.data = response.data;
+                    }
+                    return stdRes;
+                } catch (error) {
+                    stdRes.message = "获取用户信息失败";
+                    return stdRes;
+                }
+            }
         }
     }
 }
