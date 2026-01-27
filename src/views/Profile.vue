@@ -362,7 +362,7 @@ const getHeatmapData = async () => {
         const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
             params: {
                 userId: user.value.userId,
-                startDate: "2024-01-01",
+                startDate: "2023-01-01",
                 endDate: new Date().toLocaleString('sv-SE', {
                     year: 'numeric',
                     month: '2-digit',
@@ -387,7 +387,7 @@ const getHeatmapData = async () => {
         const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
             params: {
                 userId: user.value.userId,
-                startDate: "2024-01-01",
+                startDate: "2023-01-01",
                 endDate: new Date().toLocaleString('sv-SE', {
                     year: 'numeric',
                     month: '2-digit',

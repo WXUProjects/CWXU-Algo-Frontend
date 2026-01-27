@@ -43,7 +43,7 @@
                             <div class="actions">
                                 <button class="btn btn-primary">编辑</button>
                                 <button class="btn btn-primary"
-                                    @click="router.push(`/profile?user=${item.userId}`)">查看个人资料</button>
+                                    @click="router.push(`/profile?id=${item.userId}`)">查看个人资料</button>
                                 <button class="btn btn-danger">删除</button>
                             </div>
                         </td>
@@ -116,8 +116,8 @@ const getData = async (page: number) => {
     try {
         const response = await axios.get<Response>('/api/user/profile/list', {
             params: {
-                page: page,
-                pageSize: 2
+                pageNum: page,
+                pageSize: 20
             }
         });
 
