@@ -36,7 +36,6 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseLayout from '@/components/BaseLayout.vue'
-import { hashPassword } from '@/utils/hash'
 import type { UserAuthRegisterRequest as FormData} from '@/utils/api'
 import Toast from '@/utils/toast'
 import API from '@/utils/api'
@@ -59,12 +58,7 @@ const formData = ref<FormData>({
 const handleRegister = async () => {
     wait.value = true;
 
-    const hashedFormData = {
-        ...formData.value,
-        password: hashPassword(formData.value.password)
-    }
-
-    const response = await API.user.auth.register(hashedFormData);
+    const response = await API.user.auth.register(formData.value);
     Toast.stdResponse(response);
 
     if (response.success) {

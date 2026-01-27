@@ -2,9 +2,11 @@ import axios from 'axios'
 import JWT from '../utils/jwt'
 import Vaildate from '../utils/vaildate'
 import { useUserStore } from '@/stores/user'
+import { hashPassword } from '@/utils/hash'
 import Profile from '@/views/Profile.vue';
 import Link from './link';
 import type { P } from 'vue-router/dist/router-CWoNjPRp.mjs';
+import Toast from './toast';
 
 export interface stdResponse {
     message: string;
@@ -119,6 +121,7 @@ export default class API {
                     success: false,
                     data: null
                 }
+
                 if (JWT.isValid()) {
                     stdRes.message = "用户已登录";
                     return stdRes;
@@ -208,8 +211,10 @@ export default class API {
                     return stdRes;
                 }
 
+                request.password = hashPassword(request.password);
+
                 try {
-                    const response = await axios.post<UserProfileGetByIdResponse>("/v1/user/profile/update", request,{
+                    const response = await axios.post<UserProfileGetByIdResponse>("/v1/user/profile/update", request, {
                         headers: {
                             Authorization: `Bearer ${JWT.token}`
                         }
