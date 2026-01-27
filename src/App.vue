@@ -222,6 +222,7 @@ import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
 import router from './router'
 import ToastNotification from './components/ToastNotification.vue'
+import Toast from './utils/toast'
 
 const route = useRoute()
 
@@ -292,8 +293,22 @@ const setTheme = (theme: 'dark' | 'light') => {
 
 const currentTheme = ref<'dark' | 'light'>(getTheme())
 
+const hitokotoList = [
+  "今天要努力刷绿墙ヾ(*´∀ ˋ*)ﾉ",
+  "努力是成功的阶梯",
+  "今天要努力刷题ヾ(*´∀ ˋ*)ﾉ",
+  "学习大佬操作中...",
+]
+const hitokoto = () => {
+  const random = Math.floor(Math.random() * hitokotoList.length);
+  if (hitokotoList[random]) {
+    Toast.info(hitokotoList[random]);
+  }
+}
+
 onMounted(() => {
   setTheme(getTheme())
+  hitokoto()
 })
 </script>
 
