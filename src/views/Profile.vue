@@ -42,7 +42,7 @@
                                         to="/changeProfile?oj=LeetCode">去绑定</router-link>
                                     <a v-else target="_blank" :href="user.links.LeetCode">主页</a>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="item">
                                 <div class="name">LuoGu</div>
                                 <div class="link">
@@ -52,7 +52,7 @@
                                     <a v-else target="_blank" :href="user.links.LuoGu">主页</a>
                                 </div>
                             </div>
-                            <div class="item">
+                            <!-- <div class="item">
                                 <div class="name">CodeForce</div>
                                 <div class="link">
                                     <div v-if="!user.links.CodeForce && jwtUserInfo?.userId != user.userId">未绑定</div>

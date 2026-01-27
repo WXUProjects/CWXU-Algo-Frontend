@@ -31,7 +31,7 @@
                     <!-- 目前仅支持以下平台绑定：AtCoder, LuoGu, NowCoder, CodeForce, LeetCode。<br> -->
                     如何填写用户名？<br>
                     AtCoder:填写用户名，例如您的主页是https://atcoder.jp/users/AoralsFout，那么你就填AoralsFout<br>
-                    <!-- LuoGu: 填写您的用户id，例如您的主页是https://www.luogu.com.cn/user/1884901，那么你就填1884901<br> -->
+                    LuoGu: 填写您的用户名(非用户编号)<br>
                     牛客: 填写您的用户id，例如您的主页是https://ac.nowcoder.com/acm/contest/profile/978880410，那么你就填978880410<br>
                     <!-- CodeForce: 填写您的用户名，例如您的主页是https://codeforces.com/profile/AoralsFout，那么你就填AoralsFout<br> -->
                     <!-- LeetCode: 填写您的用户id，例如您的主页是https://leetcode.cn/u/musing-i2hodesdmx/，那么你就填musing-i2hodesdmx -->
@@ -42,7 +42,7 @@
                         <div class="selected">{{ ojData.platform }}</div>
                         <div class="options">
                             <div class="option" @click="ojData.platform = 'AtCoder'">AtCoder</div>
-                            <!-- <div class="option" @click="ojData.platform = 'LuoGu'">LuoGu</div> -->
+                            <div class="option" @click="ojData.platform = 'LuoGu'">LuoGu</div>
                             <div class="option" @click="ojData.platform = 'NowCoder'">牛客</div>
                             <!-- <div class="option" @click="ojData.platform = 'CodeForce'">CodeForce</div> -->
                             <!-- <div class="option" @click="ojData.platform = 'LeetCode'">LeetCode</div> -->
@@ -93,9 +93,9 @@ switch (oj) {
     case "AtCoder":
         ojData.value.platform = "AtCoder"
         break;
-    // case "luogu":
-    //     ojData.value.platform = "LuoGu"
-    //     break;
+    case "luogu":
+        ojData.value.platform = "LuoGu"
+        break;
     case "NowCoder":
         ojData.value.platform = "NowCoder"
         break;
