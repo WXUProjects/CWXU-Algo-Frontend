@@ -119,21 +119,13 @@ const pages = computed(() => {
 })
 
 const getData = async (page: number) => {
-    try {
-        const response = await API.user.profile.list(page);
-        Toast.stdResponse(response,false);
+    const response = await API.user.profile.list(page);
+    Toast.stdResponse(response, false);
 
-        if (response.success) {
-            data.value = response.data;
-            data.value.currentPage = page;
-            data.value.totalPage = Math.ceil(data.value.total / 20);
-        }
-
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '获取用户列表失败', type: 'error' }
-        }));
+    if (response.success) {
+        data.value = response.data;
+        data.value.currentPage = page;
+        data.value.totalPage = Math.ceil(data.value.total / 20);
     }
 };
 

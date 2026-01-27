@@ -135,7 +135,7 @@
               <!-- 提交 -->
               <Calendar v-if="currentCalendar === 0" :data="submitData"></Calendar>
               <!-- AC -->
-              <Calendar v-if="currentCalendar === 1" :data="ACData"></Calendar>
+              <Calendar v-if="currentCalendar === 1" :data="acData"></Calendar>
             </div>
           </div>
           <div>
@@ -194,6 +194,8 @@ import Calendar from '@/components/Calendar.vue';
 import Rank from '@/components/Rank.vue';
 import axios from 'axios';
 import JWT from '@/utils/jwt';
+import API from '@/utils/api';
+import Toast from '@/utils/toast';
 
 interface HeatmapData {
   date: string;
@@ -201,7 +203,7 @@ interface HeatmapData {
 }
 
 const submitData = ref<HeatmapData[]>([])
-const ACData = ref<HeatmapData[]>([])
+const acData = ref<HeatmapData[]>([])
 
 const test = (type: string) => {
   window.dispatchEvent(new CustomEvent('show-toast', {
@@ -216,61 +218,31 @@ const padZero = (num: number): string => {
 const getHeatmapData = async () => {
   const user = JWT.getUserInfo();
   if (!user) return;
+  const dateObj = new Date();
+  const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
 
-  interface HeatmapResponse {
-    code: string;
-    data: HeatmapData[];
-    [property: string]: any;
+  const response1 = await API.core.statistic.heatmap({
+    userId: user.userId,
+    startDate: "20230101",
+    endDate: date,
+    isAc: false
+  })
+  Toast.stdResponse(response1, false);
+
+  if (response1.success) {
+    submitData.value = response1.data;
   }
 
-  try {
-    const dateObj = new Date();
-    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
-    const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
-      params: {
-        userId: user.userId,
-        startDate: "20230101",
-        endDate: date,
-        isAc: false
-      }
-    })
-    if (response.status === 200) {
-      submitData.value = response.data.data.filter(item => item.count > 0);
-    } else {
-      window.dispatchEvent(new CustomEvent('show-toast', {
-        detail: { message: response.data.message || '请求热力图失败', type: 'error' }
-      }));
-    }
-  } catch (error: any) {
-    console.error(error);
-    window.dispatchEvent(new CustomEvent('show-toast', {
-      detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
-    }));
-  }
+  const response2 = await API.core.statistic.heatmap({
+    userId: user.userId,
+    startDate: "20230101",
+    endDate: date,
+    isAc: true
+  })
+  Toast.stdResponse(response2, false);
 
-  try {
-        const dateObj = new Date();
-    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
-    const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
-      params: {
-        userId: user.userId,
-        startDate: "20230101",
-        endDate: date,
-        isAc: true
-      }
-    })
-    if (response.status === 200) {
-      ACData.value = response.data.data.filter(item => item.count > 0);
-    } else {
-      window.dispatchEvent(new CustomEvent('show-toast', {
-        detail: { message: response.data.message || '请求热力图失败', type: 'error' }
-      }));
-    }
-  } catch (error: any) {
-    console.error(error);
-    window.dispatchEvent(new CustomEvent('show-toast', {
-      detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
-    }));
+  if (response2.success) {
+    acData.value = response2.data;
   }
 }
 

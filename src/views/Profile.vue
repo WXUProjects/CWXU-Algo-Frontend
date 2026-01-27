@@ -159,13 +159,14 @@
 import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
 import { ref, onMounted } from 'vue';
-import axios from 'axios';
 import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
-import API from '@/utils/api';
+import API, { type CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
+import type { platform } from '@/utils/link';
+import Link from '@/utils/link';
 
 const route = useRoute();
 const router = useRouter();
@@ -191,8 +192,6 @@ interface User {
     username: string;
     [property: string]: any;
 }
-
-type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
 
 interface Spider {
     platform: platform;
@@ -236,83 +235,34 @@ interface ActivityItem {
 
 const activities = ref<ActivityItem[]>([])
 
-
-interface SubmitResponse {
-    data: SubmitData[];
-    [property: string]: any;
-}
-
-interface SubmitData {
-    contest: string;
-    id: number;
-    lang: string;
-    platform: platform
-    problem: string;
-    status: string;
-    submitId: string;
-    time: string;
-    userId: string;
-    [property: string]: any;
-}
-
-const getSubmitLink = (platform: platform, contest: string, submitId: string) => {
-    switch (platform) {
-        case "AtCoder":
-            return `https://atcoder.jp/contests/${contest}/submissions/${submitId}`;
-        case "NowCoder":
-            return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
-        case "LuoGu":
-            return `https://www.luogu.com.cn/record/${submitId}`;
-        case "CodeForces":
-            return `https://CodeForces.com/contest/${contest}/submission/${submitId}`;
-        default:
-            return "";
-    }
-}
-
 const getSubmitInfo = async () => {
-    try {
-        const response = await axios.get<SubmitResponse>("/api/core/submit-log/get-by-id", {
-            params: {
-                userId: user.value.userId,
-                limit: 10,
-                cursor: -1
-            }
-        })
-        if (response.status === 200) {
-            response.data.data.forEach(item => {
-                const platfrom = item.platform;
-                const lang = item.lang;
-                const contest = item.contest;
-                const problem = item.problem;
-                const status = item.status;
-                const time = new Date(Number(item.time) * 1000).toLocaleString('sv-SE', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                });
-                activities.value.push({
-                    title: `在 ${platfrom} 使用 ${lang} 解决 ${problem || contest}：`,
-                    status: status,
-                    link: getSubmitLink(platfrom, contest, item.submitId),
-                    time: time
-                });
+    const response = await API.core.submitLog.getById(user.value.userId.toString(), -1, 10);
+    Toast.stdResponse(response, false);
+
+    if (response.success) {
+        response.data.forEach((item: CoreSubmitLogGetByIdData) => {
+            const platform = item.platform;
+            const lang = item.lang;
+            const contest = item.contest;
+            const problem = item.problem;
+            const status = item.status;
+            const time = new Date(Number(item.time) * 1000).toLocaleString('sv-SE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
             });
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '获取动态失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        loading.value.info = error.response.data.message;
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '获取动态失败', type: 'error' }
-        }));
+
+            activities.value.push({
+                title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
+                status: status,
+                link: Link.getSubmitLink(platform, contest, item.submitId),
+                time: time,
+            });
+        });
     }
 }
 
@@ -346,89 +296,37 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
-    interface HeatmapResponse {
-        code: string;
-        data: HeatmapData[];
-        [property: string]: any;
+    const dateObj = new Date();
+    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
+
+    const response1 = await API.core.statistic.heatmap({
+        userId: user.value.userId,
+        startDate: "20230101",
+        endDate: date,
+        isAc: false
+    })
+    Toast.stdResponse(response1, false);
+
+    if (response1.success) {
+        submitData.value = response1.data;
     }
 
-    try {
-        const dateObj = new Date();
-        const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
-        const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
-            params: {
-                userId: user.value.userId,
-                startDate: "20230101",
-                endDate: date,
-                isAc: false
-            }
-        })
-        if (response.status === 200) {
-            submitData.value = response.data.data.filter(item => item.count > 0);
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '请求热力图失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
-        }));
-    }
+    const response2 = await API.core.statistic.heatmap({
+        userId: user.value.userId,
+        startDate: "20230101",
+        endDate: date,
+        isAc: true
+    })
+    Toast.stdResponse(response2, false);
 
-    try {
-        const dateObj = new Date();
-        const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
-        const response = await axios.get<HeatmapResponse>("/api/core/statistic/heatmap", {
-            params: {
-                userId: user.value.userId,
-                startDate: "20230101",
-                endDate: date,
-                isAc: true
-            }
-        })
-        if (response.status === 200) {
-            acData.value = response.data.data.filter(item => item.count > 0);
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '请求热力图失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
-        }));
+    if (response2.success) {
+        acData.value = response2.data;
     }
 }
 
 const updateLog = async () => {
-    try {
-        const response = await axios.post("/api/core/spider/update",
-            {
-                userId: jwtUserInfo?.userId
-            },
-            {
-                headers: {
-                    Authorization: `Bearer ${JWT.token}`
-                }
-            })
-        if (response.status === 200) {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message, type: 'success' }
-            }));
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '请求更新数据失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '请求更新数据失败', type: 'error' }
-        }));
-    }
+    const response = await API.core.spider.update(user.value.userId);
+    Toast.stdResponse(response);
 }
 
 const showLogoutConfirm = () => {

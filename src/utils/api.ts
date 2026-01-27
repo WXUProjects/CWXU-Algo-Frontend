@@ -100,6 +100,63 @@ export interface List {
     [property: string]: any;
 }
 
+export interface CoreSubmitLogGetByIdResponse {
+    data: CoreSubmitLogGetByIdData[];
+    [property: string]: any;
+}
+
+export interface CoreSubmitLogGetByIdData {
+    contest: string;
+    id: number;
+    lang: string;
+    platform: platform;
+    problem: string;
+    status: string;
+    submitId: string;
+    time: string;
+    userId: string;
+    [property: string]: any;
+}
+
+export interface CodeSpiderSetRequest {
+    platform: platform;
+    userId: number;
+    username: string;
+    [property: string]: any;
+}
+
+export interface CodeSpiderSetResponse {
+    code: number;
+    message: string;
+    [property: string]: any;
+}
+
+export interface CodeSpiderUpdateResponse {
+    code: string;
+    message: string;
+    [property: string]: any;
+}
+
+export interface CodeStatisticRequest {
+    endDate: string;
+    isAc: boolean;
+    startDate: string;
+    userId?: number;
+    [property: string]: any;
+}
+
+export interface CodeStatisticResponse {
+    code: string;
+    data: Datum[];
+    [property: string]: any;
+}
+
+export interface Datum {
+    count: number;
+    date: string;
+    [property: string]: any;
+}
+
 const userStore = useUserStore()
 
 export default class API {
@@ -117,18 +174,19 @@ export default class API {
                 }
                 try {
                     const response = await axios.post<UserAuthRegisterResponse>('/api/user/auth/login', request);
-                    stdRes.message = response.data.message || "登录成功";
                     if (response.data.success) {
                         stdRes.success = true;
+                        stdRes.message = response.data.message || "登录成功";
                         JWT.setNewToken(response.data.jwtToken);
                         userStore.setLoginStatus(true);
+                    } else {
+                        stdRes.message = response.data.message || "登录失败";
                     }
-                    return stdRes;
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "登录失败";
-                    return stdRes;
                 }
+                return stdRes;
             },
             register: async (request: UserAuthRegisterRequest): Promise<stdResponse> => {
                 const stdRes: stdResponse = {
@@ -161,16 +219,17 @@ export default class API {
 
                 try {
                     const response = await axios.post<UserAuthRegisterResponse>('/api/user/auth/register', request);
-                    stdRes.message = response.data.message || "注册成功";
                     if (response.data.success) {
                         stdRes.success = true;
+                        stdRes.message = response.data.message || "注册成功";
+                    } else {
+                        stdRes.message = response.data.message || "注册失败";
                     }
-                    return stdRes;
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "注册失败";
-                    return stdRes;
                 }
+                return stdRes;
             }
         },
         profile: {
@@ -201,12 +260,11 @@ export default class API {
                         stdRes.success = true;
                         stdRes.data = response.data;
                     }
-                    return stdRes;
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取用户信息失败";
-                    return stdRes;
                 }
+                return stdRes;
             },
             update: async (request: UserProfileUpdateRequest): Promise<stdResponse> => {
                 const stdRes: stdResponse = {
@@ -238,17 +296,19 @@ export default class API {
                             Authorization: `Bearer ${JWT.token}`
                         }
                     });
-                    stdRes.message = response.data.message || "获取用户信息成功";
                     if (response.status === 200) {
                         stdRes.success = true;
+                        stdRes.message = response.data.message || "获取用户信息成功";
                         stdRes.data = response.data;
+                    } else {
+                        stdRes.message = response.data.message || "获取用户信息失败";
                     }
-                    return stdRes;
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取用户信息失败";
-                    return stdRes;
                 }
+
+                return stdRes;
             },
             list: async (page: number): Promise<stdResponse> => {
                 const stdRes: stdResponse = {
@@ -263,17 +323,146 @@ export default class API {
                             pageSize: 20
                         }
                     });
-                    stdRes.message = response.data.message || "获取用户列表成功";
                     if (response.status === 200) {
                         stdRes.success = true;
+                        stdRes.message = response.data.message || "获取用户列表成功";
                         stdRes.data = response.data;
+                    } else {
+                        stdRes.message = response.data.message || "获取用户列表失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取用户列表失败";
+                }
+                return stdRes;
+            }
+        }
+    }
+
+    static core = {
+        submitLog: {
+            getById: async (id: string, cursor: number, limit: number = 50): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+                try {
+                    const response = await axios.get<CoreSubmitLogGetByIdResponse>('/api/core/submit-log/get-by-id', {
+                        params: {
+                            userId: id,
+                            limit: limit,
+                            cursor: cursor
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "获取用户提交记录成功";
+                        stdRes.data = response.data.data;
+                    } else {
+                        stdRes.message = response.data.message || "获取用户提交记录失败";
                     }
                     return stdRes;
                 } catch (error: any) {
                     console.error(error);
-                    stdRes.message = "获取用户列表失败";
+                    stdRes.message = "获取用户提交记录失败";
                     return stdRes;
                 }
+            }
+        },
+        spider: {
+            set: async (request: CodeSpiderSetRequest): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+
+                if (!JWT.isValid()) {
+                    stdRes.message = "用户未登录";
+                    return stdRes;
+                }
+
+                try {
+                    const response = await axios.post<CodeSpiderSetResponse>('/api/core/spider/set', request, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "绑定 OJ 账号成功";
+                    } else {
+                        stdRes.message = response.data.message || "绑定 OJ 账号失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "绑定 OJ 账号失败";
+                }
+
+                return stdRes;
+            },
+            update: async (userId: number): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+
+                if (!JWT.isValid()) {
+                    stdRes.message = "用户未登录";
+                    return stdRes;
+                }
+
+                try {
+                    const response = await axios.post<CodeSpiderUpdateResponse>('/api/core/spider/update',
+                        {
+                            userId,
+                        },
+                        {
+                            headers: {
+                                Authorization: `Bearer ${JWT.token}`
+                            }
+                        });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "更新数据成功";
+                    } else {
+                        stdRes.message = response.data.message || "更新数据失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "更新数据失败";
+                }
+
+                return stdRes;
+            }
+        },
+        statistic: {
+            heatmap: async (request: CodeStatisticRequest): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+
+                try {
+                    const response = await axios.get<CodeStatisticResponse>('/api/core/statistic/heatmap', {
+                        params: request
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "获取热力图成功";
+                        stdRes.data = response.data.data.filter((item: Datum) => item.count > 0);
+                    } else {
+                        stdRes.message = response.data.message || "获取热力图失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取热力图失败";
+                }
+
+                return stdRes;
             }
         }
     }

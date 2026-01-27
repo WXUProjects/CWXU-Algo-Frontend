@@ -60,13 +60,13 @@
 </template>
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue';
-import axios from 'axios';
 import JWT from '@/utils/jwt';
 import { onMounted, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import API from '@/utils/api';
 import type { UserProfileUpdateRequest as FormData } from '@/utils/api';
 import Toast from '@/utils/toast';
+import type { platform } from '@/utils/link';
 
 const router = useRouter();
 const route = useRoute();
@@ -83,7 +83,7 @@ const formData = ref<FormData>({
 
 const ojData = ref({
     userId: userId,
-    platform: "",
+    platform: "" as platform,
     username: ""
 })
 
@@ -146,27 +146,10 @@ const handleConfirm = async () => {
 
 const handleOjConfirm = async () => {
     wait.value = true
-    try {
-        const response = await axios.post('/api/core/spider/set', ojData.value, {
-            headers: {
-                Authorization: `Bearer ${JWT.token}`
-            }
-        })
-        if (response.status === 200) {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message, type: 'success' }
-            }));
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '绑定OJ失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '绑定OJ失败', type: 'error' }
-        }));
-    }
+
+    const response = await API.core.spider.set(ojData.value);
+    Toast.stdResponse(response);
+
     wait.value = false
 }
 

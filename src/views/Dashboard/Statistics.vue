@@ -27,6 +27,8 @@
 </template>
 
 <script setup lang="ts">
+import API from '@/utils/api';
+import Toast from '@/utils/toast';
 import axios from 'axios';
 import { onMounted, ref } from 'vue';
 
@@ -48,26 +50,11 @@ export interface List {
 const userCount = ref(0);
 
 const getUserCount = async () => {
-    try {
-        const response = await axios.get("/api/user/profile/list", {
-            params: {
-                pageNum: 1,
-                pageSize: 1
-            }
-        });
+    const response = await API.user.profile.list(1);
+    Toast.stdResponse(response, false);
 
-        if (response.status === 200) {
-            userCount.value = response.data.total;
-        } else {
-            window.dispatchEvent(new CustomEvent('show-toast', {
-                detail: { message: response.data.message || '获取用户数量失败', type: 'error' }
-            }));
-        }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: '获取用户数量失败', type: 'error' }
-        }));
+    if (response.success) {
+        userCount.value = response.data.total;
     }
 }
 

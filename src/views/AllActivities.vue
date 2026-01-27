@@ -33,32 +33,17 @@
 
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue';
-import axios from 'axios';
+import Link from '@/utils/link';
 import { onMounted, onUnmounted, ref, nextTick } from 'vue';
 import { useRoute } from 'vue-router';
+import API from '@/utils/api';
+import Toast from '@/utils/toast';
+import type { CoreSubmitLogGetByIdData } from '@/utils/api';
 
 const route = useRoute();
 
 const userId = route.query.id;
 const name = route.query.name;
-
-interface Response {
-    data: Datum[];
-    [property: string]: any;
-}
-
-interface Datum {
-    contest: string;
-    id: number;
-    lang: string;
-    platform: platform;
-    problem: string;
-    status: string;
-    submitId: string;
-    time: string;
-    userId: string;
-    [property: string]: any;
-}
 
 interface ActivityItem {
     title: string;
@@ -75,91 +60,63 @@ const observer = ref<IntersectionObserver | null>(null);
 const loadMoreRef = ref<HTMLElement | null>(null);
 const cursor = ref<number>(-1);
 
-type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
-
-const getSubmitLink = (platform: platform, contest: string, submitId: string) => {
-    switch (platform) {
-        case "AtCoder":
-            return `https://atcoder.jp/contests/${contest}/submissions/${submitId}`;
-        case "NowCoder":
-            return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
-        case "LuoGu":
-            return `https://www.luogu.com.cn/record/${submitId}`;
-        case "CodeForces":
-            return `https://CodeForces.com/contest/${contest}/submission/${submitId}`;
-        default:
-            return "";
-    }
-}
-
 const getNewSubmit = async (currentCursor: number) => {
     // console.log(`准备获取数据：loading:${loading.value}, noMoreData:${noMoreData.value}`);
-    if (loading.value || noMoreData.value) return;
+    if (loading.value || noMoreData.value || !userId) return;
     loading.value = true;
     // console.log("获取数据中");
-    try {
-        const response = await axios.get<Response>('/api/core/submit-log/get-by-id', {
-            params: {
-                userId: userId,
-                limit: 50,
-                cursor: currentCursor
-            }
-        });
 
-        if (response.status === 200 && response.data.data.length > 0) {
-            const newActivities: ActivityItem[] = [];
+    const response = await API.core.submitLog.getById(userId.toString(), currentCursor);
+    Toast.stdResponse(response, false);
 
-            response.data.data.forEach(item => {
-                const platform = item.platform;
-                const lang = item.lang;
-                const contest = item.contest;
-                const problem = item.problem;
-                const status = item.status;
-                const time = new Date(Number(item.time) * 1000).toLocaleString('sv-SE', {
-                    year: 'numeric',
-                    month: '2-digit',
-                    day: '2-digit',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    second: '2-digit',
-                    hour12: false
-                });
 
-                newActivities.push({
-                    title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
-                    status: status,
-                    link: getSubmitLink(platform, contest, item.submitId),
-                    time: time,
-                    timeRaw: item.time
-                });
+    if (response.success && response.data.length > 0) {
+        const newActivities: ActivityItem[] = [];
+
+        response.data.forEach((item: CoreSubmitLogGetByIdData) => {
+            const platform = item.platform;
+            const lang = item.lang;
+            const contest = item.contest;
+            const problem = item.problem;
+            const status = item.status;
+            const time = new Date(Number(item.time) * 1000).toLocaleString('sv-SE', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: false
             });
 
-            // 添加新数据
-            activities.value = [...activities.value, ...newActivities];
+            newActivities.push({
+                title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
+                status: status,
+                link: Link.getSubmitLink(platform, contest, item.submitId),
+                time: time,
+                timeRaw: item.time
+            });
+        });
 
-            if (response.data.data.length > 0) {
-                // 更新游标为最后一条数据的时间戳
-                const lastItem: Datum | undefined = response.data.data[response.data.data.length - 1];
-                if (lastItem) {
-                    // console.log(`时间戳更新：${cursor.value} -> ${lastItem.time}`);
+        // 添加新数据
+        activities.value = [...activities.value, ...newActivities];
 
-                    cursor.value = Number(lastItem.time);
-                }
+        if (response.data.length > 0) {
+            // 更新游标为最后一条数据的时间戳
+            const lastItem: CoreSubmitLogGetByIdData | undefined = response.data[response.data.length - 1];
+            if (lastItem) {
+                // console.log(`时间戳更新：${cursor.value} -> ${lastItem.time}`);
+
+                cursor.value = Number(lastItem.time);
             }
-
-        } else {
-            // 没有更多数据
-            noMoreData.value = true;
         }
-    } catch (error: any) {
-        console.error(error);
-        window.dispatchEvent(new CustomEvent('show-toast', {
-            detail: { message: error.response.data.message || '获取动态失败' , type: 'error' }
-        }));
-    } finally {
-        loading.value = false;
+    } else {
+        // 没有更多数据
+        noMoreData.value = true;
     }
-};
+
+    loading.value = false;
+}
 
 // 初始化 Intersection Observer
 const initIntersectionObserver = () => {
