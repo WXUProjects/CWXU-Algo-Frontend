@@ -162,6 +162,7 @@ const handleOjConfirm = async () => {
             }));
         }
     } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '绑定OJ失败', type: 'error' }
         }));

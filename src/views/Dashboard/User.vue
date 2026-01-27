@@ -132,6 +132,7 @@ const getData = async (page: number) => {
         }
 
     } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '获取用户列表失败', type: 'error' }
         }));

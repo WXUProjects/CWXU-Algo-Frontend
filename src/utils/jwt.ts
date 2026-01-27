@@ -48,7 +48,7 @@ export default class JWT {
     
     try {
       return jwtDecode<JwtPayload>(token);
-    } catch (error) {
+    } catch (error: any) {
       console.error('JWT decode error:', error);
       // 解码失败时也清除无效token
       this.clearToken();
@@ -132,7 +132,7 @@ export default class JWT {
     
     try {
       return jwtDecode<JwtPayload>(token);
-    } catch (error) {
+    } catch (error: any) {
       console.error('JWT decode error in validation:', error);
       // 解码失败时清除token
       this.clearToken();

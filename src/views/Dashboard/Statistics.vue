@@ -63,7 +63,8 @@ const getUserCount = async () => {
                 detail: { message: response.data.message || '获取用户数量失败', type: 'error' }
             }));
         }
-    } catch (error) {
+    } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: '获取用户数量失败', type: 'error' }
         }));

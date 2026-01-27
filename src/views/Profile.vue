@@ -308,6 +308,7 @@ const getSubmitInfo = async () => {
             }));
         }
     } catch (error: any) {
+        console.error(error);
         loading.value.info = error.response.data.message;
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '获取动态失败', type: 'error' }
@@ -366,13 +367,13 @@ const getHeatmapData = async () => {
         })
         if (response.status === 200) {
             submitData.value = response.data.data.filter(item => item.count > 0);
-            console.log(submitData.value);
         } else {
             window.dispatchEvent(new CustomEvent('show-toast', {
                 detail: { message: response.data.message || '请求热力图失败', type: 'error' }
             }));
         }
     } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
         }));
@@ -397,13 +398,13 @@ const getHeatmapData = async () => {
         })
         if (response.status === 200) {
             acData.value = response.data.data.filter(item => item.count > 0);
-            console.log(acData.value);
         } else {
             window.dispatchEvent(new CustomEvent('show-toast', {
                 detail: { message: response.data.message || '请求热力图失败', type: 'error' }
             }));
         }
     } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '请求热力图失败', type: 'error' }
         }));
@@ -431,6 +432,7 @@ const updateLog = async () => {
             }));
         }
     } catch (error: any) {
+        console.error(error);
         window.dispatchEvent(new CustomEvent('show-toast', {
             detail: { message: error.response.data.message || '请求更新数据失败', type: 'error' }
         }));

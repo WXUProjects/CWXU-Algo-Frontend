@@ -3,10 +3,7 @@ import JWT from '../utils/jwt'
 import Vaildate from '../utils/vaildate'
 import { useUserStore } from '@/stores/user'
 import { hashPassword } from '@/utils/hash'
-import Profile from '@/views/Profile.vue';
 import Link from './link';
-import type { P } from 'vue-router/dist/router-CWoNjPRp.mjs';
-import Toast from './toast';
 
 export interface stdResponse {
     message: string;
@@ -110,7 +107,8 @@ export default class API {
                         userStore.setLoginStatus(true);
                     }
                     return stdRes;
-                } catch (error) {
+                } catch (error: any) {
+                    console.error(error);
                     stdRes.message = "登录失败";
                     return stdRes;
                 }
@@ -151,7 +149,8 @@ export default class API {
                         stdRes.success = true;
                     }
                     return stdRes;
-                } catch (error) {
+                } catch (error: any) {
+                    console.error(error);
                     stdRes.message = "注册失败";
                     return stdRes;
                 }
@@ -186,7 +185,8 @@ export default class API {
                         stdRes.data = response.data;
                     }
                     return stdRes;
-                } catch (error) {
+                } catch (error: any) {
+                    console.error(error);
                     stdRes.message = "获取用户信息失败";
                     return stdRes;
                 }
@@ -216,7 +216,7 @@ export default class API {
                 request.password = hashPassword(request.password);
 
                 try {
-                    const response = await axios.post<UserProfileGetByIdResponse>("/v1/user/profile/update", request, {
+                    const response = await axios.post<UserProfileGetByIdResponse>("/api/user/profile/update", request, {
                         headers: {
                             Authorization: `Bearer ${JWT.token}`
                         }
@@ -227,7 +227,8 @@ export default class API {
                         stdRes.data = response.data;
                     }
                     return stdRes;
-                } catch (error) {
+                } catch (error: any) {
+                    console.error(error);
                     stdRes.message = "获取用户信息失败";
                     return stdRes;
                 }
