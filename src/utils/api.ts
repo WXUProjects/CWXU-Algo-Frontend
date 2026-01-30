@@ -111,7 +111,7 @@ export interface CodeSpiderUpdateResponse {
     [property: string]: any;
 }
 
-export interface CodeStatisticRequest {
+export interface CoreStatisticHeatmapRequest {
     endDate: string;
     isAc: boolean;
     startDate: string;
@@ -119,7 +119,7 @@ export interface CodeStatisticRequest {
     [property: string]: any;
 }
 
-export interface CodeStatisticResponse {
+export interface CoreStatisticHeatmapResponse {
     code: string;
     data: Datum[];
     [property: string]: any;
@@ -128,6 +128,30 @@ export interface CodeStatisticResponse {
 export interface Datum {
     count: number;
     date: string;
+    [property: string]: any;
+}
+
+export interface CoreStatisticPeriodResponse {
+    code: string;
+    data: CoreStatisticPeriodData;
+    [property: string]: any;
+}
+
+export interface CoreStatisticPeriodData {
+    ac: CoreStatisticPeriodItem;
+    submit: CoreStatisticPeriodItem;
+    [property: string]: any;
+}
+
+export interface CoreStatisticPeriodItem {
+    lastMonth: number;
+    lastWeek: number;
+    lastYear: number;
+    thisMonth: number;
+    thisWeek: number;
+    thisYear: number;
+    today: number;
+    total: number;
     [property: string]: any;
 }
 
@@ -437,8 +461,8 @@ export default class API {
             }
         },
         statistic: {
-            heatmap: async (request: CodeStatisticRequest): Promise<stdResponse<CodeStatisticResponse>> => {
-                const stdRes: stdResponse<CodeStatisticResponse> = {
+            heatmap: async (request: CoreStatisticHeatmapRequest): Promise<stdResponse<CoreStatisticHeatmapResponse>> => {
+                const stdRes: stdResponse<CoreStatisticHeatmapResponse> = {
                     message: "",
                     success: false,
                     data: {
@@ -448,7 +472,7 @@ export default class API {
                 }
 
                 try {
-                    const response = await axios.get<CodeStatisticResponse>('/api/core/statistic/heatmap', {
+                    const response = await axios.get<CoreStatisticHeatmapResponse>('/api/core/statistic/heatmap', {
                         params: request
                     });
                     if (response.status === 200) {
@@ -463,6 +487,55 @@ export default class API {
                     stdRes.message = "获取热力图失败";
                 }
 
+                return stdRes;
+            },
+            period: async (userId: number): Promise<stdResponse<CoreStatisticPeriodResponse>> => {
+                const stdRes: stdResponse<CoreStatisticPeriodResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        code: "",
+                        data: {
+                            ac: {
+                                lastMonth: 0,
+                                lastWeek: 0,
+                                lastYear: 0,
+                                thisMonth: 0,
+                                thisWeek: 0,
+                                thisYear: 0,
+                                today: 0,
+                                total: 0
+                            },
+                            submit: {
+                                lastMonth: 0,
+                                lastWeek: 0,
+                                lastYear: 0,
+                                thisMonth: 0,
+                                thisWeek: 0,
+                                thisYear: 0,
+                                today: 0,
+                                total: 0
+                            }
+                        }
+                    }
+                }
+                try {
+                    const response = await axios.get<CoreStatisticPeriodResponse>('/api/core/statistic/period', {
+                        params: {
+                            userId
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "获取统计数据成功";
+                        stdRes.data = response.data
+                    } else {
+                        stdRes.message = response.data.message || "获取统计数据失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取统计数据失败";
+                }
                 return stdRes;
             }
         }

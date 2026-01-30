@@ -137,7 +137,7 @@ const getNewSubmit = async (currentCursor: number) => {
 const getUserInfo = async () => {
     if (userId) {
         const response = await API.user.profile.getById(Number(userId))
-        Toast.stdResponse(response);
+        Toast.stdResponse(response,false);
 
         user.value = response.data;
     }

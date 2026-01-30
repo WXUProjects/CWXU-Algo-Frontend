@@ -17,7 +17,7 @@
 
       <div class="sections">
         <!-- 终端风格导航项 -->
-        <router-link to="/" class="section terminal-item" active-class="active" v-if="isLogin">
+        <router-link to="/" class="section terminal-item" active-class="active">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-house" class="item-icon" />
           <div class="item-content">

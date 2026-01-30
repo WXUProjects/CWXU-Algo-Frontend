@@ -8,12 +8,16 @@
             <span class="title-icon">
               <font-awesome-icon icon="fa-solid fa-chart-line" />
             </span>
-            <span class="title-text">数据统计</span>
+            <span class="title-text">{{ isLogin ? '' : '全站' }}数据统计</span>
           </div>
           <!-- <div class="header-actions">
             <span class="action-refresh">⟳ 刷新</span>
             <span class="action-export">⬇ 导出</span>
           </div> -->
+          <div class="header-tabs">
+            <span class="tab" :class="mode === 'ac' ? 'active' : ''" @click="mode = 'ac'">AC数据</span>
+            <span class="tab" :class="mode === 'submit' ? 'active' : ''" @click="mode = 'submit'">提交数据</span>
+          </div>
         </div>
 
         <div class="stats-grid">
@@ -23,19 +27,28 @@
               <font-awesome-icon icon="fa-solid fa-trophy" class="card-icon" />
               <div class="card-title">
                 <div class="title-main">CAREER</div>
-                <div class="title-sub">生涯统计</div>
+                <div class="title-sub">生涯{{ mode.toUpperCase() }}</div>
               </div>
             </div>
             <div class="card-data">
-              <div class="data-value">1,145</div>
-              <div class="data-unit">AC Total</div>
+              <div class="data-value">{{ currentPeriodData.total }}</div>
+              <div class="data-unit">{{ mode.toUpperCase() }} Total</div>
             </div>
-            <div class="card-footer">
-              <div class="footer-trend">
-                <span class="trend-icon">↗</span>
-                <span class="trend-value">+12.5%</span>
+            <div class="card-glow"></div>
+          </div>
+
+          <!-- AC率 -->
+          <div class="stat-card glass-card">
+            <div class="card-header">
+              <font-awesome-icon icon="fa-solid fa-globe" class="card-icon" />
+              <div class="card-title">
+                <div class="title-main">Percentage</div>
+                <div class="title-sub">AC率</div>
               </div>
-              <div class="footer-info">since last month</div>
+            </div>
+            <div class="card-data">
+              <div class="data-value">{{ (periodData.ac.total / periodData.submit.total * 100).toFixed(2) }}%</div>
+              <div class="data-unit">AC Percentage</div>
             </div>
             <div class="card-glow"></div>
           </div>
@@ -46,42 +59,12 @@
               <font-awesome-icon icon="fa-solid fa-sun" class="card-icon" />
               <div class="card-title">
                 <div class="title-main">DAILY</div>
-                <div class="title-sub">今日统计</div>
+                <div class="title-sub">今日{{ mode.toUpperCase() }}</div>
               </div>
             </div>
             <div class="card-data">
-              <div class="data-value">14</div>
-              <div class="data-unit">Today's AC</div>
-            </div>
-            <div class="card-footer">
-              <div class="footer-trend">
-                <span class="trend-icon">↗</span>
-                <span class="trend-value">+3</span>
-              </div>
-              <div class="footer-info">vs yesterday</div>
-            </div>
-            <div class="card-glow"></div>
-          </div>
-
-          <!-- 本周统计 -->
-          <div class="stat-card glass-card">
-            <div class="card-header">
-              <font-awesome-icon icon="fa-solid fa-crosshairs" class="card-icon" />
-              <div class="card-title">
-                <div class="title-main">WEEKLY</div>
-                <div class="title-sub">本周统计</div>
-              </div>
-            </div>
-            <div class="card-data">
-              <div class="data-value">191</div>
-              <div class="data-unit">This Week</div>
-            </div>
-            <div class="card-footer">
-              <div class="footer-trend">
-                <span class="trend-icon">↗</span>
-                <span class="trend-value">+24.7%</span>
-              </div>
-              <div class="footer-info">vs last week</div>
+              <div class="data-value">{{ currentPeriodData.today }}</div>
+              <div class="data-unit">Today's {{ mode.toUpperCase() }}</div>
             </div>
             <div class="card-glow"></div>
           </div>
@@ -92,19 +75,69 @@
               <font-awesome-icon icon="fa-solid fa-globe" class="card-icon" />
               <div class="card-title">
                 <div class="title-main">YEARLY</div>
-                <div class="title-sub">年度统计</div>
+                <div class="title-sub">年度{{ mode.toUpperCase() }}</div>
               </div>
             </div>
             <div class="card-data">
-              <div class="data-value">981</div>
-              <div class="data-unit">Year 2025</div>
+              <div class="data-value">{{ currentPeriodData.thisYear }}</div>
+              <div class="data-unit">Year {{ new Date().getFullYear() }}'s {{ mode.toUpperCase() }}</div>
             </div>
             <div class="card-footer">
-              <div class="footer-trend">
-                <span class="trend-icon">↗</span>
-                <span class="trend-value">+156%</span>
+              <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
+                <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
+                <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
+                }}</span>
               </div>
-              <div class="footer-info">vs last year</div>
+              <div class="footer-info">VS last year</div>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+
+          <!-- 本月统计 -->
+          <div class="stat-card glass-card">
+            <div class="card-header">
+              <font-awesome-icon icon="fa-solid fa-sun" class="card-icon" />
+              <div class="card-title">
+                <div class="title-main">MONTHLY</div>
+                <div class="title-sub">本月{{ mode.toUpperCase() }}</div>
+              </div>
+            </div>
+            <div class="card-data">
+              <div class="data-value">{{ currentPeriodData.thisMonth }}</div>
+              <div class="data-unit">This Month's {{ mode.toUpperCase() }}</div>
+            </div>
+            <div class="card-footer">
+              <div class="footer-trend"
+                :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
+                <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
+                <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
+                }}</span>
+              </div>
+              <div class="footer-info">VS last month</div>
+            </div>
+            <div class="card-glow"></div>
+          </div>
+
+          <!-- 本周统计 -->
+          <div class="stat-card glass-card">
+            <div class="card-header">
+              <font-awesome-icon icon="fa-solid fa-crosshairs" class="card-icon" />
+              <div class="card-title">
+                <div class="title-main">WEEKLY</div>
+                <div class="title-sub">本周{{ mode.toUpperCase() }}</div>
+              </div>
+            </div>
+            <div class="card-data">
+              <div class="data-value">{{ currentPeriodData.thisWeek }}</div>
+              <div class="data-unit">This Week's {{ mode.toUpperCase() }}</div>
+            </div>
+            <div class="card-footer">
+              <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
+                <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
+                <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
+                }}</span>
+              </div>
+              <div class="footer-info">VS last week</div>
             </div>
             <div class="card-glow"></div>
           </div>
@@ -183,13 +216,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue';
 import Calendar from '@/components/Calendar.vue';
 import Rank from '@/components/Rank.vue';
 import JWT from '@/utils/jwt';
-import API from '@/utils/api';
+import API, { type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
 import Toast from '@/utils/toast';
+
+const isLogin = computed(() => {
+  return JWT.isValid();
+})
 
 interface HeatmapData {
   date: string;
@@ -209,13 +246,12 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
-  const user = JWT.getUserInfo();
-  if (!user) return;
+  const userId = JWT.getUserInfo()?.userId;
   const dateObj = new Date();
   const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
 
   const response1 = await API.core.statistic.heatmap({
-    userId: user.userId,
+    userId,
     startDate: "20230101",
     endDate: date,
     isAc: false
@@ -227,7 +263,7 @@ const getHeatmapData = async () => {
   }
 
   const response2 = await API.core.statistic.heatmap({
-    userId: user.userId,
+    userId,
     startDate: "20230101",
     endDate: date,
     isAc: true
@@ -262,6 +298,77 @@ const rankData = ref({
 const currentRank = ref(0)
 const currentCalendar = ref(0)
 
+const periodData = ref<CoreStatisticPeriodData>({
+  ac: {
+    lastMonth: 0,
+    lastWeek: 0,
+    lastYear: 0,
+    thisMonth: 0,
+    thisWeek: 0,
+    thisYear: 0,
+    today: 0,
+    total: 0
+  },
+  submit: {
+    lastMonth: 0,
+    lastWeek: 0,
+    lastYear: 0,
+    thisMonth: 0,
+    thisWeek: 0,
+    thisYear: 0,
+    today: 0,
+    total: 0
+  }
+})
+
+const mode = ref<'ac' | 'submit'>('ac')
+
+const currentPeriodData = computed<CoreStatisticPeriodItem>(() => {
+  return periodData.value[mode.value]
+})
+
+const getPeriodData = async () => {
+  const userId = JWT.getUserInfo()?.userId || -1;
+  const response = await API.core.statistic.period(userId);
+  Toast.stdResponse(response, false);
+
+  periodData.value = response.data.data
+  console.log(periodData.value);
+}
+
+/*
+卧槽了惊天大无语，传的明明是数字却变成字符串了，逆天
+*/
+const getTrendClass = (curr: number, prev: number): string => {
+  curr = Number(curr);
+  prev = Number(prev);
+  if (curr === prev) {
+    return 'equal'
+  } else if (curr > prev) {
+    return 'up'
+  } else {
+    return 'down'
+  }
+}
+
+const getTrendValue = (curr: number, prev: number): string => {
+  curr = Number(curr);
+  prev = Number(prev);
+  return (curr - prev >= 0 ? '+' : '') + ((curr - prev) / (prev === 0 ? 1 : prev) * 100).toFixed(2) + '%'
+}
+
+const getTrend = (curr: number, prev: number): string => {
+  curr = Number(curr);
+  prev = Number(prev);
+  if (curr === prev) {
+    return '-'
+  } else if (curr > prev) {
+    return '↗'
+  } else {
+    return '↘'
+  }
+}
+
 // 获取当前主题
 const getCurrentTheme = () => {
   const theme = localStorage.getItem('theme')
@@ -279,6 +386,7 @@ onMounted(() => {
   // 初始检查
   checkTheme()
   getHeatmapData()
+  getPeriodData()
 })
 </script>
 
@@ -464,8 +572,19 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--neon-green);
   font-weight: 500;
+
+  &.up {
+    color: red;
+  }
+
+  &.down {
+    color: green;
+  }
+
+  &.equal {
+    color: var(--text-light-color);
+  }
 }
 
 .trend-icon {

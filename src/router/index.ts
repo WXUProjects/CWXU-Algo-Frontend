@@ -19,7 +19,6 @@ const routes = [
     path: '/',
     name: 'Home',
     component: () => import('@/views/Home.vue'),
-    beforeEnter: loginGuard
   },
   {
     path: '/profile',
