@@ -26,9 +26,8 @@
             </div>
             <div class="group">
                 <div class="pageInput">
-                    <label>跳转：</label>
-                    <input type="number" min="1" :max="rankData.totalPage" :value="rankData.currentPage"
-                        autocomplete="none">
+                    <button>跳转</button>
+                    <input type="number" min="1" :max="rankData.totalPage" v-model="jumppage">
                 </div>
                 <div class="pageSum">共 {{ rankData.totalPage }} 页</div>
             </div>
@@ -49,6 +48,8 @@ const props = defineProps({
         default: ''
     }
 })
+
+const jumppage = ref(1);
 
 const rankData = ref({
     "data": [

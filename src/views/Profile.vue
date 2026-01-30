@@ -77,7 +77,7 @@
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
                                 </span>
-                                <span class="title-text">热力图 Heatmap</span>
+                                <span class="title-text">热力图</span>
                             </div>
                             <div class="header-tabs">
                                 <span class="tab" @click="currentCalendar = 0"
@@ -97,7 +97,7 @@
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-trophy" />
                                 </span>
-                                <span class="title-text">排行 Rank</span>
+                                <span class="title-text">排行</span>
                             </div>
                         </div>
                         <div class="content">
@@ -127,7 +127,7 @@
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
                                 </span>
-                                <span class="title-text">近期动态 Recently-Activities</span>
+                                <span class="title-text">近期动态</span>
                             </div>
                             <div class="header-tabs">
                                 <span class="tab"

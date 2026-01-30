@@ -121,9 +121,9 @@ a.section {
 }
 
 .section-icon {
-    font-size: 1.5rem;
-    width: 1.5rem;
-    height: 1.5rem;
+    font-size: var(--text-base);
+    width: var(--text-base);
+    height: var(--text-base);
     margin-left: 20px;
     color: var(--section-default-color);
 
@@ -135,7 +135,7 @@ a.section {
     align-items: flex-end;
     gap: 10px;
     margin: 0 10px 0 10px;
-    font-size: 1rem;
+    font-size: var(--text-base);
     color: var(--text-light-color);
 
     transition: all 0.2s ease-in-out;

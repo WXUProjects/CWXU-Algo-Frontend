@@ -8,12 +8,12 @@
             <span class="title-icon">
               <font-awesome-icon icon="fa-solid fa-chart-line" />
             </span>
-            <span class="title-text">数据统计 STATISTICS</span>
+            <span class="title-text">数据统计</span>
           </div>
-          <div class="header-actions">
-            <span class="action-refresh">⟳ refresh</span>
-            <span class="action-export">⬇ export</span>
-          </div>
+          <!-- <div class="header-actions">
+            <span class="action-refresh">⟳ 刷新</span>
+            <span class="action-export">⬇ 导出</span>
+          </div> -->
         </div>
 
         <div class="stats-grid">
@@ -121,7 +121,7 @@
                 <span class="title-icon">
                   <font-awesome-icon icon="fa-solid fa-calendar-days" />
                 </span>
-                <span class="title-text">热力图 Heatmap</span>
+                <span class="title-text">热力图</span>
               </div>
               <div class="header-tabs">
                 <span class="tab" :class="currentCalendar === 0 ? 'active' : ''"
@@ -148,7 +148,7 @@
                 <span class="title-icon">
                   <font-awesome-icon icon="fa-solid fa-trophy" />
                 </span>
-                <span class="title-text">排行榜 RANKS</span>
+                <span class="title-text">排行榜</span>
               </div>
               <div class="header-tabs">
                 <span class="tab" :class="currentRank === 0 ? 'active' : ''" @click="currentRank = 0">CAREER</span>
@@ -185,7 +185,6 @@ import { onMounted, ref } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue';
 import Calendar from '@/components/Calendar.vue';
 import Rank from '@/components/Rank.vue';
-import axios from 'axios';
 import JWT from '@/utils/jwt';
 import API from '@/utils/api';
 import Toast from '@/utils/toast';
