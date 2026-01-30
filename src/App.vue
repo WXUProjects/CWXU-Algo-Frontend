@@ -220,6 +220,7 @@ import router from './router'
 import ToastNotification from './components/ToastNotification.vue'
 import Toast from './utils/toast'
 import type { Anno } from './utils/type'
+import AnnoStore from './utils/anno'
 
 const route = useRoute()
 
@@ -306,11 +307,15 @@ const hitokoto = () => {
 const annos = ref<Anno[]>([])
 
 const closeAnno = (id: number) => {
+  AnnoStore.closeAnno(id);
+  annos.value = AnnoStore.getStorageAnnos()
 }
 
 onMounted(() => {
   setTheme(getTheme())
   hitokoto()
+  AnnoStore.syncAnnos()
+  annos.value = AnnoStore.getStorageAnnos()
 })
 </script>
 
