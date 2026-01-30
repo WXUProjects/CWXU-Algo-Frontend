@@ -112,7 +112,7 @@ const submit = () => {
 }
 
 .title {
-    font-size: 24px;
+    font-size: var(--text-lg);
     padding: 20px;
     border-bottom: 1px solid var(--divider-color);
 }

@@ -362,11 +362,11 @@ onMounted(() => {
                 border-radius: 50%;
                 width: 80%;
                 aspect-ratio: 1;
-                border: 1vw solid #fff;
+                border: 1rem solid var(--background-color-2);
                 box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
 
-                &::after {
+                /* &::after {
                     content: '';
                     position: absolute;
                     top: 0;
@@ -374,8 +374,8 @@ onMounted(() => {
                     width: 100%;
                     height: 100%;
                     border-radius: 50%;
-                    box-shadow: inset 0 0 0 1vw #e5e5e5;
-                }
+                    box-shadow: inset 0 0 0 1rem #e5e5e5;
+                } */
 
                 img {
                     width: 100%;
@@ -401,12 +401,12 @@ onMounted(() => {
                     border-bottom: 1px solid var(--divider-color);
 
                     >.name {
-                        font-size: 2rem;
+                        font-size: var(--text-2xl);
                         font-weight: bold;
                     }
 
                     >.username {
-                        font-size: 1.5rem;
+                        font-size: var(--text-xl);
                     }
                 }
 
@@ -460,11 +460,11 @@ onMounted(() => {
         justify-content: space-between;
 
         >.title {
-            font-size: 1rem;
+            font-size: var(--text-base);
         }
 
         >.value {
-            font-size: 1rem;
+            font-size: var(--text-base);
         }
 
         &::before {
@@ -492,8 +492,16 @@ onMounted(() => {
         align-items: center;
         justify-content: space-between;
 
+        >.title{
+            width: 80%;
+            font-size: var(--text-sm);
+        }
+
         >.time {
-            font-size: 0.8rem;
+            display: flex;
+            justify-content: flex-end;
+            width: 20%;
+            font-size: var(--text-xs);
             color: var(--text-light-color);
         }
 
@@ -550,7 +558,7 @@ onMounted(() => {
     border: 1px solid var(--divider-color);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
     transition: all 0.2s ease;
     user-select: none;
 
@@ -598,7 +606,7 @@ onMounted(() => {
         display: flex;
         align-items: center;
         gap: 12px;
-        font-size: 1.1rem;
+        font-size: var(--text-lg);
         font-weight: 600;
     }
 
@@ -611,7 +619,7 @@ onMounted(() => {
             border-radius: 6px;
             background-color: var(--section-background-color);
             color: var(--text-light-color);
-            font-size: 0.85rem;
+            font-size: var(--text-base);
             cursor: pointer;
             transition: all 0.2s ease;
             user-select: none;
@@ -630,7 +638,7 @@ onMounted(() => {
     }
 
     .title-icon {
-        font-size: 1.3rem;
+        font-size: var(--text-base);
     }
 
     .title-text {

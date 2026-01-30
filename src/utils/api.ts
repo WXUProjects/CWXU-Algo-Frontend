@@ -46,7 +46,7 @@ export interface UserProfileUpdateRequest {
     avatar: string;
     email: string;
     name: string;
-    userId: string;
+    userId: number;
     [property: string]: any;
 }
 
@@ -60,6 +60,7 @@ export interface UserProfileListResponse {
     list: List[];
     total: number;
     totalPage: number;
+    currentPage: number;
     [property: string]: any;
 }
 
@@ -306,6 +307,7 @@ export default class API {
                     data: {
                         total: 0,
                         totalPage: 0,
+                        currentPage: page,
                         list: []
                     }
                 }
@@ -313,13 +315,14 @@ export default class API {
                     const response = await axios.get<UserProfileListResponse>('/api/user/profile/list', {
                         params: {
                             pageNum: page,
-                            pageSize: 20
+                            pageSize: 5
                         }
                     });
                     if (response.status === 200) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取用户列表成功";
                         stdRes.data = response.data;
+                        stdRes.data.currentPage = page
                     } else {
                         stdRes.message = response.data.message || "获取用户列表失败";
                     }

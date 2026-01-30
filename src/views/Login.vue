@@ -73,7 +73,7 @@ const handleLogin = async () => {
 }
 
 .login-title {
-    font-size: 24px;
+    font-size: var(--text-2xl);
     padding: 20px;
     border-bottom: 1px solid var(--divider-color);
 }

@@ -14,10 +14,16 @@
     min-width: 0;
 }
 
-.pages .actions {
+.pages .tableActions {
     margin-bottom: 10px;
     display: flex;
     flex-direction: row-reverse;
+}
+
+.trActions{
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(100px,1fr));
+    gap: 5px;
 }
 
 .filter {
@@ -32,7 +38,7 @@
 }
 
 .filter-title {
-    font-size: 1.5rem;
+    font-size: var(--text-base);
     font-weight: bold;
     color: var(--text-default-color);
     margin-bottom: 24px;
@@ -53,7 +59,7 @@
 }
 
 .filter-item-title {
-    font-size: 1rem;
+    font-size: var(--text-sm);
     font-weight: bold;
     color: var(--text-default-color);
     display: flex;
@@ -63,7 +69,7 @@
 .filter-item-title::before {
     content: "•";
     margin-right: 8px;
-    font-size: 1.5rem;
+    font-size: var(--text-base);
 }
 
 .filter-checkbox-group {
@@ -95,7 +101,7 @@
 }
 
 .filter-checkbox-label {
-    font-size: 0.95rem;
+    font-size: var(--text-xs);
     transition: all 0.2s ease;
     padding: 6px 12px;
     border-radius: 8px;
@@ -120,7 +126,7 @@
     border-radius: 8px;
     background-color: var(--background-color-2);
     color: var(--text-default-color);
-    font-size: 0.95rem;
+    font-size: var(--text-xs);
     cursor: pointer;
     transition: border-color 0.2s ease;
     display: flex;
@@ -130,7 +136,7 @@
 
 .filter-selected::after {
     content: "▼";
-    font-size: 0.8rem;
+    font-size: var(--text-xs);
     margin-left: 8px;
 }
 
@@ -164,7 +170,7 @@
 .filter-option {
     padding: 10px 16px;
     color: var(--text-default-color);
-    font-size: 0.95rem;
+    font-size: var(--text-xs);
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -191,7 +197,7 @@
 
 .filter-switch-option {
     padding: 10px 16px;
-    font-size: 0.95rem;
+    font-size: var(--text-xs);
     color: var(--text-secondary-color);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -225,7 +231,7 @@
     color: var(--text-reverse-color);
     border: none;
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: var(--text-sm);
     font-weight: 500;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -245,7 +251,7 @@
     color: var(--text-secondary-color);
     border: 1px solid var(--divider-color);
     border-radius: 8px;
-    font-size: 1rem;
+    font-size: var(--text-sm);
     cursor: pointer;
     transition: all 0.2s ease;
 }
@@ -284,7 +290,7 @@
     border: 1px solid var(--divider-color);
     border-radius: 6px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: var(--text-base);
     transition: all 0.2s ease;
 }
 
@@ -337,7 +343,6 @@
 
     .pageNavigation {
         width: 100%;
-        font-size: 1.2rem;
         color: var(--text-default-color);
         gap: 10px;
     }

@@ -4,7 +4,7 @@
     justify-content: center;
     align-items: center;
     width: 100%;
-    font-size: 1.2rem;
+    font-size: var(--text-sm);
     color: var(--text-default-color);
     gap: 10px;
 }
@@ -20,7 +20,7 @@
 
 .pageInput input {
     width: 50px;
-    font-size: 1.2rem;
+    font-size: var(--text-sm);
     text-align: center;
     border: 1px solid var(--divider-color);
     border-radius: 5px;
@@ -40,9 +40,10 @@
     gap: 10px;
 }
 
+.pageInput button,
 .pageButtons button {
     width: max-content;
-    font-size: 1.2rem;
+    font-size: var(--text-sm);
     text-align: center;
     border: 1px solid var(--divider-color);
     border-radius: 5px;
@@ -53,6 +54,7 @@
     transition: border-color 0.3s ease;
 }
 
+.pageInput button:hover,
 .pageButtons button:hover {
     border-color: var(--input-active-color)
 }
@@ -62,7 +64,7 @@
 }
 
 .pageSum {
-    font-size: 1.2rem;
+    font-size: var(--text-sm);
     color: var(--text-default-color);
 }
 
@@ -73,7 +75,7 @@
 
     .pageNavigation {
         width: 100%;
-        font-size: 1.2rem;
+        font-size: var(--text-sm);
         color: var(--text-default-color);
         gap: 10px;
     }

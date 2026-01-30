@@ -75,7 +75,7 @@ const userId = JWT.getUserInfo()?.userId || 0;
 const oj = route.query.oj;
 
 const formData = ref<FormData>({
-    userId: "",
+    userId: 0,
     name: "",
     email: "",
     avatar: ""
@@ -110,7 +110,7 @@ switch (oj) {
 const getUserInfo = async () => {
     const jwtUser = JWT.getUserInfo();
     if (jwtUser !== null) {
-        const response = await API.user.profile.getById(jwtUser.userId.toString());
+        const response = await API.user.profile.getById(jwtUser.userId);
 
         if (response.success) {
             formData.value.avatar = response.data.avatar;
@@ -120,7 +120,7 @@ const getUserInfo = async () => {
         }
 
         Toast.stdResponse(response, false);
-    }else{
+    } else {
         Toast.warn("请先登录");
     }
 }
@@ -165,7 +165,12 @@ onMounted(() => {
     flex-direction: row;
     gap: 20px;
 
+    label {
+        font-size: var(--text-base);
+    }
+
     input {
+        font-size: var(--text-base);
         outline: none;
         color: var(--text-default-color);
         border: 1px solid var(--divider-color);
@@ -180,6 +185,7 @@ onMounted(() => {
     }
 
     button {
+        font-size: var(--text-base);
         width: 100px;
         height: 40px;
         color: var(--text-default-color);
@@ -217,11 +223,12 @@ onMounted(() => {
         gap: 10px;
 
         >.title {
-            font-size: 20px;
+            font-size: var(--text-lg);
             font-weight: bold;
         }
 
         >.item {
+            font-size: var(--text-base);
             display: flex;
             align-items: center;
             gap: 10px;
@@ -267,7 +274,7 @@ onMounted(() => {
         }
 
         >.desc {
-            font-size: 14px;
+            font-size: var(--text-sm);
             color: var(--text-light-color);
         }
 

@@ -21,6 +21,8 @@ import { faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe, faGauge
 
 // 主题
 import './assets/css/theme.css'
+// 字号
+import './assets/css/fontsize.css'
 
 library.add(
     faUser,

@@ -2,7 +2,7 @@
     <BaseLayout>
         <div class="container">
             <div class="pages">
-                <div class="actions">
+                <div class="tableActions">
                     <button class="btn def" @click="router.push('/problem/upload')">上传题目</button>
                     <button class="btn def" @click="closeFilter = false">筛选</button>
                 </div>
@@ -27,15 +27,17 @@
                         <td>
                             <span class="diff" :style="'background-color:' + colorReflect(Number(item.difficulty))">{{
                                 item.difficulty
-                                }}</span>
+                            }}</span>
                         </td>
                         <td>
                             {{ item.remark }}
                         </td>
                         <td>{{ item.uploader }}</td>
                         <td>
-                            <button class="btn del">删除</button>
-                            <button class="btn def">收藏</button>
+                            <div class="trActions">
+                                <button class="btn del">删除</button>
+                                <button class="btn def">收藏</button>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -55,9 +57,8 @@
                     </div>
                     <div class="group">
                         <div class="pageInput">
-                            <label>跳转：</label>
-                            <input type="number" min="1" :max="data.totalPage" :value="data.currentPage"
-                                autocomplete="none">
+                            <button>跳转</button>
+                            <input type="number" min="1" :max="data.totalPage" v-model="jumppage">
                         </div>
                         <div class="pageSum">共 {{ data.totalPage }} 页</div>
                     </div>
@@ -128,6 +129,8 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+
+const jumppage = ref(1)
 
 const data = ref({
     currentPage: 1,

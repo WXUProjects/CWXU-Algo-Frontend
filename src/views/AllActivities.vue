@@ -220,7 +220,7 @@ onUnmounted(() => {
         display: flex;
         align-items: center;
         gap: 12px;
-        font-size: 1.1rem;
+        font-size: var(--text-lg);
         font-weight: 600;
     }
 
@@ -233,7 +233,7 @@ onUnmounted(() => {
             border-radius: 6px;
             background-color: var(--section-background-color);
             color: var(--text-light-color);
-            font-size: 0.85rem;
+            font-size: var(--text-base);
             cursor: pointer;
             transition: all 0.2s ease;
 
@@ -251,7 +251,7 @@ onUnmounted(() => {
     }
 
     .title-icon {
-        font-size: 1.3rem;
+        font-size: var(--text-base);
     }
 
     .title-text {
@@ -278,8 +278,16 @@ onUnmounted(() => {
         align-items: center;
         justify-content: space-between;
 
+        >.title {
+            width: 80%;
+            font-size: var(--text-sm);
+        }
+
         >.time {
-            font-size: 0.8rem;
+            display: flex;
+            justify-content: flex-end;
+            width: 20%;
+            font-size: var(--text-xs);
             color: var(--text-light-color);
         }
 
@@ -336,7 +344,7 @@ onUnmounted(() => {
     text-align: center;
     padding: 10px;
     color: var(--text-light-color);
-    font-size: 0.9rem;
+    font-size: var(--text-sm);
 }
 
 .no-more {

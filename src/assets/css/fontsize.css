@@ -1,0 +1,117 @@
+/* src/assets/css/textsize.css */
+:root {
+  --text-xs-sm: 7px;
+  --text-sm-sm: 9px;
+  --text-base-sm: 11px;
+  --text-lg-sm: 13px;
+  --text-xl-sm: 15px;
+  --text-2xl-sm: 17px;
+
+  --text-xs-md: 8px;
+  --text-sm-md: 10px;
+  --text-base-md: 12px;
+  --text-lg-md: 14px;
+  --text-xl-md: 16px;
+  --text-2xl-md: 18px;
+
+  --text-xs-lg: 7px;
+  --text-sm-lg: 9px;
+  --text-base-lg: 11px;
+  --text-lg-lg: 13px;
+  --text-xl-lg: 15px;
+  --text-2xl-lg: 17px;
+
+  --text-xs-xl: 10px;
+  --text-sm-xl: 12px;
+  --text-base-xl: 14px;
+  --text-lg-xl: 16px;
+  --text-xl-xl: 18px;
+  --text-2xl-xl: 20px;
+
+  --text-xs-2xl: 11px;
+  --text-sm-2xl: 13px;
+  --text-base-2xl: 15px;
+  --text-lg-2xl: 16px;
+  --text-xl-2xl: 19px;
+  --text-2xl-2xl: 21px;
+
+  --text-xs-3xl: 12px;
+  --text-sm-3xl: 14px;
+  --text-base-3xl: 16px;
+  --text-lg-3xl: 18px;
+  --text-xl-3xl: 20px;
+  --text-2xl-3xl: 22px;
+
+  --text-xs: var(--text-xs-sm);
+  --text-sm: var(--text-sm-sm);
+  --text-base: var(--text-base-sm);
+  --text-lg: var(--text-lg-sm);
+  --text-xl: var(--text-xl-sm);
+  --text-2xl: var(--text-2xl-sm);
+}
+
+@media screen and (max-width: 576px) {
+  :root {
+    --text-xs: var(--text-xs-sm);
+    --text-sm: var(--text-sm-sm);
+    --text-base: var(--text-base-sm);
+    --text-lg: var(--text-lg-sm);
+    --text-xl: var(--text-xl-sm);
+    --text-2xl: var(--text-2xl-sm);
+  }
+}
+
+@media screen and (min-width: 576px) and (max-width: 767.98px) {
+  :root {
+    --text-xs: var(--text-xs-md);
+    --text-sm: var(--text-sm-md);
+    --text-base: var(--text-base-md);
+    --text-lg: var(--text-lg-md);
+    --text-xl: var(--text-xl-md);
+    --text-2xl: var(--text-2xl-md);
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+  :root {
+    --text-xs: var(--text-xs-lg);
+    --text-sm: var(--text-sm-lg);
+    --text-base: var(--text-base-lg);
+    --text-lg: var(--text-lg-lg);
+    --text-xl: var(--text-xl-lg);
+    --text-2xl: var(--text-2xl-lg);
+  }
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199.98px) {
+  :root {
+    --text-xs: var(--text-xs-xl);
+    --text-sm: var(--text-sm-xl);
+    --text-base: var(--text-base-xl);
+    --text-lg: var(--text-lg-xl);
+    --text-xl: var(--text-xl-xl);
+    --text-2xl: var(--text-2xl-xl);
+  }
+}
+
+@media screen and (min-width: 1200px) and (max-width: 1399.98px) {
+  :root {
+    --text-xs: var(--text-xs-2xl);
+    --text-sm: var(--text-sm-2xl);
+    --text-base: var(--text-base-2xl);
+    --text-lg: var(--text-lg-2xl);
+    --text-xl: var(--text-xl-2xl);
+    --text-2xl: var(--text-2xl-2xl);
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  :root {
+    --text-xs: var(--text-xs-3xl);
+    --text-sm: var(--text-sm-3xl);
+    --text-base: var(--text-base-3xl);
+    --text-lg: var(--text-lg-3xl);
+    --text-xl: var(--text-xl-3xl);
+    --text-2xl: var(--text-2xl-3xl);
+  }
+}

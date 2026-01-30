@@ -1,10 +1,4 @@
-/*
- * 终端科技美学主题
- * 灵感来自代码编辑器、编程终端和算法可视化
-*/
-
 :root {
-    /* 亮色主题 - 模拟日光下的代码编辑器 */
     --background-color-1: #f8f9fa;
     --background-color-2: #e9ecef;
     --divider-color: #ced4da;
@@ -23,22 +17,18 @@
 
     --card-icon-background-color: #d1d5da;
 
-    /* 霓虹色系 - 代码高亮 */
     --neon-cyan: #00d0d0;
     --neon-green: #00ff00;
 
-    /* 玻璃态效果 */
     --glass-bg: rgba(255, 255, 255, 0.1);
     --glass-border: rgba(255, 255, 255, 0.2);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
 
-    /* 渐变 */
     --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
     --gradient-terminal: linear-gradient(135deg, #00ff00 0%, #00ffff 50%, #0088ff 100%);
 }
 
 [data-theme="dark"] {
-    /* 暗色主题 - 深度终端体验 */
     --background-color-1: #0d1117;
     --background-color-2: #161b22;
     --divider-color: #30363d;
@@ -57,21 +47,17 @@
 
     --card-icon-background-color: #30363d;
 
-    /* 增强霓虹效果 */
     --neon-cyan: #00ffff;
     --neon-green: #00ff00;
 
-    /* 玻璃态效果 */
     --glass-bg: rgba(255, 255, 255, 0.05);
     --glass-border: rgba(0, 255, 255, 0.2);
     --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 
-    /* 渐变增强 */
     --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
     --gradient-terminal: linear-gradient(135deg, #00ff00 0%, #00ffff 50%, #0088ff 100%);
 }
 
-/* 全局终端样式 */
 body {
     font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
     background-color: var(--background-color-1);
@@ -79,14 +65,13 @@ body {
     transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* 代码片段样式 */
 .code-snippet {
     background-color: var(--terminal-bg);
     border: 1px solid var(--terminal-border);
     border-radius: 4px;
     padding: 16px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 14px;
+    font-size: var(--text-sm);
     line-height: 1.5;
     overflow-x: auto;
     position: relative;
@@ -100,7 +85,6 @@ body {
     top: 8px;
 }
 
-/* 玻璃态卡片 */
 .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(10px);
@@ -119,7 +103,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* 数据流动画 */
 @keyframes data-stream {
     0% {
         transform: translateX(-100%);
@@ -153,7 +136,7 @@ a {
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 14px;
+    font-size: var(--text-sm);
     border: 1px solid var(--divider-color);
 }
 
@@ -176,15 +159,20 @@ table tr:nth-child(even) {
     background-color: var(--background-color-2);
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
     .code-snippet {
-        font-size: 12px;
         padding: 12px;
     }
 
     .terminal-content {
-        font-size: 12px;
         padding: 12px;
+    }
+
+    table th{
+        padding: 4px;
+    }
+
+    table td{
+        padding: 4px;
     }
 }

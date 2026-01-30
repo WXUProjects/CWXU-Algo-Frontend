@@ -149,7 +149,7 @@ defineExpose({
 }
 
 .toast-content {
-  font-size: 14px;
+  font-size: var(--text-base);
   line-height: 1.4;
 }
 </style>

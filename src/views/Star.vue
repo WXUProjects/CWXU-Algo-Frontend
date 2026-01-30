@@ -2,7 +2,7 @@
     <BaseLayout>
         <div class="container">
             <div class="pages">
-                <div class="actions">
+                <div class="tableActions">
                     <button class="btn def" @click="closeFilter = false">筛选</button>
                 </div>
                 <table>
@@ -31,7 +31,9 @@
                             {{ item.remark }}
                         </td>
                         <td>
-                            <button class="btn del">删除</button>
+                            <div class="trActions">
+                                <button class="btn del">删除</button>
+                            </div>
                         </td>
                     </tr>
                 </table>
@@ -51,9 +53,8 @@
                     </div>
                     <div class="group">
                         <div class="pageInput">
-                            <label>跳转：</label>
-                            <input type="number" min="1" :max="data.totalPage" :value="data.currentPage"
-                                autocomplete="none">
+                            <button>跳转</button>
+                            <input type="number" min="1" :max="data.totalPage" v-model="jumppage">
                         </div>
                         <div class="pageSum">共 {{ data.totalPage }} 页</div>
                     </div>
@@ -121,6 +122,8 @@
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue'
 import { ref, computed } from 'vue';
+
+const jumppage = ref(1);
 
 const data = ref({
     currentPage: 1,

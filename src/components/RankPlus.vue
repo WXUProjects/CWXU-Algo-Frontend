@@ -83,9 +83,8 @@ const pages = computed(() => {
 
 .rankContainer>.title {
     width: 100%;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.5rem;
+    padding: 8px 0px;
+    font-size: var(--text-lg);
     color: var(--text-default-color);
 }
 
@@ -96,9 +95,8 @@ const pages = computed(() => {
 .rankItem {
     display: flex;
     align-items: center;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.2rem;
+    padding: 4px 0px;
+    font-size: var(--text-base);
     color: var(--text-default-color);
     border-bottom: 1px solid var(--border-color);
 

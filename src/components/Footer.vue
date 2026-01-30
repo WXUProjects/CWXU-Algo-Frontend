@@ -31,11 +31,11 @@
             <div class="footer-column">
                 <span class="footer-column-title">友情链接: </span>
 
-                <span style="margin-left: 10px;font-size:13.7px;">
+                <span style="margin-left: 10px;font-size:var(--text-sm)">
                     <a :href="'https://www.cwxu.edu.cn/'" target="_blank" rel="noopener noreferrer">无锡学院</a>
                 </span>
 
-                <span style="margin-left: 10px;font-size:13.7px;">
+                <span style="margin-left: 10px;font-size:var(--text-sm)">
                     <a :href="'http://bbs.algo.zhiyuansofts.cn/'" target="_blank" rel="noopener noreferrer">无锡学院算法协会论坛</a>
                 </span>
 
@@ -86,7 +86,7 @@ const formattedDate = new Date(gitDate).toLocaleString('zh-CN', {
     width: 100%;
     padding: 3rem 20px;
     text-align: left;
-    font-size: 14px;
+    font-size: var(--text-sm);
     position: relative;
     border-top: solid 1px var(--divider-color);
     color: var(--text-default-color);
@@ -116,7 +116,7 @@ const formattedDate = new Date(gitDate).toLocaleString('zh-CN', {
 
 .footer-column h4 {
     margin-bottom: 1rem;
-    font-size: 16px;
+    font-size: var(--text-base);
     font-weight: 600;
     letter-spacing: 0.5px;
 }
@@ -159,7 +159,7 @@ const formattedDate = new Date(gitDate).toLocaleString('zh-CN', {
     align-items: left;
     flex-wrap: nowrap;
     gap: 1rem;
-    font-size: 14px;
+    font-size: var(--text-sm);
 }
 
 .footer-bottom p {
@@ -170,7 +170,7 @@ const formattedDate = new Date(gitDate).toLocaleString('zh-CN', {
     display: flex;
     align-items: left;
     justify-content: flex-end;
-    font-size: 12px;
+    font-size: var(--text-sm);
     color: var(--text-light-color);
     text-align: right;
     flex-grow: 1;

@@ -65,9 +65,8 @@
                     </div>
                     <div class="group">
                         <div class="pageInput">
-                            <label>跳转：</label>
-                            <input type="number" min="1" :max="data.totalPage" :value="data.currentPage"
-                                autocomplete="none">
+                            <button @click="getData(jumppage)">跳转</button>
+                            <input type="number" min="1" :max="data.totalPage" v-model="jumppage">
                         </div>
                         <div class="pageSum">共 {{ data.totalPage }} 页</div>
                     </div>
@@ -108,6 +107,8 @@ const data = ref<Response>({
     currentPage: 1
 });
 
+const jumppage = ref(1);
+
 const pages = computed(() => {
     if (!data.value) return [];
     const currentPage = data.value.currentPage;
@@ -123,9 +124,10 @@ const getData = async (page: number) => {
     Toast.stdResponse(response, false);
 
     if (response.success) {
+        jumppage.value = page;
         data.value = response.data;
         data.value.currentPage = page;
-        data.value.totalPage = Math.ceil(data.value.total / 20);
+        data.value.totalPage = Math.ceil(data.value.total / 5);
     }
 };
 
@@ -190,7 +192,7 @@ onMounted(() => {
             display: flex;
             align-items: center;
             gap: 12px;
-            font-size: 1.1rem;
+            font-size: var(--text-lg);
             font-weight: 600;
         }
 
@@ -203,7 +205,7 @@ onMounted(() => {
                 border-radius: 6px;
                 background-color: var(--section-background-color);
                 color: var(--text-light-color);
-                font-size: 0.85rem;
+                font-size: var(--text-base);
                 cursor: pointer;
                 transition: all 0.2s ease;
                 user-select: none;
@@ -222,7 +224,7 @@ onMounted(() => {
         }
 
         .title-icon {
-            font-size: 1.3rem;
+            font-size: var(--text-lg);
         }
 
         .title-text {
@@ -248,11 +250,13 @@ onMounted(() => {
     }
 
     .actions {
-        display: flex;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
         gap: 8px;
     }
 
     .btn {
+        font-size: var(--text-sm);
         padding: 6px 12px;
         border-radius: 6px;
         border: 1px solid var(--divider-color);

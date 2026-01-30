@@ -48,9 +48,8 @@ const props = defineProps({
 <style>
 .rankContainer .title {
     width: 100%;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.5rem;
+    padding: 8px 0px;
+    font-size: var(--text-lg);
     color: var(--text-default-color);
 }
 
@@ -61,9 +60,8 @@ const props = defineProps({
 .rankItem {
     display: flex;
     align-items: center;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.2rem;
+    padding: 8px 4px;
+    font-size: var(--text-base);
     color: var(--text-default-color);
     border-bottom: 1px solid var(--border-color);
 
@@ -71,6 +69,8 @@ const props = defineProps({
 }
 
 .rankItem.itemHover:hover {
+    cursor: pointer;
+    background-color: var(--background-color-2);
     transform: translateX(10px);
 }
 

@@ -367,7 +367,7 @@ onMounted(() => {
 }
 
 .logo-glitch {
-  font-size: 2.5rem;
+  font-size: var(--text-2xl);
   font-weight: 900;
   /* color: var(--neon-cyan) */
   color: var(--text-default-color);
@@ -400,7 +400,7 @@ onMounted(() => {
 }
 
 .status-text {
-  font-size: 0.85rem;
+  font-size: var(--text-xs);
   color: var(--text-light-color);
   flex-grow: 1;
 }
@@ -472,14 +472,14 @@ onMounted(() => {
 }
 
 .item-prefix {
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   color: var(--text-terminal);
   font-weight: bold;
   min-width: 24px;
 }
 
 .item-icon {
-  font-size: 1.2rem;
+  font-size: var(--text-lg);
   color: var(--section-default-color);
   transition: all 0.2s ease;
   min-width: 24px;
@@ -498,22 +498,23 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.95rem;
+  font-size: var(--text-base);
   font-weight: 500;
 }
 
 .item-title .zh {
+  font-size: var(--text-base);
   color: var(--text-default-color);
 }
 
 .item-title .en {
   color: var(--text-light-color);
-  font-size: 0.85rem;
+  font-size: var(--text-sm);
   opacity: 0.7;
 }
 
 .item-description {
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   color: var(--text-terminal);
   opacity: 0.8;
   white-space: nowrap;
@@ -522,7 +523,7 @@ onMounted(() => {
 }
 
 .item-indicator {
-  font-size: 1rem;
+  font-size: var(--text-sm);
   color: var(--neon-cyan);
   opacity: 0.7;
   transition: all 0.2s ease;
@@ -544,11 +545,12 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.8rem;
+  font-size: var(--text-base);
   color: var(--text-light-color);
 }
 
 .info-item {
+  font-size: var(--text-xs);
   padding: 4px 8px;
   background-color: var(--section-background-color);
   border-radius: 4px;
@@ -587,7 +589,7 @@ onMounted(() => {
       border-radius: 6px;
       background-color: var(--section-background-color);
       color: var(--text-light-color);
-      font-size: 0.85rem;
+      font-size: var(--text-base);
       cursor: pointer;
       transition: all 0.2s ease;
       user-select: none;
@@ -668,7 +670,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 1.1rem;
+  font-size: var(--text-base);
 }
 
 .info-label {
@@ -785,22 +787,6 @@ onMounted(() => {
 
   .item-prefix {
     display: none;
-  }
-
-  .item-icon {
-    font-size: 1rem;
-  }
-
-  .item-title .zh {
-    font-size: 0.85rem;
-  }
-
-  .logo-glitch {
-    font-size: 2rem;
-  }
-
-  .logo-subtitle {
-    font-size: 0.8rem;
   }
 
   .content-footer {

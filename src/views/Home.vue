@@ -291,53 +291,6 @@ onMounted(() => {
   color: var(--text-default-color);
 }
 
-/* 欢迎消息样式 */
-.welcome-message {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.message-line {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 1rem;
-}
-
-.prompt {
-  color: var(--terminal-prompt);
-  font-weight: bold;
-}
-
-.command {
-  color: var(--neon-cyan);
-  font-weight: 500;
-}
-
-.args {
-  color: var(--text-light-color);
-  font-size: 0.9rem;
-}
-
-.message-output {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  padding-left: 24px;
-}
-
-.output-line {
-  color: var(--terminal-output);
-  font-size: 0.95rem;
-  line-height: 1.4;
-}
-
-.status-online {
-  color: var(--neon-green);
-  font-weight: 500;
-}
-
 /* 数据统计区域 */
 .data-section {
   display: flex;
@@ -357,12 +310,12 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 12px;
-  font-size: 1.1rem;
+  font-size: var(--text-lg);
   font-weight: 600;
 }
 
 .title-icon {
-  font-size: 1.3rem;
+  font-size: var(--text-lg);
 }
 
 .title-text {
@@ -377,7 +330,7 @@ onMounted(() => {
 .action-refresh,
 .action-export {
   color: var(--text-light-color);
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   cursor: pointer;
   padding: 4px 8px;
   border-radius: 4px;
@@ -437,7 +390,7 @@ onMounted(() => {
 }
 
 .card-icon {
-  font-size: 2rem;
+  font-size: var(--text-2xl);
   color: var(--neon-cyan);
 }
 
@@ -448,14 +401,14 @@ onMounted(() => {
 }
 
 .title-main {
-  font-size: 1.2rem;
+  font-size: var(--text-xl);
   font-weight: 700;
   color: var(--text-default-color);
   letter-spacing: 1px;
 }
 
 .title-sub {
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   color: var(--text-light-color);
   opacity: 0.8;
 }
@@ -473,7 +426,7 @@ onMounted(() => {
 }
 
 .data-unit {
-  font-size: 0.9rem;
+  font-size: var(--text-base);
   color: var(--text-light-color);
   opacity: 0.8;
 }
@@ -495,11 +448,15 @@ onMounted(() => {
 }
 
 .trend-icon {
-  font-size: 1.1rem;
+  font-size: var(--text-base);
+}
+
+.trend-value {
+  font-size: var(--text-base);
 }
 
 .footer-info {
-  font-size: 0.8rem;
+  font-size: var(--text-base);
   color: var(--text-light-color);
   opacity: 0.7;
 }
@@ -507,7 +464,7 @@ onMounted(() => {
 /* 仪表板网格布局 */
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
+  grid-template-columns: 2fr 1fr;
   gap: 24px;
   margin-top: 8px;
 }
@@ -529,7 +486,6 @@ onMounted(() => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 16px;
   border: 1px solid var(--divider-color);
   border-radius: 6px;
   overflow: auto;
@@ -545,7 +501,7 @@ onMounted(() => {
   border-radius: 6px;
   background-color: var(--section-background-color);
   color: var(--text-light-color);
-  font-size: 0.85rem;
+  font-size: var(--text-base);
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -570,6 +526,16 @@ onMounted(() => {
   overflow: auto;
 }
 
+.section-secondary-container::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.section-secondary-container::-webkit-scrollbar-thumb {
+  background-color: var(--divider-color);
+  border-radius: 5px;
+}
+
 /* 响应式设计 */
 
 @media (max-width: 768px) {
@@ -578,7 +544,6 @@ onMounted(() => {
   }
 
   .section-header {
-    flex-direction: column;
     align-items: flex-start;
     gap: 12px;
   }
@@ -601,29 +566,17 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
-  .header-title {
-    font-size: 1rem;
-  }
 
   .header-tabs {
     flex-wrap: wrap;
   }
 
   .tab {
-    font-size: 0.8rem;
     padding: 4px 8px;
   }
 
   .ranking-card {
     height: 220px;
-  }
-
-  .card-icon {
-    font-size: 1.5rem;
-  }
-
-  .title-main {
-    font-size: 1rem;
   }
 
   .data-value {
