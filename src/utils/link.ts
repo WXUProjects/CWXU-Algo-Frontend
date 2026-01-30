@@ -16,12 +16,16 @@ export default class Link {
         };
     }
 
-    static getSubmitLink = (platform: platform, contest: string, submitId: string) => {
+    static getSubmitLink = (platform: platform, contest: string, submitId: string, username?: string) => {
         switch (platform) {
             case "AtCoder":
                 return `https://atcoder.jp/contests/${contest}/submissions/${submitId}`;
             case "NowCoder":
-                return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
+                if (contest.startsWith("main|") && username) {
+                    return `https://www.nowcoder.com/profile/${username}/codeBookDetail?submissionId=${submitId}`
+                } else {
+                    return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
+                }
             case "LuoGu":
                 return `https://www.luogu.com.cn/record/${submitId}`;
             case "CodeForces":

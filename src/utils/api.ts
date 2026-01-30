@@ -4,11 +4,12 @@ import Vaildate from '../utils/vaildate'
 import { useUserStore } from '@/stores/user'
 import { hashPassword } from '@/utils/hash'
 import Link from './link';
+import type { User as UserProfileGetByIdResponse, Spider, platform } from './type'
 
-export interface stdResponse {
+export interface stdResponse<T = any> {
     message: string;
     success: boolean;
-    data: any;
+    data: T;
     [property: string]: any;
 }
 
@@ -41,34 +42,6 @@ export interface UserAuthLoginResponse {
     [property: string]: any;
 }
 
-export interface UserProfileGetByIdResponse {
-    avatar: string;
-    email: string;
-    groupId: string;
-    name: string;
-    spiders: Spider[];
-    links: Links;
-    userId: string;
-    username: string;
-    [property: string]: any;
-}
-
-export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
-
-export interface Spider {
-    platform: platform;
-    username: string;
-    [property: string]: any;
-}
-
-export interface Links {
-    AtCoder: string;
-    NowCoder: string;
-    LuoGu: string;
-    CodeForces: string;
-    LeetCode: string;
-}
-
 export interface UserProfileUpdateRequest {
     avatar: string;
     email: string;
@@ -85,8 +58,8 @@ export interface UserProfileUpdateResponse {
 
 export interface UserProfileListResponse {
     list: List[];
-    total: string;
-    totalPage: string;
+    total: number;
+    totalPage: number;
     [property: string]: any;
 }
 
@@ -163,6 +136,7 @@ export default class API {
     static user = {
         auth: {
             login: async (request: UserAuthLoginRequest): Promise<stdResponse> => {
+                // 直接处理登录，不返回data字段
                 const stdRes: stdResponse = {
                     message: "",
                     success: false,
@@ -173,7 +147,7 @@ export default class API {
                     return stdRes;
                 }
                 try {
-                    const response = await axios.post<UserAuthRegisterResponse>('/api/user/auth/login', request);
+                    const response = await axios.post<UserAuthLoginResponse>('/api/user/auth/login', request);
                     if (response.data.success) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "登录成功";
@@ -233,11 +207,26 @@ export default class API {
             }
         },
         profile: {
-            getById: async (id: string): Promise<stdResponse> => {
-                const stdRes: stdResponse = {
+            getById: async (id: number): Promise<stdResponse<UserProfileGetByIdResponse>> => {
+                const stdRes: stdResponse<UserProfileGetByIdResponse> = {
                     message: "",
                     success: false,
-                    data: null
+                    data: {
+                        avatar: "",
+                        email: "",
+                        groupId: "",
+                        name: "",
+                        spiders: [],
+                        links: {
+                            AtCoder: "",
+                            CodeForces: "",
+                            NowCoder: "",
+                            LuoGu: "",
+                            LeetCode: "",
+                        },
+                        userId: 0,
+                        username: ""
+                    }
                 }
                 try {
                     const response = await axios.get<UserProfileGetByIdResponse>("/api/user/profile/get-by-id", {
@@ -249,13 +238,13 @@ export default class API {
                     if (response.status === 200) {
                         response.data.links = {
                             AtCoder: "",
+                            CodeForces: "",
                             NowCoder: "",
                             LuoGu: "",
-                            CodeForces: "",
-                            LeetCode: ""
+                            LeetCode: "",
                         }
-                        response.data.spiders.forEach((item: Spider) => {
-                            response.data.links[item.platform] = Link.getPlatformHomeLink(item.platform, item.username);
+                        response.data.spiders.forEach(spider => {
+                            response.data.links[spider.platform] = Link.getPlatformHomeLink(spider.platform, spider.username);
                         });
                         stdRes.success = true;
                         stdRes.data = response.data;
@@ -310,11 +299,15 @@ export default class API {
 
                 return stdRes;
             },
-            list: async (page: number): Promise<stdResponse> => {
-                const stdRes: stdResponse = {
+            list: async (page: number): Promise<stdResponse<UserProfileListResponse>> => {
+                const stdRes: stdResponse<UserProfileListResponse> = {
                     message: "",
                     success: false,
-                    data: null
+                    data: {
+                        total: 0,
+                        totalPage: 0,
+                        list: []
+                    }
                 }
                 try {
                     const response = await axios.get<UserProfileListResponse>('/api/user/profile/list', {
@@ -341,11 +334,13 @@ export default class API {
 
     static core = {
         submitLog: {
-            getById: async (id: string, cursor: number, limit: number = 50): Promise<stdResponse> => {
-                const stdRes: stdResponse = {
+            getById: async (id: string, cursor: number, limit: number = 50): Promise<stdResponse<CoreSubmitLogGetByIdResponse>> => {
+                const stdRes: stdResponse<CoreSubmitLogGetByIdResponse> = {
                     message: "",
                     success: false,
-                    data: null
+                    data: {
+                        data: []
+                    }
                 }
                 try {
                     const response = await axios.get<CoreSubmitLogGetByIdResponse>('/api/core/submit-log/get-by-id', {
@@ -358,7 +353,7 @@ export default class API {
                     if (response.status === 200) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取用户提交记录成功";
-                        stdRes.data = response.data.data;
+                        stdRes.data.data = response.data.data;
                     } else {
                         stdRes.message = response.data.message || "获取用户提交记录失败";
                     }
@@ -439,11 +434,14 @@ export default class API {
             }
         },
         statistic: {
-            heatmap: async (request: CodeStatisticRequest): Promise<stdResponse> => {
-                const stdRes: stdResponse = {
+            heatmap: async (request: CodeStatisticRequest): Promise<stdResponse<CodeStatisticResponse>> => {
+                const stdRes: stdResponse<CodeStatisticResponse> = {
                     message: "",
                     success: false,
-                    data: null
+                    data: {
+                        code: "",
+                        data: []
+                    }
                 }
 
                 try {
@@ -453,7 +451,7 @@ export default class API {
                     if (response.status === 200) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取热力图成功";
-                        stdRes.data = response.data.data.filter((item: Datum) => item.count > 0);
+                        stdRes.data.data = response.data.data.filter((item: Datum) => item.count > 0);
                     } else {
                         stdRes.message = response.data.message || "获取热力图失败";
                     }

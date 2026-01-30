@@ -6,7 +6,7 @@
                     <span class="title-icon">
                         <font-awesome-icon icon="fa-solid fa-chart-line" />
                     </span>
-                    <span class="title-text">{{ name }} 的所有动态 All-Activities</span>
+                    <span class="title-text">{{ user.name }}的所有动态 All-Activities</span>
                 </div>
             </div>
             <div class="content">
@@ -39,11 +39,27 @@ import { useRoute } from 'vue-router';
 import API from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { CoreSubmitLogGetByIdData } from '@/utils/api';
+import type { User } from '@/utils/type';
 
 const route = useRoute();
 
 const userId = route.query.id;
-const name = route.query.name;
+const user = ref<User>({
+    avatar: "",
+    email: "",
+    groupId: "",
+    name: "",
+    spiders: [],
+    links: {
+        AtCoder: "",
+        NowCoder: "",
+        LuoGu: "",
+        CodeForces: "",
+        LeetCode: ""
+    },
+    userId: 0,
+    username: ""
+})
 
 interface ActivityItem {
     title: string;
@@ -70,10 +86,10 @@ const getNewSubmit = async (currentCursor: number) => {
     Toast.stdResponse(response, false);
 
 
-    if (response.success && response.data.length > 0) {
+    if (response.success && response.data.data.length > 0) {
         const newActivities: ActivityItem[] = [];
 
-        response.data.forEach((item: CoreSubmitLogGetByIdData) => {
+        response.data.data.forEach((item: CoreSubmitLogGetByIdData) => {
             const platform = item.platform;
             const lang = item.lang;
             const contest = item.contest;
@@ -92,7 +108,7 @@ const getNewSubmit = async (currentCursor: number) => {
             newActivities.push({
                 title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
                 status: status,
-                link: Link.getSubmitLink(platform, contest, item.submitId),
+                link: Link.getSubmitLink(platform, contest, item.submitId, user.value.spiders.find(spider => spider.platform === platform)?.username),
                 time: time,
                 timeRaw: item.time
             });
@@ -101,9 +117,9 @@ const getNewSubmit = async (currentCursor: number) => {
         // 添加新数据
         activities.value = [...activities.value, ...newActivities];
 
-        if (response.data.length > 0) {
+        if (response.data.data.length > 0) {
             // 更新游标为最后一条数据的时间戳
-            const lastItem: CoreSubmitLogGetByIdData | undefined = response.data[response.data.length - 1];
+            const lastItem: CoreSubmitLogGetByIdData | undefined = response.data.data[response.data.length - 1];
             if (lastItem) {
                 // console.log(`时间戳更新：${cursor.value} -> ${lastItem.time}`);
 
@@ -116,6 +132,15 @@ const getNewSubmit = async (currentCursor: number) => {
     }
 
     loading.value = false;
+}
+
+const getUserInfo = async () => {
+    if (userId) {
+        const response = await API.user.profile.getById(Number(userId))
+        Toast.stdResponse(response);
+
+        user.value = response.data;
+    }
 }
 
 // 初始化 Intersection Observer

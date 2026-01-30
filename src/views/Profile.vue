@@ -163,9 +163,10 @@ import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
-import API, { type CoreSubmitLogGetByIdData } from '@/utils/api';
+import API from '@/utils/api';
+import type { CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
-import type { platform } from '@/utils/link';
+import type { platform, User, Links } from '@/utils/type';
 import Link from '@/utils/link';
 
 const route = useRoute();
@@ -180,32 +181,6 @@ const loading = ref({
 });
 
 const jwtUserInfo = JWT.getUserInfo();
-
-interface User {
-    avatar: string;
-    email: string;
-    groupId: string;
-    name: string;
-    spiders: Spider[];
-    links: Links;
-    userId: number;
-    username: string;
-    [property: string]: any;
-}
-
-interface Spider {
-    platform: platform;
-    username: string;
-    [property: string]: any;
-}
-
-interface Links {
-    AtCoder: string;
-    NowCoder: string;
-    LuoGu: string;
-    CodeForces: string;
-    LeetCode: string;
-}
 
 const user = ref<User>({
     avatar: "",
@@ -240,7 +215,7 @@ const getSubmitInfo = async () => {
     Toast.stdResponse(response, false);
 
     if (response.success) {
-        response.data.forEach((item: CoreSubmitLogGetByIdData) => {
+        response.data.data.forEach((item: CoreSubmitLogGetByIdData) => {
             const platform = item.platform;
             const lang = item.lang;
             const contest = item.contest;
@@ -259,7 +234,7 @@ const getSubmitInfo = async () => {
             activities.value.push({
                 title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
                 status: status,
-                link: Link.getSubmitLink(platform, contest, item.submitId),
+                link: Link.getSubmitLink(platform, contest, item.submitId, user.value.spiders.find(spider => spider.platform === platform)?.username),
                 time: time,
             });
         });
@@ -268,7 +243,7 @@ const getSubmitInfo = async () => {
 
 // 获取用户信息
 const getUserInfo = async () => {
-    const response = await API.user.profile.getById(user.value.userId.toString());
+    const response = await API.user.profile.getById(user.value.userId);
 
     if (response.success) {
         user.value = response.data;
@@ -308,7 +283,7 @@ const getHeatmapData = async () => {
     Toast.stdResponse(response1, false);
 
     if (response1.success) {
-        submitData.value = response1.data;
+        submitData.value = response1.data.data;
     }
 
     const response2 = await API.core.statistic.heatmap({
@@ -320,7 +295,7 @@ const getHeatmapData = async () => {
     Toast.stdResponse(response2, false);
 
     if (response2.success) {
-        acData.value = response2.data;
+        acData.value = response2.data.data;
     }
 }
 
