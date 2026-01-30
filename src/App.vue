@@ -192,16 +192,12 @@
         </div>
       </div>
 
-      <!-- <div class="announcements">
-        <div class="announcement warn">
-          <span class="content">测试警告公告，点击关闭 </span>
-          <span class="close"></span>
+      <div class="announcements">
+        <div class="announcement" v-for="anno in annos" :class="anno.type" v-show="!anno.isclosed">
+          <span class="content">{{ anno.content }}</span>
+          <span class="close" @click="closeAnno(anno.id)"></span>
         </div>
-        <div class="announcement info">
-          <span class="content">测试信息公告，点击关闭 </span>
-          <span class="close"></span>
-        </div>
-      </div> -->
+      </div>
 
       <div class="content-main">
         <router-view v-slot="{ Component }">
@@ -223,6 +219,7 @@ import { useUserStore } from '@/stores/user'
 import router from './router'
 import ToastNotification from './components/ToastNotification.vue'
 import Toast from './utils/toast'
+import type { Anno } from './utils/type'
 
 const route = useRoute()
 
@@ -304,6 +301,11 @@ const hitokoto = () => {
   if (hitokotoList[random]) {
     Toast.info(hitokotoList[random]);
   }
+}
+
+const annos = ref<Anno[]>([])
+
+const closeAnno = (id: number) => {
 }
 
 onMounted(() => {
@@ -617,6 +619,7 @@ onMounted(() => {
     display: flex;
     align-items: center;
     height: auto;
+    color: var(--text-default-color);
 
     &.warn {
       background-color: rgba(255, 0, 0, 0.5);
@@ -649,7 +652,7 @@ onMounted(() => {
         border-radius: 1.5px;
         left: 50%;
         transform: translate(-50%, 0%) rotate(45deg);
-        background-color: #000;
+        background-color: var(--text-default-color);
       }
 
       &::after {
@@ -660,7 +663,7 @@ onMounted(() => {
         border-radius: 1.5px;
         left: 50%;
         transform: translate(-50%, 0%) rotate(-45deg);
-        background-color: #000;
+        background-color: var(--text-default-color);
       }
     }
   }

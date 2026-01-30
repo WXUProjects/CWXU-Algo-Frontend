@@ -119,7 +119,7 @@ const getNewSubmit = async (currentCursor: number) => {
 
         if (response.data.data.length > 0) {
             // 更新游标为最后一条数据的时间戳
-            const lastItem: CoreSubmitLogGetByIdData | undefined = response.data.data[response.data.length - 1];
+            const lastItem: CoreSubmitLogGetByIdData | undefined = response.data.data[response.data.data.length - 1];
             if (lastItem) {
                 // console.log(`时间戳更新：${cursor.value} -> ${lastItem.time}`);
 

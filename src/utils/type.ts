@@ -21,3 +21,11 @@ export interface Spider {
     username: string;
     [property: string]: any;
 }
+
+export interface Anno {
+    id: number;
+    content: string;
+    type: string;
+    isclosed: boolean;
+    [property: string]: any;
+}
