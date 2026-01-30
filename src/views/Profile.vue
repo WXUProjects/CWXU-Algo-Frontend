@@ -236,7 +236,7 @@ const getSubmitInfo = async () => {
             activities.value.push({
                 title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
                 status: status,
-                link: Link.getSubmitLink(platform, contest, item.submitId, user.value.spiders.find(spider => spider.platform === platform)?.username),
+                link: Link.getSubmitLink(platform, contest, item.submitId),
                 time: time,
             });
         });

@@ -16,13 +16,13 @@ export default class Link {
         };
     }
 
-    static getSubmitLink = (platform: platform, contest: string, submitId: string, username?: string) => {
+    static getSubmitLink = (platform: platform, contest: string, submitId: string) => {
         switch (platform) {
             case "AtCoder":
                 return `https://atcoder.jp/contests/${contest}/submissions/${submitId}`;
             case "NowCoder":
-                if (contest.startsWith("main|") && username) {
-                    return `https://www.nowcoder.com/profile/${username}/codeBookDetail?submissionId=${submitId}`
+                if (contest.startsWith("main|")) {
+                    return `https://www.nowcoder.com/profile/${contest.split('|')[1]}/codeBookDetail?submissionId=${submitId}`
                 } else {
                     return `https://ac.nowcoder.com/acm/contest/view-submission?submissionId=${submitId}`;
                 }
