@@ -360,10 +360,32 @@ onMounted(() => {
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
+
+  transform-style: preserve-3d;
+  transform-origin: center center;
 }
 
 .stat-card:hover {
-  transform: translateY(-4px);
+  transform: perspective(1000px) translateY(-4px) scale(1.01) rotateX(8deg);
+}
+
+.stat-card:hover::after {
+  transform: rotate(24deg) translateY(16%);
+  opacity: 1;
+}
+
+.stat-card::after {
+  content: "";
+  position: absolute;
+  top: -58%;
+  left: -18%;
+  width: 150%;
+  height: 150%;
+  background-image: linear-gradient(hsla(0, 0%, 100%, .0), hsla(0, 0%, 100%, .1) 48%, hsla(0, 0%, 100%, 0) 52%);
+  transform: rotate(24deg);
+  opacity: .5;
+  transition: transform .5s ease, opacity .5s ease;
+  pointer-events: none;
 }
 
 .card-glow {
