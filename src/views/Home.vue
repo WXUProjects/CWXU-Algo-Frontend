@@ -133,9 +133,11 @@
 
             <div class="section-secondary-container">
               <!-- 提交 -->
-              <Calendar v-if="currentCalendar === 0" :data="submitData"></Calendar>
+              <Calendar v-if="currentCalendar === 0" :data="submitData" :year="dynamicYear"
+                @changeYear="handleYearChange"></Calendar>
               <!-- AC -->
-              <Calendar v-if="currentCalendar === 1" :data="acData"></Calendar>
+              <Calendar v-if="currentCalendar === 1" :data="acData" :year="dynamicYear" @changeYear="handleYearChange">
+              </Calendar>
             </div>
           </div>
         </div>
@@ -197,12 +199,11 @@ interface HeatmapData {
 const submitData = ref<HeatmapData[]>([])
 const acData = ref<HeatmapData[]>([])
 
-const test = (type: string) => {
-  window.dispatchEvent(new CustomEvent('show-toast', {
-    detail: { message: type, type, duration: 3000 }
-  }))
-}
+const dynamicYear = ref<number>(new Date().getFullYear())
 
+const handleYearChange = (year: number) => {
+  dynamicYear.value = year
+}
 const padZero = (num: number): string => {
   return num < 10 ? '0' + num : num.toString();
 }
@@ -286,7 +287,6 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
-  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
   color: var(--text-default-color);
 }
 

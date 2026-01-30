@@ -87,8 +87,10 @@
                             </div>
                         </div>
                         <div class="content">
-                            <Calendar :data="submitData" style="width: 100%;" v-if="currentCalendar === 0"></Calendar>
-                            <Calendar :data="acData" style="width: 100%;" v-else></Calendar>
+                            <Calendar :data="submitData" style="width: 100%;" v-if="currentCalendar === 0"
+                                :year="dynamicYear" @changeYear="handleYearChange"></Calendar>
+                            <Calendar :data="acData" style="width: 100%;" v-else :year="dynamicYear"
+                                @changeYear="handleYearChange"></Calendar>
                         </div>
                     </div>
                     <div class="section">
@@ -265,6 +267,12 @@ interface HeatmapData {
 
 const submitData = ref<HeatmapData[]>([])
 const acData = ref<HeatmapData[]>([])
+
+const dynamicYear = ref<number>(new Date().getFullYear())
+
+const handleYearChange = (year: number) => {
+    dynamicYear.value = year
+}
 
 const padZero = (num: number): string => {
     return num < 10 ? '0' + num : num.toString();
@@ -492,7 +500,7 @@ onMounted(() => {
         align-items: center;
         justify-content: space-between;
 
-        >.title{
+        >.title {
             width: 80%;
             font-size: var(--text-sm);
         }

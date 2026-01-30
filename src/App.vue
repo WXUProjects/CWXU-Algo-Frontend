@@ -341,7 +341,6 @@ onMounted(() => {
   display: flex;
   min-height: 100vh;
   background-color: var(--background-color-1);
-  font-family: 'JetBrains Mono', 'Consolas', 'Monaco', monospace;
   color: var(--text-default-color);
   overflow: hidden;
 }
@@ -374,12 +373,16 @@ onMounted(() => {
 }
 
 .logo-glitch {
-  font-size: var(--text-2xl);
-  font-weight: 900;
+  font-size: 2.5rem;
+  font-weight:bolder;
   /* color: var(--neon-cyan) */
   color: var(--text-default-color);
   position: relative;
   letter-spacing: 1px;
+}
+
+.logo-icon img {
+  width: 70px;
 }
 
 /* 状态指示器 */

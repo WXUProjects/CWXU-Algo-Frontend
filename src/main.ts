@@ -10,10 +10,6 @@ import "@fontsource/jetbrains-mono"; // Defaults to weight 400
 import "@fontsource/jetbrains-mono/400.css"; // Specify weight
 import "@fontsource/jetbrains-mono/400-italic.css"; // Specify weight and style
 
-// noto sans sc 字体
-import "@fontsource/noto-sans-sc"; // Defaults to weight 400
-import "@fontsource/noto-sans-sc/400.css"; // Specify weight
-
 // FontAwesome 图标库
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'

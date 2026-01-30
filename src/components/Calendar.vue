@@ -66,11 +66,13 @@ const props = defineProps({
     title: {
         type: String,
         default: ''
+    },
+    year: {
+        type: Number,
     }
 })
 
-// 默认选中年是今年
-const selectedYear = ref<number>(new Date().getFullYear());
+const selectedYear = ref<number>(props.year || new Date().getFullYear());
 
 // 计算选中年共多少天
 const yearDays = computed(() => {
@@ -150,7 +152,12 @@ const getBlockColor = (day: number) => {
 // 用户点击更改年份
 const changeYear = (year: number) => {
     selectedYear.value = year
+    emit('changeYear', year)
 }
+
+const emit = defineEmits<{
+  (e: 'changeYear', id: number): void
+}>()
 </script>
 
 <style>
