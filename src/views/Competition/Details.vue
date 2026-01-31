@@ -23,7 +23,6 @@ import Rank from '@/components/Rank.vue'
 const router = useRouter()
 const id = router.currentRoute.value.params.id
 
-console.log(id);
 
 const rankData = ref({
     "data": [

@@ -56,18 +56,18 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
+        <router-link to="/profile" class="section terminal-item" active-class="active" v-if="isLogin">
           <!-- <div class="item-prefix">></div> -->
-          <font-awesome-icon icon="fa-solid fa-comment" class=" item-icon" />
+          <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
-              <span class="zh">论坛</span>
-              <span class="en">BBS</span>
+              <span class="zh">个人资料</span>
+              <span class="en">Profile</span>
             </div>
-            <div class="item-description">进入论坛</div>
+            <div class="item-description">查看/修改个人资料</div>
           </div>
           <div class="item-indicator">▶</div>
-        </a>
+        </router-link>
 
         <router-link to="/problem" class="section terminal-item" active-class="active">
           <!-- <div class="item-prefix">></div> -->
@@ -78,19 +78,6 @@
               <span class="en">Problem</span>
             </div>
             <div class="item-description">上传或练习题目</div>
-          </div>
-          <div class="item-indicator">▶</div>
-        </router-link>
-
-        <router-link to="/profile" class="section terminal-item" active-class="active" v-if="isLogin">
-          <!-- <div class="item-prefix">></div> -->
-          <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
-          <div class="item-content">
-            <div class="item-title">
-              <span class="zh">个人资料</span>
-              <span class="en">Profile</span>
-            </div>
-            <div class="item-description">查看/修改个人资料</div>
           </div>
           <div class="item-indicator">▶</div>
         </router-link>
@@ -120,6 +107,19 @@
           </div>
           <div class="item-indicator">▶</div>
         </router-link>
+
+        <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
+          <!-- <div class="item-prefix">></div> -->
+          <font-awesome-icon icon="fa-solid fa-comment" class=" item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">论坛</span>
+              <span class="en">BBS</span>
+            </div>
+            <div class="item-description">进入论坛</div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </a>
 
         <!-- 主题切换 -->
         <div class="section terminal-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
@@ -247,6 +247,7 @@ GitHash   ${__GIT_HASH__}
 GitDate   ${__GIT_DATE__}
 -----------------------------------
 Fonts     Jetbrains Mono
+          Maple Mono CN
 Icons     Font Awesome
 -----------------------------------
 Frontend  Aoralsfout
@@ -374,7 +375,7 @@ onMounted(() => {
 
 .logo-glitch {
   font-size: 2.5rem;
-  font-weight:bolder;
+  font-weight: bolder;
   /* color: var(--neon-cyan) */
   color: var(--text-default-color);
   position: relative;

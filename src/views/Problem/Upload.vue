@@ -97,8 +97,6 @@ const removeTag = (index: number) => {
 // 提交表单
 const submit = () => {
     formData.value.types = [...tags.value];
-
-    console.log('提交数据:', formData.value);
 }
 </script>
 
