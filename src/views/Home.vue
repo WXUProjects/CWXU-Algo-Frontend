@@ -86,7 +86,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last year</div>
             </div>
@@ -111,7 +111,7 @@
                 :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last month</div>
             </div>
@@ -135,7 +135,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last week</div>
             </div>
@@ -353,7 +353,8 @@ const getTrendClass = (curr: number, prev: number): string => {
 const getTrendValue = (curr: number, prev: number): string => {
   curr = Number(curr);
   prev = Number(prev);
-  return (curr - prev >= 0 ? '+' : '') + ((curr - prev) / (prev === 0 ? 1 : prev) * 100).toFixed(2) + '%'
+  // return (curr - prev >= 0 ? '+' : '') + ((curr - prev) / (prev === 0 ? 1 : prev) * 100).toFixed(2) + '%'
+  return (curr - prev >= 0 ? '+' : '') + (curr - prev)
 }
 
 const getTrend = (curr: number, prev: number): string => {
@@ -632,6 +633,8 @@ onMounted(() => {
 
 .header-tabs {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 12px;
 }
 
@@ -641,6 +644,7 @@ onMounted(() => {
   background-color: var(--section-background-color);
   color: var(--text-light-color);
   font-size: var(--text-base);
+  white-space: nowrap;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -683,7 +687,6 @@ onMounted(() => {
   }
 
   .section-header {
-    align-items: flex-start;
     gap: 12px;
   }
 

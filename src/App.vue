@@ -95,7 +95,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/dashboard" class="section terminal-item" active-class="active" v-if="isLogin">
+        <router-link to="/dashboard" class="section terminal-item" active-class="active" v-if="isLogin && isAdmin">
           <!-- <div class="item-prefix">></div> -->
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
@@ -225,7 +225,9 @@ import AnnoStore from './utils/anno'
 const route = useRoute()
 
 const userStore = useUserStore()
+
 const isLogin = computed(() => userStore.isLogin)
+const isAdmin = computed(() => userStore.isAdmin)
 
 // 获取当前路由名称用于显示
 const currentRouteName = computed(() => {
@@ -593,6 +595,8 @@ onMounted(() => {
 
   .header-tabs {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
     gap: 12px;
 
     .tab {
@@ -601,6 +605,7 @@ onMounted(() => {
       background-color: var(--section-background-color);
       color: var(--text-light-color);
       font-size: var(--text-base);
+      white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s ease;
       user-select: none;

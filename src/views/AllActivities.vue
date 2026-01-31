@@ -6,7 +6,7 @@
                     <span class="title-icon">
                         <font-awesome-icon icon="fa-solid fa-chart-line" />
                     </span>
-                    <span class="title-text">{{ user.name }}的所有动态 All-Activities</span>
+                    <span class="title-text">{{ user.name }}的所有动态</span>
                 </div>
             </div>
             <div class="content">
@@ -137,7 +137,7 @@ const getNewSubmit = async (currentCursor: number) => {
 const getUserInfo = async () => {
     if (userId) {
         const response = await API.user.profile.getById(Number(userId))
-        Toast.stdResponse(response,false);
+        Toast.stdResponse(response, false);
 
         user.value = response.data;
     }
@@ -228,6 +228,8 @@ onUnmounted(() => {
 
     .header-tabs {
         display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-end;
         gap: 12px;
 
         .tab {
@@ -236,6 +238,7 @@ onUnmounted(() => {
             background-color: var(--section-background-color);
             color: var(--text-light-color);
             font-size: var(--text-base);
+            white-space: nowrap;
             cursor: pointer;
             transition: all 0.2s ease;
 

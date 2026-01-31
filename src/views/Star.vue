@@ -9,9 +9,9 @@
                     <thead>
                         <tr>
                             <th>标题</th>
-                            <th>链接</th>
+                            <th style="width: 100px;">链接</th>
                             <th>类型</th>
-                            <th>难度</th>
+                            <th style="width: 50px;">难度</th>
                             <th>备注</th>
                             <th>操作</th>
                         </tr>

@@ -5,6 +5,7 @@ import JWT from '@/utils/jwt'
 export const useUserStore = defineStore('user', () => {
   // 登录状态
   const isLogin = ref<boolean>(JWT.isValid())
+  const isAdmin = ref<boolean>(JWT.getUserInfo()?.roleIds.includes(1) || false)
   
   // 更新登录状态
   function updateLoginStatus() {
@@ -17,7 +18,8 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return { 
-    isLogin, 
+    isLogin,
+    isAdmin,
     updateLoginStatus, 
     setLoginStatus 
   }

@@ -16,12 +16,12 @@
                 <table style="margin-bottom: 10px;">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>组ID</th>
+                            <th style="width: 50px;">ID</th>
+                            <th style="width: 50px;">组ID</th>
                             <th>头像</th>
-                            <th>用户名</th>
-                            <th>姓名</th>
-                            <th>最后提交日期</th>
+                            <th style="width: 100px;">用户名</th>
+                            <th style="width: 100px;">姓名</th>
+                            <th style="width: 200px;">最后提交日期</th>
                             <th>操作</th>
                         </tr>
                     </thead>
@@ -43,7 +43,7 @@
                             <div class="actions">
                                 <button class="btn btn-primary">编辑</button>
                                 <button class="btn btn-primary"
-                                    @click="router.push(`/profile?id=${item.userId}`)">查看个人资料</button>
+                                    @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
                                 <button class="btn btn-danger">删除</button>
                             </div>
                         </td>
@@ -93,10 +93,10 @@ interface Response {
 
 interface User {
     avatar: string;
-    groupId: string;
+    groupId: number;
     lastSubmit: string;
     name: string;
-    userId: string;
+    userId: number;
     username: string;
 }
 
@@ -198,6 +198,8 @@ onMounted(() => {
 
         .header-tabs {
             display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
             gap: 12px;
 
             .tab {
@@ -206,6 +208,7 @@ onMounted(() => {
                 background-color: var(--section-background-color);
                 color: var(--text-light-color);
                 font-size: var(--text-base);
+                white-space: nowrap;
                 cursor: pointer;
                 transition: all 0.2s ease;
                 user-select: none;

@@ -66,10 +66,10 @@ export interface UserProfileListResponse {
 
 export interface List {
     avatar: string;
-    groupId: string;
+    groupId: number;
     lastSubmit: string;
     name: string;
-    userId: string;
+    userId: number;
     username: string;
     [property: string]: any;
 }
@@ -167,14 +167,17 @@ export interface UserProfileMoveGroupResponse {
 
 export interface UserGroupListResponse {
     list: Group[];
+    total: number;
+    totalPage: number;
+    currentPage: number;
     [property: string]: any;
 }
 
 export interface Group {
     describe: string;
-    id: string;
+    id: number;
     name: string;
-    users: string[];
+    users: UserGroupUser[];
     [property: string]: any;
 }
 
@@ -447,19 +450,22 @@ export default class API {
             }
         },
         group: {
-            list: async (page: number, size: number): Promise<stdResponse<UserGroupListResponse>> => {
+            list: async (page: number): Promise<stdResponse<UserGroupListResponse>> => {
                 const stdRes: stdResponse<UserGroupListResponse> = {
                     message: "",
                     success: false,
                     data: {
-                        list: []
+                        list: [],
+                        total: 0,
+                        totalPage: 0,
+                        currentPage: page
                     }
                 }
                 try {
                     const response = await axios.get<UserGroupListResponse>('/api/user/group/list', {
                         params: {
                             pageNum: page,
-                            pageSize: size
+                            pageSize: 5
                         },
                         headers: {
                             Authorization: `Bearer ${JWT.token}`
@@ -469,6 +475,7 @@ export default class API {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取分组列表成功";
                         stdRes.data = response.data;
+                        stdRes.data.currentPage = page
                     } else {
                         stdRes.message = response.data.message || "获取分组列表失败";
                     }
@@ -515,12 +522,12 @@ export default class API {
                     }
                 }
                 try {
-                    const response = await axios.post<UserGroupDeleteResponse>(`/api/user/group/delete/`, { id }, {
+                    const response = await axios.post<UserGroupDeleteResponse>(`/api/user/group/delete`, { id }, {
                         headers: {
                             Authorization: `Bearer ${JWT.token}`
                         }
                     });
-                    if (response.status === 200) {
+                    if (response.data.success) {
                         stdRes.success = true;
                         stdRes.message = "删除分组成功";
                         stdRes.data = response.data;
@@ -542,7 +549,7 @@ export default class API {
                     }
                 }
                 try {
-                    const response = await axios.post<UserGroupUpdateResponse>(`/api/user/group/update/`, request, {
+                    const response = await axios.post<UserGroupUpdateResponse>(`/api/user/group/update`, request, {
                         headers: {
                             Authorization: `Bearer ${JWT.token}`
                         }
@@ -560,7 +567,7 @@ export default class API {
                 }
                 return stdRes;
             },
-            get: async (id: number): Promise<stdResponse<UserGroupGetResponse>> => { 
+            get: async (id: number): Promise<stdResponse<UserGroupGetResponse>> => {
                 const stdRes: stdResponse<UserGroupGetResponse> = {
                     message: "",
                     success: false,
@@ -572,7 +579,7 @@ export default class API {
                     }
                 }
                 try {
-                    const response = await axios.get<UserGroupGetResponse>(`/api/user/group/get/`,{
+                    const response = await axios.get<UserGroupGetResponse>(`/api/user/group/get`, {
                         params: {
                             id
                         },
@@ -584,10 +591,10 @@ export default class API {
                         stdRes.success = true;
                         stdRes.message = "获取分组成功";
                         stdRes.data = response.data;
-                    }else{
+                    } else {
                         stdRes.message = "获取分组失败";
                     }
-                } catch (error:any) {
+                } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取分组失败";
                 }

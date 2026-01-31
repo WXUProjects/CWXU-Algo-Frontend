@@ -46,5 +46,18 @@ export default defineConfig(({ mode }) => {
         }
       }
     }
+
+    // 我连不上API接口了，我用主站中转一下
+    // 临时使用
+    // server: {
+    //   port: 3000,
+    //   proxy: {
+    //     '/api': {
+    //       target: "http://algo.zhiyuansofts.cn/",
+    //       changeOrigin: true,
+    //       rewrite: (path) => path.replace(/^\/api/, '/api'),
+    //     }
+    //   }
+    // }
   }
 })

@@ -7,7 +7,7 @@ TODO:
 
 <template>
     <BaseLayout>
-        <div>
+        <div class="dashboardContainer">
             <div class="sections">
                 <router-link to="/dashboard/statistics" class="section" active-class="active">
                     <font-awesome-icon icon="fa-solid fa-chart-line" class="section-icon" />
@@ -45,6 +45,21 @@ import BaseLayout from '@/components/BaseLayout.vue'
 </script>
 
 <style scoped>
+.dashboardContainer{
+    width: 100%;
+    overflow: auto;
+}
+
+.dashboardContainer::-webkit-scrollbar{
+    width: 5px;
+    height: 5px;
+}
+
+.dashboardContainer::-webkit-scrollbar-thumb{
+    background-color: var(--divider-color);
+    border-radius: 5px;
+}
+
 .sections {
     display: flex;
     flex-direction: row;

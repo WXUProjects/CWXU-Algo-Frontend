@@ -14,6 +14,17 @@ const loginGuard = (to: any, from: any, next: any) => {
   }
 }
 
+// 管理员守卫路由
+const adminGuard = (to: any, from: any, next: any) => {
+  if (JWT.isValid() && JWT.getUserInfo()?.roleIds.includes(1)) {
+    next()
+  } else {
+    next({
+      name: 'Home',
+    })
+  }
+}
+
 const routes = [
   {
     path: '/',
@@ -56,7 +67,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/Dashboard.vue'),
-    beforeEnter: loginGuard,
+    beforeEnter: adminGuard,
     redirect: '/dashboard/statistics',
     children: [{
       path: 'group',

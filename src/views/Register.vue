@@ -17,7 +17,7 @@
                 </div>
                 <div class="form-item">
                     <label>姓名</label>
-                    <input type="text" v-model="formData.name" placeholder="请输入您的姓名">
+                    <input type="text" v-model="formData.name" placeholder="请输入您的真实姓名">
                 </div>
                 <div class="form-item">
                     <label>邮箱</label>
