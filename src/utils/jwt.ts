@@ -6,7 +6,7 @@ export interface JwtPayload {
   userId: number;
   username: string;
   name: string;
-  roleIds: string;
+  roleIds: number[];
   // [key: string]: any;
 }
 

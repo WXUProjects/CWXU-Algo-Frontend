@@ -155,6 +155,71 @@ export interface CoreStatisticPeriodItem {
     [property: string]: any;
 }
 
+export interface UserProfileMoveGroupRequest {
+    userId: number;
+    groupId: number;
+}
+
+export interface UserProfileMoveGroupResponse {
+    code: string;
+    message: string;
+}
+
+export interface UserGroupListResponse {
+    list: Group[];
+    [property: string]: any;
+}
+
+export interface Group {
+    describe: string;
+    id: string;
+    name: string;
+    users: string[];
+    [property: string]: any;
+}
+
+export interface UserGroupCreateRequest {
+    name: string;
+    describe: string;
+}
+
+export interface UserGroupCreateResponse {
+    id: number;
+    message: string;
+}
+
+export interface UserGroupDeleteResponse {
+    success: boolean;
+}
+
+export interface UserGroupUpdateRequest {
+    id: number;
+    name: string;
+    describe: string;
+}
+
+export interface UserGroupUpdateResponse {
+    success: boolean;
+}
+
+export interface UserGroupGetResponse {
+    describe: string;
+    id: number;
+    name: string;
+    users: UserGroupUser[];
+    [property: string]: any;
+}
+
+export interface UserGroupUser {
+    avatar: string;
+    groupId: number;
+    lastSubmit: string;
+    name: string;
+    userId: number;
+    username: string;
+    [property: string]: any;
+}
+
 const userStore = useUserStore()
 
 export default class API {
@@ -355,7 +420,179 @@ export default class API {
                     stdRes.message = "获取用户列表失败";
                 }
                 return stdRes;
+            },
+            moveGroup: async (request: UserProfileMoveGroupRequest): Promise<stdResponse> => {
+                const stdRes: stdResponse = {
+                    message: "",
+                    success: false,
+                    data: null
+                }
+                try {
+                    const response = await axios.post<UserProfileMoveGroupResponse>('/api/user/profile/move-group', request, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "移动用户组成功";
+                    } else {
+                        stdRes.message = response.data.message || "移动用户组失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "移动用户组失败";
+                }
+                return stdRes;
             }
+        },
+        group: {
+            list: async (page: number, size: number): Promise<stdResponse<UserGroupListResponse>> => {
+                const stdRes: stdResponse<UserGroupListResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        list: []
+                    }
+                }
+                try {
+                    const response = await axios.get<UserGroupListResponse>('/api/user/group/list', {
+                        params: {
+                            pageNum: page,
+                            pageSize: size
+                        },
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "获取分组列表成功";
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = response.data.message || "获取分组列表失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取分组列表失败";
+                }
+                return stdRes;
+            },
+            create: async (request: UserGroupCreateRequest): Promise<stdResponse<UserGroupCreateResponse>> => {
+                const stdRes: stdResponse<UserGroupCreateResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        id: 0,
+                        message: ""
+                    }
+                }
+                try {
+                    const response = await axios.post<UserGroupCreateResponse>('/api/user/group/create', request, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "创建分组成功";
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = response.data.message || "创建分组失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "创建分组失败";
+                }
+                return stdRes;
+            },
+            delete: async (id: number): Promise<stdResponse<UserGroupDeleteResponse>> => {
+                const stdRes: stdResponse<UserGroupDeleteResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        success: false,
+                    }
+                }
+                try {
+                    const response = await axios.post<UserGroupDeleteResponse>(`/api/user/group/delete/`, { id }, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = "删除分组成功";
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = "删除分组失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "删除分组失败";
+                }
+                return stdRes;
+            },
+            update: async (request: UserGroupUpdateRequest): Promise<stdResponse<UserGroupUpdateResponse>> => {
+                const stdRes: stdResponse<UserGroupUpdateResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        success: false,
+                    }
+                }
+                try {
+                    const response = await axios.post<UserGroupUpdateResponse>(`/api/user/group/update/`, request, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = "更新分组成功";
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = "更新分组失败";
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "更新分组失败";
+                }
+                return stdRes;
+            },
+            get: async (id: number): Promise<stdResponse<UserGroupGetResponse>> => { 
+                const stdRes: stdResponse<UserGroupGetResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        id: 0,
+                        name: "",
+                        describe: "",
+                        users: []
+                    }
+                }
+                try {
+                    const response = await axios.get<UserGroupGetResponse>(`/api/user/group/get/`,{
+                        params: {
+                            id
+                        },
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}`
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        stdRes.message = "获取分组成功";
+                        stdRes.data = response.data;
+                    }else{
+                        stdRes.message = "获取分组失败";
+                    }
+                } catch (error:any) {
+                    console.error(error);
+                    stdRes.message = "获取分组失败";
+                }
+                return stdRes;
+            },
         }
     }
 

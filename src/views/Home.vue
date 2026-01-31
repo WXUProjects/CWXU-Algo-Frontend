@@ -333,7 +333,6 @@ const getPeriodData = async () => {
   Toast.stdResponse(response, false);
 
   periodData.value = response.data.data
-  console.log(periodData.value);
 }
 
 /*
