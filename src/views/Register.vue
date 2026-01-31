@@ -47,7 +47,7 @@ const wait = ref<boolean>(false)
 
 const formData = ref<FormData>({
     email: '',
-    groupId: '1',
+    groupId: '0',
     username: '',
     password: '',
     passwordConfirm: '',
