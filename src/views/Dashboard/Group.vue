@@ -137,7 +137,6 @@
                             <td>{{ formatDate(item.lastSubmit) }}</td>
                             <td>
                                 <div class="actions">
-                                    <button class="btn btn-default">编辑</button>
                                     <button class="btn btn-default"
                                         @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
                                     <button class="btn btn-danger" v-if="usersData?.id != 0"
