@@ -3,24 +3,28 @@ import { defineStore } from 'pinia'
 import JWT from '@/utils/jwt'
 
 export const useUserStore = defineStore('user', () => {
-  // 登录状态
+  // 状态
   const isLogin = ref<boolean>(JWT.isValid())
   const isAdmin = ref<boolean>(JWT.getUserInfo()?.roleIds.includes(1) || false)
-  
-  // 更新登录状态
+
+  // 更新状态
   function updateLoginStatus() {
     isLogin.value = JWT.isValid()
   }
-  
-  // 手动设置登录状态
+  function updateAdminStatus() {
+    isAdmin.value = JWT.getUserInfo()?.roleIds.includes(1) || false
+  }
+
+  // 手动设置状态
   function setLoginStatus(status: boolean) {
     isLogin.value = status
   }
 
-  return { 
+  return {
     isLogin,
     isAdmin,
-    updateLoginStatus, 
-    setLoginStatus 
+    updateLoginStatus,
+    updateAdminStatus,
+    setLoginStatus
   }
 })

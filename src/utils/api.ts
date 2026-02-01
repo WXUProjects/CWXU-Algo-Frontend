@@ -246,6 +246,7 @@ export default class API {
                         stdRes.message = response.data.message || "登录成功";
                         JWT.setNewToken(response.data.jwtToken);
                         userStore.setLoginStatus(true);
+                        userStore.updateAdminStatus();
                     } else {
                         stdRes.message = response.data.message || "登录失败";
                     }

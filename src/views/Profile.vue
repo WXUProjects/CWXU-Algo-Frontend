@@ -319,6 +319,7 @@ const showLogoutConfirm = () => {
 const logout = async () => {
     JWT.clearToken()
     userStore.setLoginStatus(false)
+    userStore.updateAdminStatus()
 
     // 跳转到登录页面
     router.push('/login')
