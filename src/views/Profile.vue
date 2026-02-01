@@ -74,10 +74,13 @@
                             </div>
                         </div>
                         <div class="moblie-details">
-                            <div class="item">牛客</div>
-                            <div class="item">AtCoder</div>
-                            <div class="item">CodeForces</div>
-                            <div class="item">洛谷</div>
+                            <a class="item" v-if="user.links.NowCoder" target="_blank"
+                                :href="user.links.NowCoder">牛客</a>
+                            <a class="item" v-if="user.links.AtCoder" target="_blank"
+                                :href="user.links.AtCoder">AtCoder</a>
+                            <a class="item" v-if="user.links.CodeForces" target="_blank"
+                                :href="user.links.CodeForces">CodeForces</a>
+                            <a class="item" v-if="user.links.LuoGu" target="_blank" :href="user.links.LuoGu">洛谷</a>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -790,6 +793,7 @@ onMounted(() => {
 
             >.name {
                 border-bottom: none;
+
                 >.name {
                     font-size: 2rem;
                 }
@@ -812,6 +816,8 @@ onMounted(() => {
                 >.item {
                     flex-grow: 0;
                     width: auto;
+                    color: var(--text-light-color);
+                    text-decoration: none;
                     background-color: var(--background-color-2);
                     padding: 5px 10px;
                     border-radius: 10px;
