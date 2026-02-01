@@ -8,6 +8,7 @@ TODO:
 <template>
     <BaseLayout>
         <div class="dashboardContainer">
+            <div class="tip">建议使用大屏设备访问该页面</div>
             <div class="sections">
                 <router-link to="/dashboard/statistics" class="section" active-class="active">
                     <font-awesome-icon icon="fa-solid fa-chart-line" class="section-icon" />
@@ -148,7 +149,21 @@ a.section {
     transition: all 0.2s ease-in-out;
 }
 
+.tip{
+    display: none;
+    font-size: var(--text-2xl);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    background-color: red;
+}
+
 @media (max-width:860px) {
+    .tip{
+        display: block;
+    }
+
     .en {
         display: none;
     }
