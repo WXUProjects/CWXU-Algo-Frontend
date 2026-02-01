@@ -250,7 +250,7 @@ const getHeatmapData = async () => {
   Toast.stdResponse(response1, false);
 
   if (response1.success) {
-    submitData.value = response1.data.data;
+    submitData.value = response1.data.data.filter(item => item.count > 0);
   }
 
   const response2 = await API.core.statistic.heatmap({
@@ -262,7 +262,7 @@ const getHeatmapData = async () => {
   Toast.stdResponse(response2, false);
 
   if (response2.success) {
-    acData.value = response2.data.data;
+    acData.value = response2.data.data.filter(item => item.count > 0);
   }
 }
 

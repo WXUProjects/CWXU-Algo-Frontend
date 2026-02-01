@@ -759,7 +759,7 @@ export default class API {
                     if (response.status === 200) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取热力图成功";
-                        stdRes.data.data = response.data.data.filter((item: Datum) => item.count > 0);
+                        stdRes.data.data = response.data.data;
                     } else {
                         stdRes.message = response.data.message || "获取热力图失败";
                     }

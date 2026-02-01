@@ -1,6 +1,6 @@
 <template>
     <div class="dashboardContent">
-        <h1>数据统计</h1>
+        <h2>数据统计</h2>
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="card-header">
@@ -222,14 +222,41 @@
                 </div> -->
             </div>
         </div>
+        <h2>提交趋势（堆叠折线图）</h2>
+        <div class="chart-container">
+            <v-chart class="chart" :option="chartOption" autoresize />
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-import API, { type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
+import API, { type CoreStatisticPeriodData, type Datum as DailyData } from '@/utils/api';
 import Toast from '@/utils/toast';
-import axios from 'axios';
 import { computed, onMounted, ref } from 'vue';
+
+// 导入 ECharts 相关
+import { use } from 'echarts/core';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart } from 'echarts/charts';
+import {
+    TooltipComponent,
+    ToolboxComponent,
+    LegendComponent,
+    GridComponent,
+    DataZoomComponent,
+} from 'echarts/components';
+import VChart from 'vue-echarts';
+
+// 注册 ECharts 模块
+use([
+    CanvasRenderer,
+    LineChart,
+    TooltipComponent,
+    ToolboxComponent,
+    LegendComponent,
+    GridComponent,
+    DataZoomComponent,
+]);
 
 export interface Response {
     list: List[];
@@ -332,10 +359,181 @@ const getGroupCount = async () => {
     }
 }
 
+/*
+DailyData:
+{
+    count: number;
+    date: string; // YYYY-MM-DD
+}
+*/
+
+const acDataDaily = ref<DailyData[]>([])
+const submitDataDaily = ref<DailyData[]>([])
+
+const padZero = (num: number): string => {
+    return num < 10 ? '0' + num : num.toString();
+}
+
+const getDailyData = async () => {
+    const dateObj = new Date();
+    const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
+    const responseAc = await API.core.statistic.heatmap({
+        startDate: '20230101',
+        endDate: date,
+        isAc: true,
+    });
+    const responseSubmit = await API.core.statistic.heatmap({
+        startDate: '20230101',
+        endDate: date,
+        isAc: false,
+    });
+    Toast.stdResponse(responseAc, false);
+    Toast.stdResponse(responseAc, false);
+    if (responseAc.success && responseSubmit.success) {
+        acDataDaily.value = responseAc.data.data;
+        submitDataDaily.value = responseSubmit.data.data;
+    }
+}
+
+// 计算最近30天的起始索引
+const calculateDefaultRange = (dates: string[]) => {
+    if (dates.length <= 30) {
+        // 如果总数据少于等于30天，则显示全部数据
+        return {
+            startIndex: 0,
+            endIndex: dates.length - 1
+        };
+    } else {
+        // 否则显示最后30天的数据
+        const endIndex = dates.length - 1;
+        const startIndex = Math.max(0, endIndex - 29); // 30天包括最后一天
+        return {
+            startIndex,
+            endIndex
+        };
+    }
+};
+
+const chartOption = computed(() => {
+    // 按日期排序数据
+    const sortedAcData = [...acDataDaily.value].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    const sortedSubmitData = [...submitDataDaily.value].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+    // 提取日期和数值
+    const dates = sortedAcData.map(item => item.date);
+    const acValues = sortedAcData.map(item => item.count);
+    const submitValues = sortedSubmitData.map(item => item.count);
+
+    // 计算默认显示范围
+    const { startIndex, endIndex } = calculateDefaultRange(dates);
+
+    // 计算默认缩放比例
+    const startPercent = (startIndex / dates.length) * 100;
+    const endPercent = (endIndex / dates.length) * 100;
+
+    return {
+        darkmode: "auto",
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                label: {
+                    backgroundColor: '#6a7985'
+                }
+            }
+        },
+        legend: {
+            data: ['AC', '提交'],
+            top: 0,
+            left: 'left'
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: dates,
+                axisLabel: {
+                    formatter: function (value: string) {
+                        // 格式化日期显示，只显示月份和日期
+                        const date = new Date(value);
+                        return `${date.getMonth() + 1}-${date.getDate()}`;
+                    }
+                },
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                splitLine: {
+                    show: false
+                }
+            }
+        ],
+        dataZoom: [
+            {
+                type: 'inside',
+                start: startPercent,
+                end: endPercent
+            },
+            {
+                start: startPercent,
+                end: endPercent,
+                handleSize: '110%',
+            }
+        ],
+        series: [
+            {
+                name: 'AC',
+                type: 'line',
+                stack: '总量',
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: acValues,
+                itemStyle: {
+                    color: '#5470c6'
+                },
+                smooth: true,
+                showSymbol: false,
+            },
+            {
+                name: '提交',
+                type: 'line',
+                stack: '总量',
+                areaStyle: {},
+                emphasis: {
+                    focus: 'series'
+                },
+                data: submitValues,
+                itemStyle: {
+                    color: '#91cc75'
+                },
+                smooth: true,
+                showSymbol: false,
+            }
+        ]
+    };
+});
+
 onMounted(() => {
     getUserCount();
     getPeriodData();
     getGroupCount();
+    getDailyData()
 })
 </script>
 
@@ -446,6 +644,17 @@ onMounted(() => {
         font-size: 0.8rem;
         color: var(--text-light-color);
         opacity: 0.7;
+    }
+
+    .chart-container {
+        width: 100%;
+        height: 500px;
+        margin-top: 20px;
+    }
+
+    .chart {
+        width: 100%;
+        height: 100%;
     }
 }
 </style>
