@@ -1125,6 +1125,7 @@ onMounted(() => {
                 text-wrap: nowrap;
                 letter-spacing: 10px;
                 line-height: 2;
+                user-select: none;
             }
         }
 
