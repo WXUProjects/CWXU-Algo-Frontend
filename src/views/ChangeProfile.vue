@@ -135,6 +135,11 @@ const handleCancel = () => {
 const handleConfirm = async () => {
     wait.value = true
 
+    if (formData.value.name === "" || formData.value.email === "") {
+        wait.value = false;
+        return Toast.error("请填写完整信息");
+    }
+
     const response = await API.user.profile.update(formData.value);
     Toast.stdResponse(response);
 
@@ -146,6 +151,11 @@ const handleConfirm = async () => {
 
 const handleOjConfirm = async () => {
     wait.value = true
+
+    if (ojData.value.username === "") {
+        wait.value = false;
+        return Toast.error("请填写完整信息");
+    }
 
     const response = await API.core.spider.set(ojData.value);
     Toast.stdResponse(response);

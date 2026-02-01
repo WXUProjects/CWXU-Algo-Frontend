@@ -30,8 +30,8 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/rank" class="section terminal-item" active-class="active">
-          <!-- <div class="item-prefix">></div> -->
+        <!-- <router-link to="/rank" class="section terminal-item" active-class="active">
+          <div class="item-prefix">></div>
           <font-awesome-icon icon="fa-solid fa-trophy" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -41,7 +41,7 @@
             <div class="item-description">查看排行数据</div>
           </div>
           <div class="item-indicator">▶</div>
-        </router-link>
+        </router-link> -->
 
         <router-link to="/competition" class="section terminal-item" active-class="active">
           <!-- <div class="item-prefix">></div> -->

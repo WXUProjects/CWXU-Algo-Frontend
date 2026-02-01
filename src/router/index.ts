@@ -58,11 +58,11 @@ const routes = [
     name: 'Register',
     component: () => import('@/views/Register.vue')
   },
-  {
-    path: '/rank',
-    name: 'Rank',
-    component: () => import('@/views/Rank.vue')
-  },
+  // {
+  //   path: '/rank',
+  //   name: 'Rank',
+  //   component: () => import('@/views/Rank.vue')
+  // },
   {
     path: '/dashboard',
     name: 'Dashboard',

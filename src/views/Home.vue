@@ -144,9 +144,7 @@
         </div>
       </div>
 
-      <!-- 热力图和排行榜区域 -->
       <div class="dashboard-grid">
-        <!-- 左侧：热力图 -->
         <div class="grid-left">
           <div class="section-secondary">
             <div class="section-header">
@@ -165,19 +163,16 @@
             </div>
 
             <div class="section-secondary-container">
-              <!-- 提交 -->
               <Calendar v-if="currentCalendar === 0" :data="submitData" :year="dynamicYear"
                 @changeYear="handleYearChange"></Calendar>
-              <!-- AC -->
               <Calendar v-if="currentCalendar === 1" :data="acData" :year="dynamicYear" @changeYear="handleYearChange">
               </Calendar>
             </div>
           </div>
         </div>
 
-        <!-- 右侧：排行榜 -->
         <div class="grid-right">
-          <div class="section-secondary">
+          <!-- <div class="section-secondary">
             <div class="section-header">
               <div class="header-title">
                 <span class="title-icon">
@@ -193,22 +188,18 @@
             </div>
 
             <div class="section-secondary-container">
-              <!-- 总榜 -->
               <div v-if="currentRank === 0">
                 <Rank :data="rankData"></Rank>
               </div>
-
-              <!-- 月榜 -->
               <div v-else-if="currentRank === 1">
                 <Rank :data="rankData"></Rank>
               </div>
 
-              <!-- 周榜 -->
               <div v-else-if="currentRank === 2">
                 <Rank :data="rankData"></Rank>
               </div>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

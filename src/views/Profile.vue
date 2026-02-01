@@ -93,7 +93,7 @@
                                 @changeYear="handleYearChange"></Calendar>
                         </div>
                     </div>
-                    <div class="section">
+                    <!-- <div class="section">
                         <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
@@ -122,7 +122,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                     <div class="section">
                         <div class="header">
                             <div class="header-title">

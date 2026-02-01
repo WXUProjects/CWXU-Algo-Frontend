@@ -69,7 +69,7 @@ defineExpose({
 });
 </script>
 
-<style>
+<style scoped>
 .confirmContainer {
     position: fixed;
     top: 0;
@@ -83,8 +83,9 @@ defineExpose({
     z-index: 10000;
 
     >.window {
-        background: var(--background-color-1);
+        background: var(--background-color-2);
         border-radius: 8px;
+        border: 1px solid var(--divider-color);
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         min-width: 300px;
         max-width: 500px;
