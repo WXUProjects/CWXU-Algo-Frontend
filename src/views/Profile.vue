@@ -7,6 +7,16 @@
         <div class="container" v-else>
             <div class="top">
                 <div class="left">
+                    <div class="background">
+                        <div class="flow-emoji">
+                            {{ '💯🏅🎯'.repeat(3) }}<br>
+                            {{ '🏅🎯💯'.repeat(3) }}<br>
+                            {{ '🎯💯🏅'.repeat(3) }}<br>
+                            {{ '💯🏅🎯'.repeat(3) }}<br>
+                            {{ '🏅🎯💯'.repeat(3) }}<br>
+                            {{ '🎯💯🏅'.repeat(3) }}<br>
+                        </div>
+                    </div>
                     <div class="avatar">
                         <img :src="user.avatar ? user.avatar : '/images/defaultAvatar.png'" alt="" srcset="">
                     </div>
@@ -62,6 +72,12 @@
                                     <a v-else target="_blank" :href="user.links.CodeForces">主页</a>
                                 </div>
                             </div>
+                        </div>
+                        <div class="moblie-details">
+                            <div class="item">牛客</div>
+                            <div class="item">AtCoder</div>
+                            <div class="item">CodeForces</div>
+                            <div class="item">洛谷</div>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -149,6 +165,11 @@
                             <div v-else>暂无近期动态</div>
                         </div>
                     </div>
+                    <div class="moblie-actions" v-if="jwtUserInfo?.userId == user.userId">
+                        <button class="btn def" @click="updateLog()">更新OJ数据</button>
+                        <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
+                        <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
+                    </div>
                 </div>
             </div>
             <div class="bottom">
@@ -170,6 +191,7 @@ import type { CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { platform, User, Links } from '@/utils/type';
 import Link from '@/utils/link';
+import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const route = useRoute();
 const router = useRouter();
@@ -365,6 +387,11 @@ onMounted(() => {
             width: 300px;
             gap: 20px;
 
+
+            >.background {
+                display: none;
+            }
+
             >.avatar {
                 position: relative;
                 overflow: hidden;
@@ -435,6 +462,7 @@ onMounted(() => {
             >.actions {
                 display: flex;
                 flex-direction: column;
+                width: 100%;
                 gap: 10px;
             }
         }
@@ -660,6 +688,10 @@ onMounted(() => {
     }
 }
 
+.moblie-actions {
+    display: none;
+}
+
 @media (max-width:1400px) {
     .container>.top {
         width: 100%;
@@ -691,12 +723,105 @@ onMounted(() => {
 }
 
 @media (max-width:680px) {
+    .moblie-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+
+        .btn {
+            width: 100%;
+            font-size: var(--text-base);
+        }
+    }
+
     .container>.top>.left {
-        width: auto;
+        position: relative;
+        width: 100%;
         flex-direction: column;
 
+        >.background {
+            display: block;
+            position: relative;
+            width: calc(100% + 40px);
+            height: 200px;
+            margin-top: -20px;
+            background-color: var(--background-color-2);
+            border-bottom: 2px solid var(--divider-color);
+            overflow: hidden;
+
+            >.flow-emoji {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform-origin: center center;
+                transform: translate(-50%, -50%) rotate(-10deg);
+                width: 100%;
+                font-size: 2rem;
+                text-wrap: nowrap;
+                letter-spacing: 10px;
+                line-height: 2;
+            }
+        }
+
+        >.avatar {
+            position: absolute;
+            left: 0px;
+            top: 150px;
+            overflow: hidden;
+            border-radius: 50%;
+            width: 100px;
+            aspect-ratio: 1;
+            border: 10px solid var(--background-color-2);
+            box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+
+            img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                user-select: none;
+                -webkit-user-drag: none;
+            }
+        }
+
         >.info {
+            padding-top: 75px;
             width: 100%;
+
+            >.name {
+                border-bottom: none;
+                >.name {
+                    font-size: 2rem;
+                }
+
+                >.username {
+                    font-size: 1.2rem;
+                }
+            }
+
+            >.details {
+                display: none;
+            }
+
+            >.moblie-details {
+                display: flex;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 5px;
+
+                >.item {
+                    flex-grow: 0;
+                    width: auto;
+                    background-color: var(--background-color-2);
+                    padding: 5px 10px;
+                    border-radius: 10px;
+                    font-size: var(--text-sm);
+                }
+            }
+        }
+
+        >.actions {
+            display: none;
         }
     }
 }
