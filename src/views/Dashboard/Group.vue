@@ -52,7 +52,8 @@
                         <td>{{ item.users.length }}</td>
                         <td>
                             <div class="actions">
-                                <button class="btn btn-default" @click="getUsersData(Number(item.id))">管理组成员</button>
+                                <button class="btn btn-default"
+                                    @click="getUsersData(Number(item.id)); cancelAddUser()">管理组成员</button>
                                 <button class="btn btn-danger" @click="deleteGroup(item.id)">删除组</button>
                                 <button class="btn btn-default"
                                     @click="item.edit ? item.edit = false : editItem(index)">{{
@@ -97,29 +98,46 @@
                         <span class="title-text">#{{ usersData?.id }} {{ usersData?.name }} 成员管理</span>
                     </div>
                     <div class="header-tabs">
-                        <span class="tab" @click="usersData.id = -1; showAddUser = false">退出组管理</span>
-                        <span class="tab" @click="showAddUser = !showAddUser">{{ showAddUser ? "取消添加成员" : "添加成员"
+                        <span class="tab" @click="usersData.id = -1; cancelAddUser()">退出组管理</span>
+                        <span class="tab" @click="showAddUser ? cancelAddUser() : showAddUser = true">{{ showAddUser ?
+                            "取消添加成员" : "添加成员"
                         }}</span>
                         <span class="tab" @click="getUsersData(usersData.id)" v-if="usersData">刷新</span>
                     </div>
                 </div>
                 <div class="content">
                     <div class="content-input"
-                        :style="showAddUser ? 'max-height: 180px;opacity:1' : 'max-height:0px;opacity:0;pointer-events: none;'">
-                        <div>我想换成搜索框直接搜用户姓名选择，输入id有点反人类</div>
+                        :style="showAddUser ? 'max-height: 300px;opacity:1' : 'max-height:0px;opacity:0;pointer-events: none;'">
                         <div class="inputs">
-                            <label>用户id</label>
-                            <input type="text" placeholder="请输入你要添加用户的id" v-model="userIdInput"
-                                @input="handleUserIdInput">
+                            <label>姓名</label>
+                            <input type="text" placeholder="请输入你要添加用户的姓名" @input="handleNameInput"
+                                v-model="userNameInput">
+                            <div class="actions">
+                                <button class="btn btn-danger" @click="cancelAddUser()">取消</button>
+                            </div>
                         </div>
-                        <div class="inputs">
-                            <label>确认姓名</label>
-                            <input type="text" v-model="userNameInput" style="cursor:not-allowed;" disabled="true"
-                                placeholder="自动获取姓名，请您确认">
-                        </div>
-                        <div class="actions">
-                            <button class="btn btn-default" @click="move(Number(userIdInput), usersData.id)">确定</button>
-                            <button class="btn btn-danger" @click="cancelAddUser">取消</button>
+                        <div v-if="searchUserData.length > 0">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 50px;">ID</th>
+                                        <th style="width: 100px;">姓名</th>
+                                        <th>操作</th>
+                                    </tr>
+                                </thead>
+                                <tr v-for="item in searchUserData">
+                                    <td style="width: 50px;">{{ item.userId }}</td>
+                                    <td style="width: 100px;">{{ item.name }}</td>
+                                    <td>
+                                        <div class="actions">
+                                            <button class="btn btn-primary" @click="move(item.userId, usersData.id)"
+                                                v-if="usersData.users.findIndex(user => user.userId === item.userId) === -1">添加该用户</button>
+                                            <button class="btn btn-default" v-else :disabled="true"
+                                                style="cursor: not-allowed;">已在该组</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                     <table style="margin-bottom: 10px;" v-if="usersData.users.length > 0">
@@ -157,7 +175,7 @@ import API from '@/utils/api';
 import Toast from '@/utils/toast';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import type { UserGroupListResponse, UserGroupGetResponse } from '@/utils/api';
+import type { UserGroupListResponse, UserGroupGetResponse, UserProfileGetByNameList } from '@/utils/api';
 
 const router = useRouter();
 
@@ -240,7 +258,6 @@ const move = async (userId: number, groupId: number) => {
         Toast.error('请输入用户id');
         return;
     }
-    cancelAddUser()
     const response = await API.user.profile.moveGroup({ userId, groupId });
     Toast.stdResponse(response);
 
@@ -309,62 +326,53 @@ const deleteGroup = async (groupId: number) => {
     }
 }
 
-const userIdInput = ref('');
 const userNameInput = ref('');
+const searchUserData = ref<UserProfileGetByNameList[]>([]);
 let inputTimer: number | null = null; // 存储定时器ID
 
-const getUserInfo = async (userId: number) => {
-    const response = await API.user.profile.getById(userId);
+const search = async () => {
+    const response = await API.user.profile.getByName(userNameInput.value);
+    Toast.stdResponse(response, false);
 
     if (response.success) {
-        userNameInput.value = response.data.name;
-        return response.data.name;
-    } else {
-        userNameInput.value = "该用户不存在";
-        return '';
+        searchUserData.value = response.data.list;
     }
-};
+}
 
-const handleUserIdInput = () => {
+const handleNameInput = async () => {
     if (inputTimer) {
         clearTimeout(inputTimer);
     }
 
-    // 如果输入框为空，清空用户名显示
-    if (!userIdInput.value.trim()) {
+    if (!userNameInput.value.trim()) {
         userNameInput.value = '';
+        searchUserData.value = [];
         return;
     }
 
-    // 设置新的定时器
     inputTimer = setTimeout(async () => {
-        const userId = Number(userIdInput.value);
-        if (!isNaN(userId) && userId > 0) {
-            await getUserInfo(userId);
-        }
-    }, 1000);
-};
+        await search();
+    }, 500);
+}
 
 const cancelAddUser = () => {
     showAddUser.value = false;
-    userIdInput.value = '';
     userNameInput.value = '';
-    // 清除定时器
+    searchUserData.value = [];
     if (inputTimer) {
         clearTimeout(inputTimer);
         inputTimer = null;
     }
-};
+}
 
 onMounted(() => {
     getGroupData(1);
 });
 
-onUnmounted(() => {
-    if (inputTimer) {
-        clearTimeout(inputTimer);
-    }
-});
+if (inputTimer) {
+    clearTimeout(inputTimer);
+    inputTimer = null;
+}
 </script>
 
 
@@ -419,8 +427,19 @@ onUnmounted(() => {
                 display: flex;
                 flex-direction: column;
                 gap: 10px;
+                overflow: auto;
 
                 transition: all 0.2s ease;
+
+                &::-webkit-scrollbar {
+                    width: 5px;
+                    height: 5px;
+                }
+
+                &::-webkit-scrollbar-thumb {
+                    background-color: var(--divider-color);
+                    border-radius: 5px;
+                }
             }
 
             &::-webkit-scrollbar {

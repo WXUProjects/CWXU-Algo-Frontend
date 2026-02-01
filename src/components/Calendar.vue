@@ -160,7 +160,7 @@ const emit = defineEmits<{
 }>()
 </script>
 
-<style>
+<style scoped>
 .ACCalendar {
     user-select: none;
 }
@@ -232,7 +232,7 @@ const emit = defineEmits<{
 }
 
 .dayCharts::-webkit-scrollbar {
-    height: 10px;
+    height: 5px;
 }
 
 .dayCharts::-webkit-scrollbar-thumb {
@@ -292,12 +292,13 @@ const emit = defineEmits<{
     flex-shrink: 0;
     flex-direction: column;
     padding-bottom: 5px;
+    padding-right: 5px;
     gap: 5px;
     overflow: auto;
 }
 
 .yearSelector::-webkit-scrollbar {
-    height: 10px;
+    height: 5px;
     width: 5px;
 }
 

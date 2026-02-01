@@ -139,6 +139,7 @@ table {
     border-collapse: collapse;
     font-size: var(--text-base);
     border: 1px solid var(--divider-color);
+    background-color: var(--background-color-1);
 }
 
 table th,

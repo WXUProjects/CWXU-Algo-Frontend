@@ -223,6 +223,17 @@ export interface UserGroupUser {
     [property: string]: any;
 }
 
+export interface UserProfileGetByNameResponse {
+    list: UserProfileGetByNameList[];
+    [property: string]: any;
+}
+
+export interface UserProfileGetByNameList {
+    name: string;
+    userId: number;
+    [property: string]: any;
+}
+
 const userStore = useUserStore()
 
 export default class API {
@@ -344,6 +355,31 @@ export default class API {
                         stdRes.data = response.data;
                     }
                 } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "获取用户信息失败";
+                }
+                return stdRes;
+            },
+            getByName: async (name: string): Promise<stdResponse<UserProfileGetByNameResponse>> => {
+                const stdRes: stdResponse<UserProfileGetByNameResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        list: []
+                    }
+                }
+                try {
+                    const response = await axios.get<UserProfileGetByNameResponse>("/api/user/profile/get-by-name", {
+                        params: {
+                            name,
+                        }
+                    });
+                    if (response.status === 200) { 
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "获取用户信息成功";
+                        stdRes.data = response.data;
+                    }
+                } catch (error:any) {
                     console.error(error);
                     stdRes.message = "获取用户信息失败";
                 }
