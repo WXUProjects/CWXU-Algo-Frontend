@@ -84,6 +84,8 @@ defineExpose({
   display: flex;
   flex-direction: column;
   gap: 10px;
+  /* 鼠标事件穿透，临时解决移动端遮挡问题 */
+  pointer-events: none;
 }
 
 .toast {
