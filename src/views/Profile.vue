@@ -460,6 +460,10 @@ onMounted(() => {
                         justify-content: space-between;
                     }
                 }
+
+                >.moblie-details {
+                    display: none;
+                }
             }
 
             >.actions {
