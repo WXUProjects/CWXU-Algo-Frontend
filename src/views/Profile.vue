@@ -96,6 +96,64 @@
                                 <span class="title-icon">
                                     <font-awesome-icon icon="fa-solid fa-chart-line" />
                                 </span>
+                                <span class="title-text">数据</span>
+                            </div>
+                            <div class="header-tabs">
+                                <span class="tab" @click="currentData = 0"
+                                    :class="currentData === 0 ? 'active' : ''">提交</span>
+                                <span class="tab" @click="currentData = 1"
+                                    :class="currentData === 1 ? 'active' : ''">AC</span>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div v-if="currentData === 0" class="statisticItems">
+                                <div class="statisticItem" v-for="item in data.submit">
+                                    <div class="title">{{ item.title }}</div>
+                                    <div class="barContainer">
+                                        <div class="bar"
+                                            :style="'width:' + ((item.value / (item.value + item.ave)) * 100) + '%'">
+                                        </div>
+                                        <div class="ave"
+                                            :style="'left:' + ((item.ave / (item.value + item.ave)) * 100) + '%'">平均值:{{
+                                                item.ave.toFixed(2) }}</div>
+                                        <div class="cursor"
+                                            :style="'left:' + ((item.ave / (item.value + item.ave)) * 100) + '%'"></div>
+                                    </div>
+                                    <div class="value">{{ item.value.toString().includes('.') ?
+                                        item.value.toFixed(2) : item.value }}</div>
+                                    <div class="grow" :class="getGrowClass(item.grow)">{{ item.grow ? item.grow > 0 ?
+                                        '+' + item.grow : item.grow : '' }}
+                                    </div>
+                                </div>
+                            </div>
+                            <div v-else class="statisticItems">
+                                <div class="statisticItem" v-for="item in data.ac">
+                                    <div class="title">{{ item.title }}</div>
+                                    <div class="barContainer">
+                                        <div class="bar"
+                                            :style="'width:' + ((item.value / (item.value + item.ave)) * 100) + '%'">
+                                        </div>
+                                        <div class="ave"
+                                            :style="'left:' + ((item.ave / (item.value + item.ave)) * 100) + '%'">平均值:{{
+                                                item.ave.toFixed(2) }}</div>
+                                        <div class="cursor"
+                                            :style="'left:' + ((item.ave / (item.value + item.ave)) * 100) + '%'"></div>
+                                    </div>
+                                    <div class="value">{{ item.value.toString().includes('.') ?
+                                        item.value.toFixed(2) : item.value }}</div>
+                                    <div class="grow" :class="getGrowClass(item.grow)">{{ item.grow ? item.grow > 0 ?
+                                        '+' + item.grow : item.grow : '' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="header">
+                            <div class="header-title">
+                                <span class="title-icon">
+                                    <font-awesome-icon icon="fa-solid fa-chart-line" />
+                                </span>
                                 <span class="title-text">热力图</span>
                             </div>
                             <div class="header-tabs">
@@ -190,17 +248,17 @@ import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
 import API from '@/utils/api';
-import type { CoreSubmitLogGetByIdData } from '@/utils/api';
+import type { CoreStatisticPeriodData, CoreStatisticPeriodResponse, CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { platform, User, Links } from '@/utils/type';
 import Link from '@/utils/link';
-import { width } from '@fortawesome/free-solid-svg-icons/fa0';
 
 const route = useRoute();
 const router = useRouter();
 const userStore = useUserStore();
 
 const currentCalendar = ref(0);
+const currentData = ref(0)
 
 const loading = ref({
     statue: true,
@@ -283,6 +341,7 @@ const getUserInfo = async () => {
 
     getSubmitInfo();
     getHeatmapData();
+    getData();
 }
 
 interface HeatmapData {
@@ -329,6 +388,222 @@ const getHeatmapData = async () => {
 
     if (response2.success) {
         acData.value = response2.data.data.filter(item => item.count > 0);
+    }
+}
+
+interface Unit {
+    title: string;
+    value: number;
+    ave: number;
+    grow?: number;
+}
+
+interface Data {
+    ac: {
+        today: Unit,
+        thisWeek: Unit,
+        thisMonth: Unit,
+        thisYear: Unit,
+        total: Unit,
+        percentage: Unit
+    },
+    submit: {
+        today: Unit,
+        thisWeek: Unit,
+        thisMonth: Unit,
+        thisYear: Unit,
+        total: Unit,
+        percentage: Unit
+    }
+}
+
+const data = ref<Data>({
+    ac: {
+        today: {
+            title: "今日AC",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        },
+        thisWeek: {
+            title: "本周AC",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        thisMonth: {
+            title: "本月AC",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        thisYear: {
+            title: "今年AC",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        total: {
+            title: "总AC",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        },
+        percentage: {
+            title: "AC率",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        }
+    },
+    submit: {
+        today: {
+            title: "今日提交",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        },
+        thisWeek: {
+            title: "本周提交",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        thisMonth: {
+            title: "本月提交",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        thisYear: {
+            title: "今年提交",
+            value: 0,
+            ave: 0,
+            grow: 0
+        },
+        total: {
+            title: "总提交",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        },
+        percentage: {
+            title: "AC率",
+            value: 0,
+            ave: 0,
+            grow: undefined
+        }
+    },
+})
+
+const getGrowClass = (grow: number | undefined) => {
+    if (grow) {
+        if (grow === 0) {
+            return "equal";
+        } else if (grow > 0) {
+            return "up";
+        } else if (grow < 0) {
+            return "down";
+        }
+    }
+}
+
+const getData = async () => {
+    const userId = user.value.userId
+
+    const userResponse = await API.core.statistic.period(userId);
+    const globalResponse = await API.core.statistic.period(-1);
+    const userCountResponse = await API.user.profile.list(1);
+
+    Toast.stdResponse(userResponse, false);
+    Toast.stdResponse(globalResponse, false);
+    Toast.stdResponse(userCountResponse, false);
+
+    if (userResponse.success && globalResponse.success && userCountResponse.success) {
+        const userData: CoreStatisticPeriodData = userResponse.data.data;
+        const globalData: CoreStatisticPeriodData = globalResponse.data.data;
+        const userCount: number = userCountResponse.data.total;
+        data.value = {
+            ac: {
+                today: {
+                    title: "今日AC",
+                    value: Number(userData.ac.today),
+                    ave: globalData.ac.today / userCount,
+                    grow: undefined
+                },
+                thisWeek: {
+                    title: "本周AC",
+                    value: Number(userData.ac.thisWeek),
+                    ave: globalData.ac.thisWeek / userCount,
+                    grow: userData.ac.thisWeek - userData.ac.lastWeek
+                },
+                thisMonth: {
+                    title: "本月AC",
+                    value: Number(userData.ac.thisMonth),
+                    ave: globalData.ac.thisMonth / userCount,
+                    grow: userData.ac.thisMonth - userData.ac.lastMonth
+                },
+                thisYear: {
+                    title: "今年AC",
+                    value: Number(userData.ac.thisYear),
+                    ave: globalData.ac.thisYear / userCount,
+                    grow: userData.ac.thisYear - userData.ac.lastYear
+                },
+                total: {
+                    title: "总AC ",
+                    value: Number(userData.ac.total),
+                    ave: globalData.ac.total / userCount,
+                    grow: undefined
+                },
+                percentage: {
+                    title: "AC率 ",
+                    value: userData.ac.total / userData.submit.total * 100,
+                    ave: globalData.ac.total / globalData.submit.total * 100,
+                    grow: undefined
+                }
+            },
+            submit: {
+                today: {
+                    title: "今日提交",
+                    value: Number(userData.submit.today),
+                    ave: globalData.submit.today / userCount,
+                    grow: undefined
+                },
+                thisWeek: {
+                    title: "本周提交",
+                    value: Number(userData.submit.thisWeek),
+                    ave: globalData.submit.thisWeek / userCount,
+                    grow: userData.submit.thisWeek - userData.submit.lastWeek
+                },
+                thisMonth: {
+                    title: "本月提交",
+                    value: Number(userData.submit.thisMonth),
+                    ave: globalData.submit.thisMonth / userCount,
+                    grow: userData.submit.thisMonth - userData.submit.lastMonth
+                },
+                thisYear: {
+                    title: "今年提交",
+                    value: Number(userData.submit.thisYear),
+                    ave: globalData.submit.thisYear / userCount,
+                    grow: userData.submit.thisYear - userData.submit.lastYear
+                },
+                total: {
+                    title: "总提交",
+                    value: Number(userData.submit.total),
+                    ave: globalData.submit.total / userCount,
+                    grow: undefined
+                },
+                percentage: {
+                    title: "AC率",
+                    value: userData.ac.total / userData.submit.total * 100,
+                    ave: globalData.ac.total / globalData.submit.total * 100,
+                    grow: undefined
+                }
+            }
+        }
+
+        console.log(data.value);
+
     }
 }
 
@@ -697,6 +972,89 @@ onMounted(() => {
 
 .moblie-actions {
     display: none;
+}
+
+.statisticItems {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    >.statisticItem {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+
+        >.title {
+            font-size: var(--text-base);
+            width: 80px;
+        }
+
+        >.barContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            flex-grow: 1;
+            flex-direction: row;
+            position: relative;
+            background-color: var(--background-color-2);
+
+            >.bar {
+                width: 0%;
+                position: relative;
+                height: 10px;
+                background-color: var(--neon-cyan);
+                transition: all 1s ease-in-out;
+            }
+
+            >.ave {
+                font-size: var(--text-xs);
+                text-wrap: nowrap;
+                position: absolute;
+                z-index: 1;
+                left: 50%;
+                top: -100%;
+                transform: translate(-50%, -50%);
+                transition: all 1s ease-in-out;
+            }
+
+            >.cursor {
+                position: absolute;
+                z-index: 2;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+                width: 2px;
+                height: 12px;
+                background-color: red;
+                transition: all 1s ease-in-out;
+            }
+        }
+
+        >.value {
+            font-size: var(--text-base);
+            background-color: var(--background-color-1);
+            width: 50px;
+        }
+
+        >.grow {
+            font-size: var(--text-base);
+            width: 50px;
+
+            &.up {
+                color: red;
+            }
+
+            &.down {
+                color: green;
+            }
+
+            &.equal {
+                color: var(--text-light-color);
+            }
+        }
+    }
 }
 
 @media (max-width:1400px) {
