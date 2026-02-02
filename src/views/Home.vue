@@ -86,7 +86,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last year</div>
             </div>
@@ -111,7 +111,7 @@
                 :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last month</div>
             </div>
@@ -135,7 +135,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last week</div>
             </div>
@@ -167,6 +167,77 @@
                 @changeYear="handleYearChange"></Calendar>
               <Calendar v-if="currentCalendar === 1" :data="acData" :year="dynamicYear" @changeYear="handleYearChange">
               </Calendar>
+            </div>
+          </div>
+          <div class="section-secondary">
+            <div class="section-header">
+              <div class="header-title">
+                <span class="title-icon">
+                  <font-awesome-icon icon="fa-solid fa-star" />
+                </span>
+                <span class="title-text">快捷入口</span>
+              </div>
+            </div>
+
+            <div class="section-secondary-container">
+              <div class="enterCardGrid">
+                <a class="card" href="https://ac.nowcoder.com/" target="_blank">
+                  <div class="icon">
+                    <img src="/images/ac.nowcoder.webp" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">牛客竞赛</div>
+                    <div class="desc">专业的编程算法训练平台</div>
+                  </div>
+                </a>
+                <a class="card" href="https://www.nowcoder.com/problem/tracker#/daily" target="_blank">
+                  <div class="icon">
+                    <img src="/images/www.nowcoder.webp" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">牛客tracker</div>
+                    <div class="desc">牛客tracker</div>
+                  </div>
+                </a>
+                <a class="card" href="https://www.luogu.com.cn/" target="_blank">
+                  <div class="icon">
+                    <img src="https://fecdn.luogu.com.cn/columba/static.325908fec383795b.logo-single-color.svg" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">洛谷</div>
+                    <div class="desc">计算机科学教育新生态</div>
+                  </div>
+                </a>
+                <a class="card" href="https://atcoder.jp/home" target="_blank">
+                  <div class="icon">
+                    <img src="https://img.atcoder.jp/assets/logo.png" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">AtCoder</div>
+                    <div class="desc">AtCoder is a programming contest site for anyone from beginners to experts</div>
+                  </div>
+                </a>
+                <a class="card" href="https://codeforces.com/" target="_blank">
+                  <div class="icon">
+                    <img src="https://codeforces.com/codeforces.org/s/52348/android-icon-192x192.png" alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">CodeForces</div>
+                    <div class="desc">全球最大算法平台</div>
+                  </div>
+                </a>
+                <a class="card" href="https://leetcode.cn/" target="_blank">
+                  <div class="icon">
+                    <img
+                      src="https://assets.leetcode.cn/aliyun-lc-upload/uploaded_files/2021/03/73c9f099-abbe-4d94-853f-f8abffd459cd/leetcode.png"
+                      alt="">
+                  </div>
+                  <div class="info">
+                    <div class="title">力扣</div>
+                    <div class="desc">全球极客挚爱的技术成长平台</div>
+                  </div>
+                </a>
+              </div>
             </div>
           </div>
         </div>
@@ -627,6 +698,9 @@ onMounted(() => {
 
 .grid-left,
 .grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   min-width: 0;
   width: 100%;
 }
@@ -691,6 +765,67 @@ onMounted(() => {
 
 .analyseItem {
   font-size: var(--text-base);
+}
+
+.enterCardGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+
+  >.card {
+    color: var(--text-default-color);
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--divider-color);
+    gap: 10px;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.01);
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      border-color: var(--neon-cyan);
+    }
+
+    >.icon {
+      flex-shrink: 0;
+      width: 50px;
+      height: 50px;
+      overflow: hidden;
+      border: 1px solid var(--divider-color);
+      /* background-color: var(--background-color-3); */
+      border-radius: 10px;
+
+      >img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    >.info {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 150px;
+
+      >.title {
+        font-size: var(--text-base);
+      }
+
+      >.desc {
+        font-size: var(--text-xs);
+        color: var(--text-light-color);
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+    }
+  }
 }
 
 /* 响应式设计 */
