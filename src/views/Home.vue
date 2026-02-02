@@ -86,7 +86,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last year</div>
             </div>
@@ -111,7 +111,7 @@
                 :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last month</div>
             </div>
@@ -135,7 +135,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last week</div>
             </div>
@@ -212,13 +212,13 @@ import BaseLayout from '@/components/BaseLayout.vue';
 import Calendar from '@/components/Calendar.vue';
 // import Rank from '@/components/Rank.vue';
 import JWT from '@/utils/jwt';
-import API, { type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
+import API, { type CoreStatisticHeatmapRequest, type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
 import Toast from '@/utils/toast';
 import Bot from '@/utils/bot';
+import { useUserStore } from '@/stores/user';
 
-const isLogin = computed(() => {
-  return JWT.isValid();
-})
+const userStore = useUserStore()
+const isLogin = computed(() => userStore.isLogin)
 
 interface HeatmapData {
   date: string;
@@ -238,29 +238,29 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
-  // 如果用户未登录，返回undefined，正好请求全局数据
-  const userId = JWT.getUserInfo()?.userId;
   const dateObj = new Date();
   const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
 
-  const response1 = await API.core.statistic.heatmap({
-    userId,
+  let request: CoreStatisticHeatmapRequest = {
     startDate: "20230101",
     endDate: date,
     isAc: false
-  })
+  }
+
+  if (isLogin) {
+    request.userId = JWT.getUserInfo()!.userId
+  }
+
+  const response1 = await API.core.statistic.heatmap(request)
   Toast.stdResponse(response1, false);
 
   if (response1.success) {
     submitData.value = response1.data.data.filter(item => item.count > 0);
   }
 
-  const response2 = await API.core.statistic.heatmap({
-    userId,
-    startDate: "20230101",
-    endDate: date,
-    isAc: true
-  })
+  request.isAc = true
+
+  const response2 = await API.core.statistic.heatmap(request)
   Toast.stdResponse(response2, false);
 
   if (response2.success) {

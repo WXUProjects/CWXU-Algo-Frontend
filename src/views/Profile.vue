@@ -1,10 +1,7 @@
 <template>
     <BaseLayout>
         <Confirm ref="confirmRef" :message="'确定要退出登录吗？'" @confirm="logout" />
-        <div class="loading" v-if="loading.statue">
-            <div>{{ loading.info }}</div>
-        </div>
-        <div class="container" v-else>
+        <div class="container">
             <div class="top">
                 <div class="left">
                     <div class="background">
@@ -22,10 +19,10 @@
                     </div>
                     <div class="info">
                         <div class="name">
-                            <div class="name">{{ user.name }}</div>
-                            <div class="username">{{ user.username }}</div>
+                            <div class="name">{{ user.name || "萌新" }}</div>
+                            <div class="username">{{ user.username || "noob" }}</div>
                         </div>
-                        <div class="details">
+                        <div class="details" v-if="user">
                             <div class="item">
                                 <div class="name">AtCoder</div>
                                 <div class="link">
@@ -248,9 +245,9 @@ import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
 import API from '@/utils/api';
-import type { CoreStatisticPeriodData, CoreStatisticPeriodResponse, CoreSubmitLogGetByIdData } from '@/utils/api';
+import type { CoreStatisticPeriodData, CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
-import type { platform, User, Links } from '@/utils/type';
+import type { User } from '@/utils/type';
 import Link from '@/utils/link';
 import Bot from '@/utils/bot';
 
@@ -262,11 +259,6 @@ const userStore = useUserStore();
 
 const currentCalendar = ref(0);
 const currentData = ref(0)
-
-const loading = ref({
-    statue: true,
-    info: "加载中..."
-});
 
 const jwtUserInfo = JWT.getUserInfo();
 
@@ -335,9 +327,6 @@ const getUserInfo = async () => {
 
     if (response.success) {
         user.value = response.data;
-        loading.value.statue = false;
-    } else {
-        loading.value.info = response.message;
     }
 
     Toast.stdResponse(response, false);
@@ -625,14 +614,11 @@ const logout = async () => {
 }
 
 onMounted(() => {
+    // 该页面有登录路由守卫
     if (route.query.id) {
         user.value.userId = Number(route.query.id);
     } else {
-        if (!JWT.isValid()) {
-            window.location.href = "/login";
-        } else {
-            user.value.userId = JWT.getUserInfo()?.userId || 0;
-        }
+        user.value.userId = JWT.getUserInfo()!.userId;
     }
     getUserInfo()
 })

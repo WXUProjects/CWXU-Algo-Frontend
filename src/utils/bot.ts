@@ -79,7 +79,7 @@ class Bot {
             if (userStore.isLogin) {
                 const user = userStore.info as User
 
-                if (user.spiders.length === 0) {
+                if (user && user.spiders.length === 0) {
                     return say("绑定OJ平台后才可以查看您的数据哦")
                 }
                 return "";
