@@ -4,12 +4,12 @@
 
 import JWT from "./jwt";
 import Toast from "./toast";
-import Ramdom from "./random";
 import { useBotLogStore } from "@/stores/bot-log";
-import type { JwtPayload } from "@/utils/jwt";
-import API from "./api";
 import { useUserStore } from "@/stores/user";
 import type { User } from "./type";
+import type { CoreStatisticPeriodData } from "./api";
+import Analyse from "./analyse";
+import Random from "./random";
 
 const say = (message: string) => {
     const botLogStore = useBotLogStore();
@@ -21,13 +21,21 @@ const say = (message: string) => {
 }
 
 const randomSay = (data: string[]) => {
-    const message = data[Math.floor(Math.random() * data.length)] as string;
+    const message = Random.choice(data);
     return say(message);
 }
 
 class Bot {
     static analyse = {
-        period: () => { }
+        period: (data: CoreStatisticPeriodData) => {
+            if (!JWT.isValid()) {
+                return "";
+            }
+
+            const analyse = Analyse.period(data);
+
+            return randomSay(analyse);
+        }
     }
     static getHitokoto = () => {
         const data = [

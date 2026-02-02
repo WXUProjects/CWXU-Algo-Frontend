@@ -86,7 +86,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last year</div>
             </div>
@@ -111,7 +111,7 @@
                 :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last month</div>
             </div>
@@ -135,7 +135,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
-                }}</span>
+                  }}</span>
               </div>
               <div class="footer-info">VS last week</div>
             </div>
@@ -200,6 +200,20 @@
               </div>
             </div>
           </div> -->
+          <div class="section-secondary">
+            <div class="section-header">
+              <div class="header-title">
+                <span class="title-icon">
+                  <font-awesome-icon icon="fa-solid fa-trophy" />
+                </span>
+                <span class="title-text">数据分析</span>
+              </div>
+            </div>
+
+            <div class="section-secondary-container">
+              <div v-for="item in analyse">{{ item }}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -214,7 +228,7 @@ import Calendar from '@/components/Calendar.vue';
 import JWT from '@/utils/jwt';
 import API, { type CoreStatisticHeatmapRequest, type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
 import Toast from '@/utils/toast';
-import Bot from '@/utils/bot';
+import Analyse from '@/utils/analyse';
 import { useUserStore } from '@/stores/user';
 
 const userStore = useUserStore()
@@ -224,6 +238,8 @@ interface HeatmapData {
   date: string;
   count: number;
 }
+
+const analyse = ref<string[]>([])
 
 const submitData = ref<HeatmapData[]>([])
 const acData = ref<HeatmapData[]>([])
@@ -326,6 +342,7 @@ const getPeriodData = async () => {
   Toast.stdResponse(response, false);
 
   periodData.value = response.data.data
+  analyse.value = Analyse.period(response.data.data)
 }
 
 /*
