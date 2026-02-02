@@ -252,6 +252,9 @@ import type { CoreStatisticPeriodData, CoreStatisticPeriodResponse, CoreSubmitLo
 import Toast from '@/utils/toast';
 import type { platform, User, Links } from '@/utils/type';
 import Link from '@/utils/link';
+import Bot from '@/utils/bot';
+
+Bot.tip.addOjTip();
 
 const route = useRoute();
 const router = useRouter();
@@ -601,9 +604,6 @@ const getData = async () => {
                 }
             }
         }
-
-        console.log(data.value);
-
     }
 }
 
@@ -618,8 +618,7 @@ const showLogoutConfirm = () => {
 
 const logout = async () => {
     JWT.clearToken()
-    userStore.setLoginStatus(false)
-    userStore.updateAdminStatus()
+    userStore.syncStatus()
 
     // 跳转到登录页面
     router.push('/login')

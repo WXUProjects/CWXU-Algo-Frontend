@@ -1,3 +1,7 @@
+/**
+ * 常用类型
+*/
+
 export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
 
 export type Links = {

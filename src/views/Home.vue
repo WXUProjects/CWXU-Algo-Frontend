@@ -210,10 +210,11 @@
 import { computed, onMounted, ref } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue';
 import Calendar from '@/components/Calendar.vue';
-import Rank from '@/components/Rank.vue';
+// import Rank from '@/components/Rank.vue';
 import JWT from '@/utils/jwt';
 import API, { type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
 import Toast from '@/utils/toast';
+import Bot from '@/utils/bot';
 
 const isLogin = computed(() => {
   return JWT.isValid();
@@ -237,6 +238,7 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
+  // 如果用户未登录，返回undefined，正好请求全局数据
   const userId = JWT.getUserInfo()?.userId;
   const dateObj = new Date();
   const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());

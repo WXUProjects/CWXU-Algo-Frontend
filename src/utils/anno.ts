@@ -1,3 +1,7 @@
+/**
+ * 管理公告工具类
+*/
+
 import type { Anno } from "./type";
 
 // 模拟获取数据

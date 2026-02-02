@@ -1,10 +1,15 @@
+/**
+ * 集成API请求，通过类似API.user.auth.login(request)的方法进行API请求
+ * 统一响应结构(stdResponse)，简化错误处理
+*/
+
 import axios from 'axios'
 import JWT from '../utils/jwt'
-import Vaildate from '../utils/vaildate'
+import Validate from '../utils/validate';
 import { useUserStore } from '@/stores/user'
 import { hashPassword } from '@/utils/hash'
 import Link from './link';
-import type { User as UserProfileGetByIdResponse, Spider, platform } from './type'
+import type { User as UserProfileGetByIdResponse, platform } from './type'
 
 export interface stdResponse<T = any> {
     message: string;
@@ -234,8 +239,6 @@ export interface UserProfileGetByNameList {
     [property: string]: any;
 }
 
-const userStore = useUserStore()
-
 export default class API {
     static user = {
         auth: {
@@ -256,8 +259,8 @@ export default class API {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "登录成功";
                         JWT.setNewToken(response.data.jwtToken);
-                        userStore.setLoginStatus(true);
-                        userStore.updateAdminStatus();
+                        const userStore = useUserStore()
+                        userStore.syncStatus()
                     } else {
                         stdRes.message = response.data.message || "登录失败";
                     }
@@ -279,7 +282,7 @@ export default class API {
                     return stdRes;
                 }
 
-                if (!Vaildate.checkEmali(request.email)) {
+                if (!Validate.checkEmali(request.email)) {
                     stdRes.message = "请输入有效邮箱";
                     return stdRes;
                 }
@@ -374,12 +377,12 @@ export default class API {
                             name,
                         }
                     });
-                    if (response.status === 200) { 
+                    if (response.status === 200) {
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取用户信息成功";
                         stdRes.data = response.data;
                     }
-                } catch (error:any) {
+                } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取用户信息失败";
                 }
@@ -397,12 +400,13 @@ export default class API {
                     return stdRes;
                 }
 
-                if (!Vaildate.checkEmali(request.email)) {
+                if (!Validate.checkEmali(request.email)) {
                     stdRes.message = "请输入有效邮箱";
                     return stdRes;
                 }
 
-                if (request.email === '' || request.name === '' || request.avatar === '') {
+                // 不检查头像，空表示移除头像
+                if (request.email === '' || request.name === '') {
                     stdRes.message = "输入不能为空";
                     return stdRes;
                 }
@@ -416,6 +420,8 @@ export default class API {
                         }
                     });
                     if (response.status === 200) {
+                        const userStore = useUserStore();
+                        userStore.syncStatus();
                         stdRes.success = true;
                         stdRes.message = response.data.message || "获取用户信息成功";
                         stdRes.data = response.data;
@@ -686,6 +692,11 @@ export default class API {
                     return stdRes;
                 }
 
+                if(request.username === ""){
+                    stdRes.message = "用户名不能为空";
+                    return stdRes;
+                }
+
                 try {
                     const response = await axios.post<CodeSpiderSetResponse>('/api/core/spider/set', request, {
                         headers: {
@@ -817,6 +828,122 @@ export default class API {
                     console.error(error);
                     stdRes.message = "获取统计数据失败";
                 }
+                return stdRes;
+            }
+        }
+    }
+}
+
+// 示例
+// 层级结构与接口文档保持一致，方便调用
+/**
+ * 接口示例
+ * parent
+ *    child
+ *        function-name: POST http://api.example.com/v1/parent/child/function-name
+ *            Authorization: 需要
+ *            Request:{
+ *                 paramA: number 必选
+ *                 paramB: string 必选
+ *            }
+ *            Response:{
+ *                 success: boolean
+ *                 message: string
+ *                 data: {
+ *                     resultA: number
+ *                     resultB: string
+ *                 }
+ *            }
+*/
+
+// 定义数据类型
+
+// 请求数据类型
+interface ParentChildFunctionNameRequest {
+    paramA: number;
+    paramB: string;
+}
+
+
+// 响应数据类型
+interface ParentChildFunctionNameReponse {
+    success: boolean;
+    message: string;
+    data: {
+        resultA: number;
+        resultB: string;
+    };
+}
+
+// 标准响应中数据的类型
+interface ParentChildFunctionNameData {
+    resultA: number;
+    resultB: string;
+}
+
+// 实际应当export该类
+// 这里为了演示没有export
+class APIExample {
+    static parent = {
+        child: {
+            // 参数可以是一个请求对象或者单独类型的多个参数
+            // functionName: async (paramA:number, paramB:string): Promise<stdResponse<ParentChildFunctionNameData>> => {
+            // 如果api不响应数据，返回类型的stdResponse不需要泛型
+            // functionName: async (paramA:number, paramB:string): Promise<stdResponse> => {
+            functionName: async (request: ParentChildFunctionNameRequest): Promise<stdResponse<ParentChildFunctionNameData>> => {
+                // 第一步：定义默认响应
+                const stdRes: stdResponse<ParentChildFunctionNameData> = {
+                    message: "",
+                    success: false,
+                    // 如果不响应数据，则返回空对象
+                    // data: {}
+                    data: {
+                        resultA: 0,
+                        resultB: ""
+                    }
+                }
+                // 第二步：数据校验(如果需要)
+                if (request.paramB === "") {
+                    stdRes.message = "参数B不能为空";
+                    return stdRes;
+                }
+                // 第三步：trycatch
+                try {
+                    const response = await axios.post<ParentChildFunctionNameReponse>('/api/parent/child/function-name', request, {
+                        headers: {
+                            Authorization: `Bearer ${JWT.token}` // 如果需要认证
+                        }
+                    })
+                    // 由于后端没有标准响应模板，所以这里需要自行判断
+                    // 如果响应不包含成功提示，使用response.status判断成功
+                    // if (response.status === 200) {
+                    //     // 处理响应数据
+                    //     stdRes.data = response.data.data
+                    //
+                    //     // 设置成功状态
+                    //     stdRes.success = true;
+                    //     stdRes.message = response.data.message || "成功信息"
+                    // } else {
+                    //     stdRes.success = false;
+                    //     stdRes.message = response.data.message || "失败信息"
+                    // }
+                    // 否则使用响应成功提示判断
+                    if (response.data.success) {
+                        // 处理响应数据
+                        stdRes.data = response.data.data
+
+                        // 设置成功状态
+                        stdRes.success = true;
+                        stdRes.message = response.data.message || "成功信息"
+                    } else {
+                        stdRes.success = false;
+                        stdRes.message = response.data.message || "失败信息"
+                    }
+                } catch (error: any) {
+                    console.error(error);
+                    stdRes.message = "失败信息"
+                }
+                // 最后一步，返回标准响应
                 return stdRes;
             }
         }

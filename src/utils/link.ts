@@ -1,3 +1,7 @@
+/**
+ * 格式化链接工具类
+*/ 
+
 export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
 
 export default class Link {

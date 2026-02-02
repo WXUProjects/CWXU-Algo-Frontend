@@ -1,3 +1,7 @@
+/**
+ * 通知管理工具类
+*/
+
 import type { stdResponse } from "./api";
 
 export default class Toast {
@@ -25,6 +29,11 @@ export default class Toast {
         }));
     }
 
+    /**
+     * @brief 自动处理API工具类产生的标准响应
+     * @param response 标准响应
+     * @param showSuccess 是否处理成功响应
+    */
     static stdResponse = (response: stdResponse, showSuccess: boolean = true) => {
         if (response.success) {
             if (showSuccess) {

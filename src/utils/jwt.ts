@@ -1,3 +1,7 @@
+/**
+ * jwt管理工具类
+*/
+
 import { jwtDecode } from 'jwt-decode';
 
 export interface JwtPayload {

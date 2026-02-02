@@ -1,14 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import JWT from '@/utils/jwt'
+import { useUserStore } from '@/stores/user'
 // 登录守卫路由
 const loginGuard = (to: any, from: any, next: any) => {
-  if (JWT.isValid()) {
+  const userStore = useUserStore()
+  if (userStore.isLogin) {
     next()
   } else {
     next({
       name: 'Login',
-      query: { 
-        redirect: to.fullPath 
+      query: {
+        redirect: to.fullPath
       }
     })
   }
@@ -16,7 +18,8 @@ const loginGuard = (to: any, from: any, next: any) => {
 
 // 管理员守卫路由
 const adminGuard = (to: any, from: any, next: any) => {
-  if (JWT.isValid() && JWT.getUserInfo()?.roleIds.includes(1)) {
+  const userStore = useUserStore()
+  if (userStore.isAdmin) {
     next()
   } else {
     next({

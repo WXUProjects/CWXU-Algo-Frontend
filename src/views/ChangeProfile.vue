@@ -6,7 +6,6 @@
             </div>
             <div class="info">
                 <div class="title">修改个人资料</div>
-                <div class="desc">修改个人资料需要重新登录后生效</div>
                 <div class="item">
                     <label>姓名</label>
                     <input type="text" placeholder="Name" v-model="formData.name">
@@ -60,29 +59,33 @@
 </template>
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue';
-import JWT from '@/utils/jwt';
-import { onMounted, ref } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import API from '@/utils/api';
 import type { UserProfileUpdateRequest as FormData } from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { platform } from '@/utils/link';
+import { useUserStore } from '@/stores/user';
+import type { User } from '@/utils/type';
 
 const router = useRouter();
 const route = useRoute();
 
-const userId = JWT.getUserInfo()?.userId || 0;
+const userStore = useUserStore();
+
+// 该页面配置了路由守卫，user一定不为null
+const user = computed(() => userStore.info as User);
 const oj = route.query.oj;
 
 const formData = ref<FormData>({
-    userId: 0,
-    name: "",
-    email: "",
-    avatar: ""
+    userId: user.value.userId,
+    name: user.value.name,
+    email: user.value.email,
+    avatar: user.value.avatar
 })
 
 const ojData = ref({
-    userId: userId,
+    userId: user.value.userId,
     platform: "" as platform,
     username: ""
 })
@@ -107,24 +110,6 @@ switch (oj) {
         ojData.value.platform = "AtCoder"
 }
 
-const getUserInfo = async () => {
-    const jwtUser = JWT.getUserInfo();
-    if (jwtUser !== null) {
-        const response = await API.user.profile.getById(jwtUser.userId);
-
-        if (response.success) {
-            formData.value.avatar = response.data.avatar;
-            formData.value.name = response.data.name;
-            formData.value.email = response.data.email;
-            formData.value.userId = response.data.userId;
-        }
-
-        Toast.stdResponse(response, false);
-    } else {
-        Toast.warn("请先登录");
-    }
-}
-
 // 如果wait为true，则禁用按钮
 const wait = ref<boolean>(false)
 
@@ -135,37 +120,20 @@ const handleCancel = () => {
 const handleConfirm = async () => {
     wait.value = true
 
-    if (formData.value.name === "" || formData.value.email === "") {
-        wait.value = false;
-        return Toast.error("请填写完整信息");
-    }
-
     const response = await API.user.profile.update(formData.value);
     Toast.stdResponse(response);
 
     wait.value = false
-
-    // 重新获取用户信息
-    getUserInfo();
 }
 
 const handleOjConfirm = async () => {
     wait.value = true
-
-    if (ojData.value.username === "") {
-        wait.value = false;
-        return Toast.error("请填写完整信息");
-    }
 
     const response = await API.core.spider.set(ojData.value);
     Toast.stdResponse(response);
 
     wait.value = false
 }
-
-onMounted(() => {
-    getUserInfo();
-})
 </script>
 <style scoped>
 .addOj,

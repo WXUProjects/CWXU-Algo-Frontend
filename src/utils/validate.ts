@@ -1,4 +1,4 @@
-export default class Vaildate {
+export default class Validate {
     static checkEmali(email: string): boolean {
         if (!email) {
             return false;

@@ -212,15 +212,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
 import router from './router'
 import ToastNotification from './components/ToastNotification.vue'
-import Toast from './utils/toast'
 import type { Anno } from './utils/type'
 import AnnoStore from './utils/anno'
+import Bot from './utils/bot'
+import Random from './utils/random'
 
 const route = useRoute()
 
@@ -294,19 +295,6 @@ const setTheme = (theme: 'dark' | 'light') => {
 
 const currentTheme = ref<'dark' | 'light'>(getTheme())
 
-const hitokotoList = [
-  "今天要努力刷绿墙ヾ(*´∀ ˋ*)ﾉ",
-  "努力是成功的阶梯",
-  "今天要努力刷题ヾ(*´∀ ˋ*)ﾉ",
-  "学习大佬操作中...",
-]
-const hitokoto = () => {
-  const random = Math.floor(Math.random() * hitokotoList.length);
-  if (hitokotoList[random]) {
-    Toast.info(hitokotoList[random]);
-  }
-}
-
 const annos = ref<Anno[]>([])
 
 const closeAnno = (id: number) => {
@@ -316,8 +304,14 @@ const closeAnno = (id: number) => {
 
 onMounted(() => {
   setTheme(getTheme())
-  hitokoto()
+  userStore.syncStatus()
   AnnoStore.syncAnnos()
+  if (Random.range(0, 1)) {
+    Bot.getHitokoto();
+  } else {
+    Bot.tip.timeTip();
+  }
+  Bot.tip.loginTip();
   annos.value = AnnoStore.getStorageAnnos()
 })
 </script>
