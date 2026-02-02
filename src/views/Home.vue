@@ -86,7 +86,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisYear, currentPeriodData.lastYear)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisYear, currentPeriodData.lastYear) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisYear, currentPeriodData.lastYear)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last year</div>
             </div>
@@ -111,7 +111,7 @@
                 :class="getTrendClass(currentPeriodData.thisMonth, currentPeriodData.lastMonth)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisMonth, currentPeriodData.lastMonth) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisMonth, currentPeriodData.lastMonth)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last month</div>
             </div>
@@ -135,7 +135,7 @@
               <div class="footer-trend" :class="getTrendClass(currentPeriodData.thisWeek, currentPeriodData.lastWeek)">
                 <span class="trend-icon">{{ getTrend(currentPeriodData.thisWeek, currentPeriodData.lastWeek) }}</span>
                 <span class="trend-value">{{ getTrendValue(currentPeriodData.thisWeek, currentPeriodData.lastWeek)
-                  }}</span>
+                }}</span>
               </div>
               <div class="footer-info">VS last week</div>
             </div>
@@ -211,7 +211,7 @@
             </div>
 
             <div class="section-secondary-container">
-              <div v-for="item in analyse">{{ item }}</div>
+              <div v-for="item in analyse" v-html="item" class="analyseItem"></div>
             </div>
           </div>
         </div>
@@ -687,6 +687,10 @@ onMounted(() => {
 .section-secondary-container::-webkit-scrollbar-thumb {
   background-color: var(--divider-color);
   border-radius: 5px;
+}
+
+.analyseItem {
+  font-size: var(--text-base);
 }
 
 /* 响应式设计 */

@@ -73,8 +73,8 @@ export default class Analyse {
             }
         } else {
             analyse.push(Random.choice([
-                "今天还没开始练习，现在就开始吧！",
-                "每天进步一点点，今天就从一道题开始"
+                "今天还没开始练习，现在就开始吧！<a href='https://www.nowcoder.com/problem/tracker#/daily'>为您推荐</a>",
+                "每天进步一点点，今天就从一道题开始。<a href='https://www.nowcoder.com/problem/tracker#/daily'>为您推荐</a>"
             ]));
         }
 
