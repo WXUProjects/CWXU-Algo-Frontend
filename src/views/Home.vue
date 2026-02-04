@@ -494,7 +494,7 @@ onMounted(() => {
   align-items: center;
   padding: 12px 10px;
   border-radius: 12px;
-  background-color: var(--background-color-header);
+  background: var(--background-header);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
@@ -715,10 +715,10 @@ onMounted(() => {
 .section-secondary {
   width: 100%;
   display: flex;
+  gap: 10px;
   flex-direction: column;
   /* border: 1px solid var(--divider-color); */
   /* border-radius: 6px; */
-  overflow: auto;
 }
 
 .header-tabs {
@@ -756,7 +756,9 @@ onMounted(() => {
   padding: 10px;
   gap: 16px;
   width: calc(100% - 20px);
-  overflow: auto;
+  border-radius: 12px;
+  background-color: var(--background-color-content);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .section-secondary-container::-webkit-scrollbar {

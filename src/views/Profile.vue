@@ -634,7 +634,7 @@ onMounted(() => {
     >.top {
         display: flex;
         flex-direction: row;
-        align-items: flex-start;
+        align-items: center;
         justify-content: space-around;
 
         >.left,
@@ -662,7 +662,7 @@ onMounted(() => {
                 border-radius: 50%;
                 width: 80%;
                 aspect-ratio: 1;
-                border: 1rem solid var(--background-color-2);
+                border: 1rem solid var(--background-color-content);
                 box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.1);
                 transition: all 0.3s ease;
 
@@ -693,12 +693,16 @@ onMounted(() => {
             >.info {
                 display: flex;
                 flex-direction: column;
+                background: var(--background-color-content);
+                border-radius: 12px;
+                box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+                padding: 10px;
                 gap: 10px;
                 width: 100%;
 
                 >.name {
                     width: 100%;
-                    border-bottom: 1px solid var(--divider-color);
+                    /* border-bottom: 1px solid var(--divider-color); */
 
                     >.name {
                         font-size: var(--text-2xl);
@@ -707,6 +711,7 @@ onMounted(() => {
 
                     >.username {
                         font-size: var(--text-xl);
+                        color: var(--text-light-color);
                     }
                 }
 
@@ -881,6 +886,9 @@ onMounted(() => {
 }
 
 .section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
     border-radius: 6px;
 
     >.header {
@@ -889,11 +897,14 @@ onMounted(() => {
         align-items: center;
         padding: 12px 10px;
         border-radius: 12px;
-        background-color: var(--background-color-header);
+        background: var(--background-header);
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
     }
 
     >.content {
+        background-color: var(--background-color-content);
+        border-radius: 12px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
         padding: 10px;
         overflow: auto;
 
@@ -1140,6 +1151,8 @@ onMounted(() => {
             }
 
             >.info {
+                background: none;
+                box-shadow: none;
                 padding: 75px 20px 0 20px;
                 width: calc(100% - 40px);
 

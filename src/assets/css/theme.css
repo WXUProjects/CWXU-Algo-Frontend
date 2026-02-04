@@ -2,6 +2,7 @@
     --background-color-1: #f8f9fa;
     --background-color-2: #e9ecef;
     --background-color-3: #dcdde3;
+    --background-header: linear-gradient(45deg, oklch(from var(--neon-cyan) 1 c h / 0.5) 0%, #ffffff 100px, #ffffff calc(100% - 100px), oklch(from var(--neon-cyan) 1 c h / 0.5) 100%);
     --background-color-header: #ffffff;
     --background-color-content: #ffffff;
     --divider-color: #ced4da;
@@ -27,6 +28,7 @@
     --background-color-1: #0d1117;
     --background-color-2: #161b22;
     --background-color-3: #21262d;
+    --background-header: linear-gradient(45deg, oklch(from var(--neon-cyan) 1 c h / 0.2) 0%, #161b22 100px, #161b22 calc(100% - 100px), oklch(from var(--neon-cyan) 1 c h / 0.2) 100%);
     --background-color-header: #161b22;
     --background-color-content: #161b22;
     --divider-color: #222527;

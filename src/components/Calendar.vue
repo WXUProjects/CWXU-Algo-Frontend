@@ -278,7 +278,6 @@ const emit = defineEmits<{
 .detailContainer {
     display: flex;
     gap: 10px;
-    background-color: var(--background-color-1);
     pointer-events: none;
 
     color: var(--text-default-color)
