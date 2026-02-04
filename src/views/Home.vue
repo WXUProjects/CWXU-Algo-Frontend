@@ -21,6 +21,7 @@
         </div>
 
         <div class="stats-grid">
+          <Stars class="stars" />
           <!-- 生涯统计 -->
           <div class="stat-card">
             <div class="card-header">
@@ -301,6 +302,7 @@ import API, { type CoreStatisticHeatmapRequest, type CoreStatisticPeriodData, ty
 import Toast from '@/utils/toast';
 import Analyse from '@/utils/analyse';
 import { useUserStore } from '@/stores/user';
+import Stars from '@/components/Stars.vue';
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
@@ -541,14 +543,22 @@ onMounted(() => {
 
 /* 统计卡片网格 */
 .stats-grid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 8px;
 }
 
+.stars{
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
 .stat-card {
   background-color: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(2px);
   position: relative;
   padding: 20px;
   border-radius: 12px;
@@ -562,7 +572,7 @@ onMounted(() => {
 
 .stat-card:hover {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: perspective(1000px) translateY(-4px) scale(1.01) rotateX(8deg);
+  transform: perspective(1000px) translateY(-4px) scale(1.05) rotateX(8deg);
 }
 
 .stat-card:hover::after {
@@ -731,7 +741,6 @@ onMounted(() => {
 .tab {
   padding: 6px 12px;
   border-radius: 6px;
-  background-color: var(--section-background-color);
   color: var(--text-light-color);
   font-size: var(--text-base);
   white-space: nowrap;
@@ -740,13 +749,13 @@ onMounted(() => {
 }
 
 .tab:hover {
+  background-color: oklch(from var(--background-color-2) 1 c h / 0.1);
   color: var(--text-default-color);
-  background-color: var(--divider-color);
 }
 
 .tab.active {
   background-color: var(--neon-cyan);
-  color: var(--background-color-1);
+  color: var(--text-reverse-color);
   font-weight: 500;
 }
 

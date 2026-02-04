@@ -25,7 +25,8 @@
                         <div class="details" v-if="user">
                             <div class="item">
                                 <div class="name">AtCoder</div>
-                                <div class="link">
+                                <div class="link"
+                                    :class="!(!user.links.AtCoder && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
                                     <div v-if="!user.links.AtCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.AtCoder && jwtUserInfo?.userId == user.userId"
                                         to="/changeProfile?oj=AtCoder">去绑定</router-link>
@@ -34,7 +35,8 @@
                             </div>
                             <div class="item">
                                 <div class="name">牛客</div>
-                                <div class="link">
+                                <div class="link"
+                                    :class="!(!user.links.NowCoder && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
                                     <div v-if="!user.links.NowCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.NowCoder && jwtUserInfo?.userId == user.userId"
                                         to="/changeProfile?oj=NowCoder">去绑定</router-link>
@@ -43,7 +45,7 @@
                             </div>
                             <!-- <div class="item">
                                 <div class="name">力扣</div>
-                                <div class="link">
+                                <div class="link" :class="!(!user.links.AtCoder && jwtUserInfo?.userId != user.userId)?'go':''">
                                     <div v-if="!user.links.LeetCode && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.LeetCode && jwtUserInfo?.userId == user.userId"
                                         to="/changeProfile?oj=LeetCode">去绑定</router-link>
@@ -52,7 +54,8 @@
                             </div> -->
                             <div class="item">
                                 <div class="name">洛谷</div>
-                                <div class="link">
+                                <div class="link"
+                                    :class="!(!user.links.LuoGu && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
                                     <div v-if="!user.links.LuoGu && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link v-else-if="!user.links.LuoGu && jwtUserInfo?.userId == user.userId"
                                         to="/changeProfile?oj=LuoGu">去绑定</router-link>
@@ -61,7 +64,8 @@
                             </div>
                             <div class="item">
                                 <div class="name">CodeForces</div>
-                                <div class="link">
+                                <div class="link"
+                                    :class="!(!user.links.CodeForces && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
                                     <div v-if="!user.links.CodeForces && jwtUserInfo?.userId != user.userId">未绑定</div>
                                     <router-link
                                         v-else-if="!user.links.CodeForces && jwtUserInfo?.userId == user.userId"
@@ -288,13 +292,67 @@ interface ActivityItem {
     time: string;
 }
 
-const activities = ref<ActivityItem[]>([])
+// 增加占位数据，保证刷新时页面变化小
+const activities = ref<ActivityItem[]>([
+    {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    }, {
+        title: "-",
+        status: "",
+        link: "",
+        time: ""
+    },
+])
 
 const getSubmitInfo = async () => {
     const response = await API.core.submitLog.getById(user.value.userId.toString(), -1, 10);
     Toast.stdResponse(response, false);
 
     if (response.success) {
+        activities.value = [];
         response.data.data.forEach((item: CoreSubmitLogGetByIdData) => {
             const platform = item.platform;
             const lang = item.lang;
@@ -696,8 +754,8 @@ onMounted(() => {
                 background: var(--background-color-content);
                 border-radius: 12px;
                 box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-                padding: 10px;
-                gap: 10px;
+                padding: 20px;
+                gap: 20px;
                 width: 100%;
 
                 >.name {
@@ -724,6 +782,41 @@ onMounted(() => {
                         display: flex;
                         flex-direction: row;
                         justify-content: space-between;
+
+                        >.link {
+                            position: relative;
+                            border-radius: 6px;
+                            transition: padding 0.3s ease;
+
+                            &.go {
+                                background-color: var(--neon-cyan);
+                                padding: 0 10px 0 20px;
+                            }
+
+                            &.go::before {
+                                pointer-events: none;
+                                content: '>';
+                                position: absolute;
+                                left: 10px;
+                                color: var(--text-reverse-color);
+                                transform: rotate(0deg);
+                                transition: all 0.3s ease;
+                            }
+
+                            &.go:hover::before {
+                                left: calc(100% - 20px);
+                                transform: rotate(180deg);
+                            }
+
+                            &.go:hover {
+                                padding: 0 20px 0 10px;
+                            }
+
+                            >a {
+                                color: var(--text-reverse-color);
+                                text-decoration: none;
+                            }
+                        }
                     }
                 }
 
@@ -934,7 +1027,6 @@ onMounted(() => {
         .tab {
             padding: 6px 12px;
             border-radius: 6px;
-            background-color: var(--section-background-color);
             color: var(--text-light-color);
             font-size: var(--text-base);
             cursor: pointer;
@@ -943,12 +1035,12 @@ onMounted(() => {
 
             &:hover {
                 color: var(--text-default-color);
-                background-color: var(--divider-color);
+                background-color: oklch(from var(--background-color-2) 1 c h / 0.1);
             }
 
             &.active {
                 background-color: var(--neon-cyan);
-                color: var(--background-color-1);
+                color: var(--text-reverse-color);
                 font-weight: 500;
             }
         }
@@ -996,7 +1088,7 @@ onMounted(() => {
             flex-grow: 1;
             flex-direction: row;
             position: relative;
-            background-color: var(--background-color-2);
+            background-color: var(--background-color-1);
 
             >.bar {
                 width: 0%;
@@ -1032,7 +1124,6 @@ onMounted(() => {
 
         >.value {
             font-size: var(--text-base);
-            background-color: var(--background-color-1);
             width: 50px;
         }
 
