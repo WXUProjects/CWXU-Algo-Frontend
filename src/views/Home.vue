@@ -22,7 +22,7 @@
 
         <div class="stats-grid">
           <!-- 生涯统计 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-trophy" class="card-icon" />
               <div class="card-title">
@@ -38,7 +38,7 @@
           </div>
 
           <!-- AC率 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-globe" class="card-icon" />
               <div class="card-title">
@@ -54,7 +54,7 @@
           </div>
 
           <!-- 今日统计 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-sun" class="card-icon" />
               <div class="card-title">
@@ -70,7 +70,7 @@
           </div>
 
           <!-- 年度统计 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-globe" class="card-icon" />
               <div class="card-title">
@@ -94,7 +94,7 @@
           </div>
 
           <!-- 本月统计 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-sun" class="card-icon" />
               <div class="card-title">
@@ -119,7 +119,7 @@
           </div>
 
           <!-- 本周统计 -->
-          <div class="stat-card glass-card">
+          <div class="stat-card">
             <div class="card-header">
               <font-awesome-icon icon="fa-solid fa-crosshairs" class="card-icon" />
               <div class="card-title">
@@ -477,6 +477,8 @@ onMounted(() => {
   flex-direction: column;
   gap: 24px;
   color: var(--text-default-color);
+  padding: 20px;
+  width: calc(100% - 40px);
 }
 
 /* 数据统计区域 */
@@ -491,7 +493,9 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 12px 10px;
-  border-bottom: 1px solid var(--divider-color);
+  border-radius: 12px;
+  background-color: var(--background-color-header);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 }
 
 .header-title {
@@ -531,7 +535,7 @@ onMounted(() => {
 }
 
 .action-export:hover {
-  color: var(--neon-green);
+  color: var(--text-light-color);
   background-color: var(--section-background-color);
 }
 
@@ -544,17 +548,20 @@ onMounted(() => {
 }
 
 .stat-card {
+  background-color: rgba(255, 255, 255, 0.05);
   position: relative;
   padding: 20px;
   border-radius: 12px;
   overflow: hidden;
   transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 
   transform-style: preserve-3d;
   transform-origin: center center;
 }
 
 .stat-card:hover {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
   transform: perspective(1000px) translateY(-4px) scale(1.01) rotateX(8deg);
 }
 
@@ -700,18 +707,17 @@ onMounted(() => {
 .grid-right {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
   min-width: 0;
   width: 100%;
 }
 
-/* 排行榜区域 */
 .section-secondary {
   width: 100%;
   display: flex;
   flex-direction: column;
-  border: 1px solid var(--divider-color);
-  border-radius: 6px;
+  /* border: 1px solid var(--divider-color); */
+  /* border-radius: 6px; */
   overflow: auto;
 }
 
@@ -773,6 +779,7 @@ onMounted(() => {
   gap: 10px;
 
   >.card {
+    background-color: var(--background-color-content);
     color: var(--text-default-color);
     text-decoration: none;
     position: relative;
@@ -781,14 +788,14 @@ onMounted(() => {
     flex-direction: row;
     padding: 10px;
     border-radius: 8px;
-    border: 1px solid var(--divider-color);
     gap: 10px;
     transition: all 0.2s ease;
+    border: 1px dashed var(--background-color-content);
 
     &:hover {
       transform: scale(1.01);
       box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-      border-color: var(--neon-cyan);
+      border: 1px dashed var(--neon-cyan);
     }
 
     >.icon {
@@ -796,8 +803,6 @@ onMounted(() => {
       width: 50px;
       height: 50px;
       overflow: hidden;
-      border: 1px solid var(--divider-color);
-      /* background-color: var(--background-color-3); */
       border-radius: 10px;
 
       >img {
@@ -831,6 +836,11 @@ onMounted(() => {
 /* 响应式设计 */
 
 @media (max-width: 768px) {
+  .terminal-home {
+    width: calc(100% - 20px);
+    padding: 10px;
+  }
+
   .stats-grid {
     grid-template-columns: 1fr;
   }

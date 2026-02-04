@@ -157,12 +157,10 @@ onMounted(() => {
 
 .dashboardContent {
     height: 100%;
-    border: 1px solid var(--divider-color);
+    border-top: 1px solid var(--divider-color);
     color: var(--text-default-color);
-    padding: 10px;
 
     .section {
-        border: 1px solid var(--divider-color);
         border-radius: 6px;
 
         >.header {

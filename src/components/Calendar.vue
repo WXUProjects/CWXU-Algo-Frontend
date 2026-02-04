@@ -241,7 +241,7 @@ const emit = defineEmits<{
 }
 
 .dayCharts::-webkit-scrollbar-track {
-    background-color: var(--background-color);
+    background-color: var(--background-color-1);
 }
 
 .dayGrid {
@@ -256,7 +256,7 @@ const emit = defineEmits<{
     width: 10px;
     height: 10px;
     border-radius: 2px;
-    background-color: var(--divider-color);
+    background-color: var(--background-color-2);
     cursor: pointer;
 }
 
@@ -308,7 +308,7 @@ const emit = defineEmits<{
 }
 
 .yearSelector::-webkit-scrollbar-track {
-    background-color: var(--background-color);
+    background-color: var(--background-color-1);
 }
 
 .yearSelector .section {

@@ -13,7 +13,7 @@ import Footer from './Footer.vue'
 
 <style scoped>
 .view-container {
-    width: calc(100% - 40px);
+    width: 100%;
     height: 100%;
 }
 
@@ -22,7 +22,6 @@ import Footer from './Footer.vue'
     display: flex;
     flex-direction: column;
     gap: 60px;
-    padding: 20px;
     color: var(--text-default-color);
 }
 

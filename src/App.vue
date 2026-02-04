@@ -2,12 +2,6 @@
   <div class="container">
     <!-- 侧边栏 -->
     <div class="sidebar">
-      <!-- <div class="terminal-header">
-        <div class="terminal-dot red"></div>
-        <div class="terminal-dot yellow"></div>
-        <div class="terminal-dot green"></div>
-        <div class="terminal-title">navigation.terminal</div>
-      </div> -->
 
       <div class="sidebar-logo">
         <div class="logo-icon">
@@ -16,9 +10,7 @@
       </div>
 
       <div class="sections">
-        <!-- 终端风格导航项 -->
-        <router-link to="/" class="section terminal-item" active-class="active">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-house" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -30,8 +22,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <!-- <router-link to="/rank" class="section terminal-item" active-class="active">
-          <div class="item-prefix">></div>
+        <!-- <router-link to="/rank" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-trophy" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -43,8 +34,7 @@
           <div class="item-indicator">▶</div>
         </router-link> -->
 
-        <router-link to="/competition" class="section terminal-item" active-class="active">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/competition" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-flag" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -56,8 +46,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/profile" class="section terminal-item" active-class="active" v-if="isLogin">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/profile" class="section navigation-item" active-class="active" v-if="isLogin">
           <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -69,8 +58,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/problem" class="section terminal-item" active-class="active">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/problem" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-list" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -82,8 +70,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/star" class="section terminal-item" active-class="active" v-if="isLogin">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/star" class="section navigation-item" active-class="active" v-if="isLogin">
           <font-awesome-icon icon="fa-solid fa-star" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -95,8 +82,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/dashboard" class="section terminal-item" active-class="active" v-if="isLogin && isAdmin">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/dashboard" class="section navigation-item" active-class="active" v-if="isLogin && isAdmin">
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -108,8 +94,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section terminal-item">
-          <!-- <div class="item-prefix">></div> -->
+        <a href="http://bbs.algo.zhiyuansofts.cn/" target="_blank" class="section navigation-item">
           <font-awesome-icon icon="fa-solid fa-comment" class=" item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -122,8 +107,7 @@
         </a>
 
         <!-- 主题切换 -->
-        <div class="section terminal-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
-          <!-- <div class="item-prefix">></div> -->
+        <div class="section navigation-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
           <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="item-icon" />
           <font-awesome-icon v-else icon="fa-solid fa-moon" class="item-icon" />
           <div class="item-content">
@@ -136,8 +120,7 @@
           <div class="item-indicator">▶</div>
         </div>
 
-        <router-link to="/login" class="section terminal-item" active-class="active" v-if="!isLogin">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/login" class="section navigation-item" active-class="active" v-if="!isLogin">
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -149,8 +132,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/register" class="section terminal-item" active-class="active" v-if="!isLogin">
-          <!-- <div class="item-prefix">></div> -->
+        <router-link to="/register" class="section navigation-item" active-class="active" v-if="!isLogin">
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -164,7 +146,7 @@
 
       </div>
 
-      <!-- 终端状态栏 -->
+      <!-- 状态栏 -->
       <div class="sidebar-footer">
         <div class="system-info">
           <span class="info-item">v1.0.0</span>
@@ -181,7 +163,6 @@
 
     <!-- 主内容区 -->
     <div class="content">
-      <!-- <div class="content-header data-stream"> -->
       <div class="content-header">
         <div class="header-info">
           <span class="info-label">></span>
@@ -422,8 +403,8 @@ onMounted(() => {
   overflow-y: auto;
 }
 
-/* 终端导航项 */
-.terminal-item {
+/* 导航项 */
+.navigation-item {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -439,7 +420,7 @@ onMounted(() => {
   overflow: hidden;
 }
 
-.terminal-item::before {
+.navigation-item::before {
   content: '';
   position: absolute;
   top: 0;
@@ -450,39 +431,32 @@ onMounted(() => {
   transition: left 0.6s ease;
 }
 
-.terminal-item:hover::before {
+.navigation-item:hover::before {
   left: 100%;
 }
 
-.terminal-item:hover {
+.navigation-item:hover {
   /* border-color: var(--neon-cyan); */
   background-color: var(--section-background-color);
   color: var(--text-default-color);
   transform: translateX(4px);
 }
 
-.terminal-item.active {
+.navigation-item.active {
   border-color: var(--neon-cyan);
   background-color: var(--section-background-color);
   color: var(--text-default-color);
   box-shadow: 0 0 12px rgba(0, 255, 255, 0.2);
 }
 
-.terminal-item.active .item-prefix {
+.navigation-item.active .item-prefix {
   color: var(--neon-cyan);
   text-shadow: 0 0 8px var(--neon-cyan);
 }
 
-.terminal-item.active .item-icon {
+.navigation-item.active .item-icon {
   color: var(--neon-cyan);
   transform: scale(1.1);
-}
-
-.item-prefix {
-  font-size: var(--text-base);
-  color: var(--text-terminal);
-  font-weight: bold;
-  min-width: 24px;
 }
 
 .item-icon {
@@ -522,7 +496,7 @@ onMounted(() => {
 
 .item-description {
   font-size: var(--text-xs);
-  color: var(--text-terminal);
+  color: var(--text-light-color);
   opacity: 0.8;
   white-space: nowrap;
   overflow: hidden;
@@ -536,7 +510,7 @@ onMounted(() => {
   transition: all 0.2s ease;
 }
 
-.terminal-item:hover .item-indicator {
+.navigation-item:hover .item-indicator {
   opacity: 1;
   transform: translateX(4px);
 }
@@ -701,7 +675,7 @@ onMounted(() => {
   position: relative;
 }
 
-/* 内容底部终端 */
+/* 内容底部 */
 .content-footer {
   margin: 24px;
   border-radius: 8px;
@@ -756,7 +730,7 @@ onMounted(() => {
     gap: 8px;
   }
 
-  .terminal-item {
+  .navigation-item {
     min-width: 200px;
     flex-shrink: 0;
   }
@@ -791,7 +765,7 @@ onMounted(() => {
 }
 
 @media (max-width: 640px) {
-  .terminal-item {
+  .navigation-item {
     min-width: 160px;
     padding: 10px 12px;
   }

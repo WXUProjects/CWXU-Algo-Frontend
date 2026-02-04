@@ -72,9 +72,9 @@ import BaseLayout from '@/components/BaseLayout.vue'
     align-items: center;
     height: 50px;
     border: 1px solid var(--divider-color);
+    padding: 0 20px;
     border-bottom: none;
     border-right: none;
-    padding: 0 10px;
 
     transition: all 0.2s ease-in-out;
     cursor: pointer;
