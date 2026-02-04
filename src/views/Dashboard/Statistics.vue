@@ -222,7 +222,7 @@
                 </div> -->
             </div>
         </div>
-        <h2>提交趋势（堆叠折线图）</h2>
+        <h2>提交趋势</h2>
         <div class="chart-container">
             <v-chart class="chart" :option="chartOption" autoresize />
         </div>
@@ -498,30 +498,20 @@ const chartOption = computed(() => {
             {
                 name: 'AC',
                 type: 'line',
-                stack: '总量',
-                areaStyle: {},
                 emphasis: {
                     focus: 'series'
                 },
                 data: acValues,
-                itemStyle: {
-                    color: '#5470c6'
-                },
                 smooth: true,
                 showSymbol: false,
             },
             {
                 name: '提交',
                 type: 'line',
-                stack: '总量',
-                areaStyle: {},
                 emphasis: {
                     focus: 'series'
                 },
                 data: submitValues,
-                itemStyle: {
-                    color: '#91cc75'
-                },
                 smooth: true,
                 showSymbol: false,
             }
