@@ -38,12 +38,12 @@
                 <span style="margin-left: 10px;font-size:var(--text-sm)">
                     <a :href="'http://bbs.algo.zhiyuansofts.cn/'" target="_blank" rel="noopener noreferrer">无锡学院算法协会论坛</a>
                 </span>
-
             </div>
             <hr class="footer-divider">
             <div class="footer-bottom">
-                <p><!-- &copy; {{ currentYear }} zhiyuansofts. 保留所有权利. -->
-                    <!-- <br /> -->
+                <p>
+                    &copy; {{ currentYear }} zhiyuansofts. <a href="https://beian.miit.gov.cn/" target="_blank" style="font-size:var(--text-sm)">苏ICP备2025217901号</a>
+                    <br />
                     ♥ Designed by <a href="https://github.com/AoralsFout" target="_blank">AoralsFout</a>、<a
                         href="https://github.com/srcenchen" target="_blank">srcenchen</a>、<a
                         href="https://github.com/hyhgfrgh" target="_blank">hyhgfrgh</a>.
