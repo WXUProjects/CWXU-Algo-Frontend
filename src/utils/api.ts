@@ -239,6 +239,18 @@ export interface UserProfileGetByNameList {
     [property: string]: any;
 }
 
+export interface AgentSummaryRecentResponse {
+    code: number;
+    msg: string;
+    resp: string;
+    [property: string]: any;
+}
+
+export interface AgentSummaryRecentData {
+    msg: string[];
+    updateTime: string;
+}
+
 export default class API {
     static user = {
         auth: {
@@ -827,6 +839,44 @@ export default class API {
                 } catch (error: any) {
                     console.error(error);
                     stdRes.message = "获取统计数据失败";
+                }
+                return stdRes;
+            }
+        }
+    }
+
+    static agent = {
+        summary:{
+            recent: async (userId: number): Promise<stdResponse<AgentSummaryRecentData>> => {
+                const stdRes: stdResponse<AgentSummaryRecentData> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        msg: [],
+                        updateTime: ""
+                    }
+                }
+                try {
+                    const response = await axios.get<AgentSummaryRecentResponse>('/api/agent/summary/recent', {
+                        params: {
+                            userId
+                        }
+                    });
+                    if (response.status === 200) {
+                        stdRes.success = true;
+                        const data = JSON.parse(response.data.resp) as AgentSummaryRecentData;
+                        stdRes.data = data;
+                        if(response.data.code === 0){
+                            stdRes.message = "获取最近小结成功";
+                        }
+                        if(response.data.code === 1){
+                            stdRes.message = "获取最近小结成功";
+                            stdRes.data.msg.push(response.data.msg)
+                        }
+                    }
+                } catch (error:any) {
+                    console.log(error);
+                    stdRes.message = "获取最近提交失败";
                 }
                 return stdRes;
             }

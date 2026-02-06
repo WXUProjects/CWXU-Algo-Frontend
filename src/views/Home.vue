@@ -278,12 +278,14 @@
                 <span class="title-icon">
                   <font-awesome-icon icon="fa-solid fa-trophy" />
                 </span>
-                <span class="title-text">数据分析</span>
+                <span class="title-text">AI总结</span>
               </div>
             </div>
 
             <div class="section-secondary-container">
-              <div v-for="item in analyse" v-html="item" class="analyseItem"></div>
+              <div v-for="item in aiSummary" class="analyseItem"> {{ item }}</div>
+              <div class="aiTip">内容由AI生成，请仔细甄别。</div>
+              <!-- <div v-for="item in analyse" v-html="item" class="analyseItem"></div> -->
             </div>
           </div>
         </div>
@@ -313,6 +315,7 @@ interface HeatmapData {
 }
 
 const analyse = ref<string[]>([])
+const aiSummary = ref<string[]>([])
 
 const submitData = ref<HeatmapData[]>([])
 const acData = ref<HeatmapData[]>([])
@@ -336,7 +339,7 @@ const getHeatmapData = async () => {
     isAc: false
   }
 
-  if (isLogin) {
+  if (isLogin.value) {
     request.userId = JWT.getUserInfo()!.userId
   }
 
@@ -418,6 +421,17 @@ const getPeriodData = async () => {
   analyse.value = Analyse.period(response.data.data)
 }
 
+const getAiSummary = async () =>{
+  const userId = JWT.getUserInfo()?.userId
+  if (!userId) {
+    aiSummary.value = ["登录后查看AI总结"]
+    return
+  }
+  const response = await API.agent.summary.recent(userId);
+  Toast.stdResponse(response, false);
+  aiSummary.value = response.data.msg;
+}
+
 /*
 卧槽了惊天大无语，传的明明是数字却变成字符串了，逆天
 */
@@ -470,6 +484,7 @@ onMounted(() => {
   checkTheme()
   getHeatmapData()
   getPeriodData()
+  getAiSummary()
 })
 </script>
 
@@ -782,6 +797,11 @@ onMounted(() => {
 
 .analyseItem {
   font-size: var(--text-base);
+}
+
+.aiTip{
+  font-size: var(--text-xs);
+  color: var(--text-light-color);
 }
 
 .enterCardGrid {
