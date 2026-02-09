@@ -211,7 +211,7 @@
                             </div>
                             <div class="header-tabs">
                                 <span class="tab"
-                                    @click="router.push(`/allActivities?id=${user.userId}&name=${user.name}`)">查看所有动态</span>
+                                    @click="router.push(`/allActivities?id=${user.userId}`)">查看所有动态</span>
                             </div>
                         </div>
                         <div class="content">
@@ -348,7 +348,7 @@ const activities = ref<ActivityItem[]>([
 ])
 
 const getSubmitInfo = async () => {
-    const response = await API.core.submitLog.getById(user.value.userId.toString(), -1, 10);
+    const response = await API.core.submitLog.getById(user.value.userId, -1, 10);
     Toast.stdResponse(response, false);
 
     if (response.success) {

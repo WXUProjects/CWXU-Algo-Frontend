@@ -93,7 +93,7 @@ export interface CoreSubmitLogGetByIdData {
     status: string;
     submitId: string;
     time: string;
-    userId: string;
+    userId: number;
     [property: string]: any;
 }
 
@@ -660,7 +660,7 @@ export default class API {
 
     static core = {
         submitLog: {
-            getById: async (id: string, cursor: number, limit: number = 50): Promise<stdResponse<CoreSubmitLogGetByIdResponse>> => {
+            getById: async (id: number, cursor: number, limit: number = 50): Promise<stdResponse<CoreSubmitLogGetByIdResponse>> => {
                 const stdRes: stdResponse<CoreSubmitLogGetByIdResponse> = {
                     message: "",
                     success: false,

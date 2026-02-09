@@ -6,13 +6,20 @@
                     <span class="title-icon">
                         <font-awesome-icon icon="fa-solid fa-chart-line" />
                     </span>
-                    <span class="title-text">{{ user.name }}的所有动态</span>
+                    <span class="title-text">{{ title }}所有动态</span>
+                </div>
+                <div class="header-tabs">
+                    <span class="tab" @click="router.push(`/allActivities`)" v-if="userId != -1">查看大家的动态</span>
+                    <span class="tab" @click="router.push(`/allActivities?id=${JWT.getUserInfo()?.userId}`)"
+                        v-else>查看我的动态</span>
                 </div>
             </div>
             <div class="content">
                 <div v-if="activities.length != 0" class="activities">
                     <div class="activity" v-for="(activity, index) in activities" :key="index">
                         <div class="title">
+                            <!-- <img :src="activity.avatar ? activity.avatar : '/images/defaultAvatar.png'"
+                                @click="router.push('profile?id=' + activity.userId)" class="avatar"> -->
                             <span>{{ activity.title }}</span>
                             <a :href="activity.link" target="_blank">{{ activity.status }}</a>
                         </div>
@@ -34,32 +41,52 @@
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue';
 import Link from '@/utils/link';
-import { onMounted, onUnmounted, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, ref, nextTick, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import API from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { CoreSubmitLogGetByIdData } from '@/utils/api';
-import type { User } from '@/utils/type';
+import { useRouter } from 'vue-router';
+import JWT from '@/utils/jwt';
 
 const route = useRoute();
+const router = useRouter();
 
-const userId = route.query.id;
-const user = ref<User>({
-    avatar: "",
-    email: "",
-    groupId: "",
-    name: "",
-    spiders: [],
-    links: {
-        AtCoder: "",
-        NowCoder: "",
-        LuoGu: "",
-        CodeForces: "",
-        LeetCode: ""
-    },
-    userId: 0,
-    username: ""
+const userId = ref<number>(-1);
+const title = ref('');
+
+watch(() => route.query.id, async () => {
+    await getParams();
+
+    activities.value = [];
+    loading.value = false;
+    noMoreData.value = false;
+    cursor.value = -1;
 })
+
+const getParams = async () => {
+    userId.value = Number(route.query.id) ? Number(route.query.id) : -1;
+    if (userId.value === -1) {
+        title.value = "";
+    } else {
+        const response = await API.user.profile.getById(userId.value);
+        Toast.stdResponse(response, false);
+        if (response.success) {
+            title.value = response.data.name + "的";
+        } else {
+            title.value = '';
+        }
+    }
+}
+
+// 使用用户列表存储用户信息
+interface User {
+    userId: number;
+    name: string;
+    avatar: string;
+}
+const users = ref<User[]>([]);
+
 
 interface ActivityItem {
     title: string;
@@ -67,6 +94,8 @@ interface ActivityItem {
     link: string;
     time: string;
     timeRaw: string;
+    avatar: string;
+    userId: number;
 }
 
 const activities = ref<ActivityItem[]>([]);
@@ -78,18 +107,20 @@ const cursor = ref<number>(-1);
 
 const getNewSubmit = async (currentCursor: number) => {
     // console.log(`准备获取数据：loading:${loading.value}, noMoreData:${noMoreData.value}`);
-    if (loading.value || noMoreData.value || !userId) return;
+    if (loading.value || noMoreData.value) return;
     loading.value = true;
     // console.log("获取数据中");
 
-    const response = await API.core.submitLog.getById(userId.toString(), currentCursor);
+    const response = await API.core.submitLog.getById(userId.value, currentCursor);
     Toast.stdResponse(response, false);
 
 
     if (response.success && response.data.data.length > 0) {
         const newActivities: ActivityItem[] = [];
 
-        response.data.data.forEach((item: CoreSubmitLogGetByIdData) => {
+        // 内部使用了 await，所以这里不能使用 forEach
+        // 使用forEach会因为users更新不及时造成大量重复网络请求
+        for (const item of response.data.data) {
             const platform = item.platform;
             const lang = item.lang;
             const contest = item.contest;
@@ -105,14 +136,18 @@ const getNewSubmit = async (currentCursor: number) => {
                 hour12: false
             });
 
+            const user = await getUserInfo(item.userId);
+
             newActivities.push({
-                title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
+                title: `${user.name} 在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
                 status: status,
                 link: Link.getSubmitLink(platform, contest, item.submitId),
                 time: time,
-                timeRaw: item.time
+                timeRaw: item.time,
+                avatar: user.avatar,
+                userId: item.userId
             });
-        });
+        };
 
         // 添加新数据
         activities.value = [...activities.value, ...newActivities];
@@ -134,12 +169,27 @@ const getNewSubmit = async (currentCursor: number) => {
     loading.value = false;
 }
 
-const getUserInfo = async () => {
-    if (userId) {
-        const response = await API.user.profile.getById(Number(userId))
+const getUserInfo = async (userId: number) => {
+    const user = users.value.find(item => item.userId === userId)
+    if (user) {
+        return user;
+    } else {
+        const response = await API.user.profile.getById(userId);
         Toast.stdResponse(response, false);
 
-        user.value = response.data;
+        const user = {
+            userId: 0,
+            name: "",
+            avatar: ""
+        };
+
+        if (response.success) {
+            user.userId = response.data.userId
+            user.name = response.data.name
+            user.avatar = response.data.avatar
+            users.value.push(user);
+        }
+        return user;
     }
 }
 
@@ -184,7 +234,7 @@ const cleanupObserver = () => {
 };
 
 onMounted(() => {
-    getUserInfo();
+    getParams();
 
     // 首次加载数据
     getNewSubmit(cursor.value);
@@ -284,8 +334,19 @@ onUnmounted(() => {
         justify-content: space-between;
 
         >.title {
+            display: flex;
+            align-items: center;
             width: 80%;
             font-size: var(--text-sm);
+
+            >.avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin-right: 10px;
+                cursor: pointer;
+            }
         }
 
         >.time {
