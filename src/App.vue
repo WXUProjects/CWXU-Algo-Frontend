@@ -34,12 +34,12 @@
           <div class="item-indicator">▶</div>
         </router-link> -->
 
-        <router-link to="/competition" class="section navigation-item" active-class="active">
+        <router-link to="/contest" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-flag" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
               <span class="zh">比赛</span>
-              <span class="en">Competition</span>
+              <span class="en">Contest</span>
             </div>
             <div class="item-description">查看比赛数据</div>
           </div>
@@ -576,8 +576,8 @@ onMounted(() => {
       white-space: nowrap;
       cursor: pointer;
       transition: all 0.2s ease;
+      -webkit-user-select: none;
       user-select: none;
-
       &:hover {
         color: var(--text-default-color);
         background-color: var(--divider-color);

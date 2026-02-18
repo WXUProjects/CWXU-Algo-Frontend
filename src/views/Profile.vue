@@ -740,6 +740,7 @@ onMounted(() => {
                     width: 100%;
                     height: 100%;
                     border-radius: 50%;
+                    -webkit-user-select: none;
                     user-select: none;
                     -webkit-user-drag: none;
                 }
@@ -964,6 +965,7 @@ onMounted(() => {
     cursor: pointer;
     font-size: var(--text-sm);
     transition: all 0.2s ease;
+    -webkit-user-select: none;
     user-select: none;
 
     &.dan:hover {
@@ -1032,6 +1034,7 @@ onMounted(() => {
             font-size: var(--text-base);
             cursor: pointer;
             transition: all 0.2s ease;
+            -webkit-user-select: none;
             user-select: none;
 
             &:hover {
@@ -1222,6 +1225,7 @@ onMounted(() => {
                         text-wrap: nowrap;
                         letter-spacing: 10px;
                         line-height: 2;
+                        -webkit-user-select: none;
                         user-select: none;
                     }
                 }
@@ -1242,6 +1246,7 @@ onMounted(() => {
                         width: 100%;
                         height: 100%;
                         border-radius: 50%;
+                        -webkit-user-select: none;
                         user-select: none;
                         -webkit-user-drag: none;
                     }

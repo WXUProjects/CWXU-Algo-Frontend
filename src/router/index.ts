@@ -89,14 +89,14 @@ const routes = [
     }]
   },
   {
-    path: '/competition',
-    name: 'Competition',
-    component: () => import('@/views/Competition.vue'),
+    path: '/contest',
+    name: 'Contest',
+    component: () => import('@/views/Contest.vue'),
   },
   {
-    path: '/competition/:id',
-    name: 'Competition Details',
-    component: () => import('@/views/Competition/Details.vue')
+    path: '/contest/:id',
+    name: 'Contest Details',
+    component: () => import('@/views/Contest/Details.vue')
   },
   {
     path: '/star',

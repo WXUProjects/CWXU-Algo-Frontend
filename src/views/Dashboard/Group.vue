@@ -474,6 +474,7 @@ if (inputTimer) {
                 font-size: var(--text-base);
                 cursor: pointer;
                 transition: all 0.2s ease;
+                -webkit-user-select: none;
                 user-select: none;
                 white-space: nowrap;
 

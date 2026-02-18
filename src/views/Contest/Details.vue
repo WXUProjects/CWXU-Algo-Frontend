@@ -1,7 +1,7 @@
 <template>
     <BaseLayout>
         <template #header>
-            比赛 Competition
+            比赛 Contest
         </template>
         <div>
             <div class="title">比赛信息</div>

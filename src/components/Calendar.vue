@@ -162,6 +162,7 @@ const emit = defineEmits<{
 
 <style scoped>
 .ACCalendar {
+    -webkit-user-select: none;
     user-select: none;
 }
 

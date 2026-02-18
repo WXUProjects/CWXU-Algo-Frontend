@@ -573,6 +573,7 @@ onMounted(() => {
 
 .stat-card {
   background-color: rgba(255, 255, 255, 0.05);
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   position: relative;
   padding: 20px;

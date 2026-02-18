@@ -251,6 +251,61 @@ export interface AgentSummaryRecentData {
     updateTime: string;
 }
 
+export interface CoreContestListRequest {
+    limit: number;
+    offset: number;
+    /**
+     * 用户id
+     * -1 表示所有比赛
+     * 其他用户id表示该用户参加过的比赛
+    */
+    userId: number;
+    [property: string]: any;
+}
+
+export interface CoreContestListResponse {
+    code: string;
+    message: string;
+    data: CoreContestListData[];
+    total: number;
+    [property: string]: any;
+}
+
+export interface CoreContestListData {
+    id: number;
+    platform: platform;
+    userId: number;
+    contestId: string;
+    contestName: string;
+    contestUrl: string;
+    rank: number;
+    totalCount: number;
+    acCount: number;
+    time: string;
+}
+
+export interface CoreContestRankingRequest {
+    contestId: string;
+    limit: number;
+    offset: number;
+}
+
+export interface CoreContestRankingResponse {
+    code: string;
+    message: string;
+    data: CoreContestRankingData[];
+    total: number;
+}
+
+export interface CoreContestRankingData {
+    rank: number;
+    userId: number;
+    name: string;
+    score: number;
+    acCount: number;
+    totalCount: number;
+}
+
 export default class API {
     static user = {
         auth: {
@@ -704,7 +759,7 @@ export default class API {
                     return stdRes;
                 }
 
-                if(request.username === ""){
+                if (request.username === "") {
                     stdRes.message = "用户名不能为空";
                     return stdRes;
                 }
@@ -842,11 +897,74 @@ export default class API {
                 }
                 return stdRes;
             }
+        },
+        contest: {
+            list: async (request: CoreContestListRequest): Promise<stdResponse<CoreContestListResponse>> => {
+                const stdRes: stdResponse<CoreContestListResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        code: "",
+                        message: "",
+                        data: [],
+                        total: 0
+                    }
+                }
+                try {
+                    const response = await axios.get<CoreContestListResponse>('/api/core/contest/list', {
+                        params: request
+                    });
+                    if (response.data.code === "0") {
+                        stdRes.success = true;
+                        stdRes.message = "获取比赛列表成功";
+                        response.data.data.forEach(item => {
+                            const time = Number(item.time) * 1000;
+                            const timeObj = new Date(time);
+                            item.time = timeObj.toLocaleString();
+                        })
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = "获取比赛列表失败";
+                    }
+                } catch (error: any) {
+                    console.log(error);
+                    stdRes.message = "获取比赛列表失败";
+                }
+                return stdRes;
+            },
+            ranking: async (request: CoreContestRankingRequest): Promise<stdResponse<CoreContestRankingResponse>> => {
+                const stdRes: stdResponse<CoreContestRankingResponse> = {
+                    message: "",
+                    success: false,
+                    data: {
+                        code: "",
+                        message: "",
+                        data: [],
+                        total: 0
+                    }
+                }
+                try {
+                    const response = await axios.get<CoreContestRankingResponse>('/api/core/contest/ranking', {
+                        params: request
+                    });
+                    if (response.data.code === "0") {
+                        stdRes.success = true;
+                        stdRes.message = "获取比赛排名成功";
+                        stdRes.data = response.data;
+                    } else {
+                        stdRes.message = "获取比赛排名失败";
+                    }
+                } catch (error: any) {
+                    console.log(error);
+                    stdRes.message = "获取比赛排名失败";
+                }
+                return stdRes;
+            }
         }
     }
 
     static agent = {
-        summary:{
+        summary: {
             recent: async (userId: number): Promise<stdResponse<AgentSummaryRecentData>> => {
                 const stdRes: stdResponse<AgentSummaryRecentData> = {
                     message: "",
@@ -866,15 +984,15 @@ export default class API {
                         stdRes.success = true;
                         const data = JSON.parse(response.data.resp) as AgentSummaryRecentData;
                         stdRes.data = data;
-                        if(response.data.code === 0){
+                        if (response.data.code === 0) {
                             stdRes.message = "获取最近小结成功";
                         }
-                        if(response.data.code === 1){
+                        if (response.data.code === 1) {
                             stdRes.message = "获取最近小结成功";
                             stdRes.data.msg.push(response.data.msg)
                         }
                     }
-                } catch (error:any) {
+                } catch (error: any) {
                     console.log(error);
                     stdRes.message = "获取最近提交失败";
                 }

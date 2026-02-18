@@ -94,6 +94,7 @@ defineExpose({
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   border: 1px solid #ccc;
+  -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   margin-bottom: 10px;
 }

@@ -190,6 +190,7 @@ const handleOjConfirm = async () => {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            -webkit-user-select: none;
             user-select: none;
             -webkit-user-drag: none;
         }
@@ -212,6 +213,7 @@ const handleOjConfirm = async () => {
             gap: 10px;
 
             >.select {
+                -webkit-user-select: none;
                 user-select: none;
                 position: relative;
 

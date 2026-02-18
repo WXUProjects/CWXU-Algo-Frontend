@@ -209,6 +209,7 @@ onMounted(() => {
                 white-space: nowrap;
                 cursor: pointer;
                 transition: all 0.2s ease;
+                -webkit-user-select: none;
                 user-select: none;
 
                 &:hover {
