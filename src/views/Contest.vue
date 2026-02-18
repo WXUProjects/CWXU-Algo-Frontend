@@ -130,6 +130,7 @@ onMounted(() => {
 @import '@/assets/css/navagation.css';
 
 .contestContainer {
+    width: calc(100% - 20px);
     padding: 20px;
 
     >.section {
@@ -317,7 +318,19 @@ onMounted(() => {
 
 @media (max-width:1000px) {
     .contestContainer {
+        width: 100%;
         padding: 0;
+    }
+}
+
+@media (max-width:500px) {
+    .contestList {
+        >.contestItem {
+            >.actions {
+                gap: 10px;
+                flex-direction: column;
+            }
+        }
     }
 }
 </style>
