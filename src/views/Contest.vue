@@ -7,10 +7,14 @@
                         <span class="title-icon">
                             <font-awesome-icon icon="fa-solid fa-chart-line" />
                         </span>
-                        <span class="title-text">所有比赛</span>
+                        <span class="title-text" v-if="userMode">{{ user.name }}参加的比赛</span>
+                        <span class="title-text" v-else>所有比赛</span>
                     </div>
                     <div class="header-tabs">
-                        <span class="tab" @click="">查看我参加的比赛</span>
+                        <span class="tab" v-if="!userMode && isLogin"
+                            @click="router.push(`/contest?id=${userStore.info?.userId}`)">查看我参加的比赛</span><span
+                            class="tab" v-if="userMode"
+                            @click="router.push(`/contest`)">查看所有比赛</span>
                     </div>
                 </div>
                 <div class="content">
@@ -59,14 +63,37 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue'
 import type { CoreContestListData } from '@/utils/api';
 import API from '@/utils/api';
 import Toast from '@/utils/toast';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
+import type { User } from '@/utils/type';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const route = useRoute()
+const userStore = useUserStore();
+const id = ref(route.query.id);
+const isLogin = userStore.isLogin;
+const userMode = ref(false);
+const user = ref<User>({
+    avatar: '',
+    email: '',
+    groupId: '',
+    name: '',
+    spiders: [],
+    links: {
+        AtCoder: '',
+        NowCoder: '',
+        LeetCode: '',
+        LuoGu: '',
+        CodeForces: ''
+    },
+    userId: -1,
+    username: ''
+})
 
 const data = ref<{
     list: CoreContestListData[],
@@ -82,6 +109,15 @@ const data = ref<{
 
 const loading = ref(true);
 
+const getUser = async () => {
+    const response = await API.user.profile.getById(Number(id.value))
+    Toast.stdResponse(response, false);
+
+    if (response.success) {
+        user.value = response.data;
+    }
+}
+
 const getContestList = async (page: number) => {
     if (page > data.value.totalPage || page < 1 || page === data.value.currentPage) {
         return
@@ -91,8 +127,9 @@ const getContestList = async (page: number) => {
 
     const limit = 10;
     const offset = (page - 1) * limit;
+    const userId = userMode.value ? Number(id.value) : -1;
 
-    const response = await API.core.contest.list({ limit, offset, userId: -1 });
+    const response = await API.core.contest.list({ limit, offset, userId });
     Toast.stdResponse(response, false);
 
     if (response.success) {
@@ -100,7 +137,6 @@ const getContestList = async (page: number) => {
         data.value.total = response.data.total;
         data.value.totalPage = Math.ceil(data.value.total / limit);
         data.value.currentPage = page;
-        console.log(response.data.data);
     }
     loading.value = false;
 }
@@ -121,8 +157,51 @@ const toContest = (url: string) => {
     window.open(url);
 }
 
-onMounted(() => {
+watch(() => route.query.id, async () => {
+    userMode.value = false;
+    loading.value = false;
+    user.value = {
+        avatar: '',
+        email: '',
+        groupId: '',
+        name: '',
+        spiders: [],
+        links: {
+            AtCoder: '',
+            NowCoder: '',
+            LeetCode: '',
+            LuoGu: '',
+            CodeForces: ''
+        },
+        userId: -1,
+        username: ''
+    };
+    data.value = {
+        list: [],
+        total: 1,
+        totalPage: 1,
+        currentPage: 0
+    };
+    jumppage.value = 1;
+    id.value = route.query.id;
+
+    if (id.value) {
+        userMode.value = true;
+    }
     getContestList(1);
+    if (userMode.value) {
+        getUser();
+    }
+})
+
+onMounted(() => {
+    if (id.value) {
+        userMode.value = true;
+    }
+    getContestList(1);
+    if (userMode.value) {
+        getUser();
+    }
 })
 </script>
 
