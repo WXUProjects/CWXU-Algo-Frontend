@@ -210,8 +210,7 @@
                                 <span class="title-text">近期动态</span>
                             </div>
                             <div class="header-tabs">
-                                <span class="tab"
-                                    @click="router.push(`/allActivities?id=${user.userId}`)">查看所有动态</span>
+                                <span class="tab" @click="router.push(`/allActivities?id=${user.userId}`)">查看所有动态</span>
                             </div>
                         </div>
                         <div class="content">
@@ -225,6 +224,34 @@
                                 </div>
                             </div>
                             <div v-else>暂无近期动态</div>
+                        </div>
+                    </div>
+                    <div class="section">
+                        <div class="header">
+                            <div class="header-title">
+                                <span class="title-icon">
+                                    <font-awesome-icon icon="fa-solid fa-chart-line" />
+                                </span>
+                                <span class="title-text">最近参加的比赛</span>
+                            </div>
+                            <div class="header-tabs">
+                                <span class="tab" @click="router.push(`/contest?id=${user.userId}`)">查看所有比赛</span>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="contests">
+                                <div class="contest" v-for="contest in contests">
+                                    <div class="info">
+                                        <div class="platform">{{ contest.platform }}</div>
+                                        <div class="title">{{ contest.contestName }}</div>
+                                    </div>
+                                    <div class="actions">
+                                        <div class="btn def" @click="toContest(contest.contestUrl)">跳转到比赛主页</div>
+                                        <div class="btn def" @click="router.push({ path: '/contest/' + contest.id })">
+                                            查看比赛信息</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="moblie-actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -249,7 +276,7 @@ import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
 import { useUserStore } from '@/stores/user';
 import API from '@/utils/api';
-import type { CoreStatisticPeriodData, CoreSubmitLogGetByIdData } from '@/utils/api';
+import type { CoreContestListData, CoreStatisticPeriodData, CoreSubmitLogGetByIdData } from '@/utils/api';
 import Toast from '@/utils/toast';
 import type { User } from '@/utils/type';
 import Link from '@/utils/link';
@@ -392,6 +419,7 @@ const getUserInfo = async () => {
     getSubmitInfo();
     getHeatmapData();
     getData();
+    getContests();
 }
 
 interface HeatmapData {
@@ -657,6 +685,25 @@ const getData = async () => {
 const updateLog = async () => {
     const response = await API.core.spider.update(user.value.userId);
     Toast.stdResponse(response);
+}
+
+const contests = ref<CoreContestListData[]>([])
+
+const getContests = async () => {
+    const limit = 5;
+    const offset = 0;
+    const userId = user.value.userId;
+
+    const response = await API.core.contest.list({ limit, offset, userId });
+    Toast.stdResponse(response, false);
+
+    if (response.success) {
+        contests.value = response.data.data;
+    }
+}
+
+const toContest = (url: string) => {
+    window.open(url);
 }
 
 const showLogoutConfirm = () => {
@@ -956,6 +1003,9 @@ onMounted(() => {
 }
 
 .btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin: 0 5px;
     padding: 3px 6px;
     background-color: var(--background-color-2);
@@ -1146,6 +1196,38 @@ onMounted(() => {
             &.equal {
                 color: var(--text-light-color);
             }
+        }
+    }
+}
+
+.contests {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    >.contest {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+
+        >.info {
+            flex-grow: 1;
+            >.platform {
+                color: var(--text-light-color);
+                font-size: var(--text-sm);
+            }
+
+            >.title {
+                color: var(--text-default-color);
+                font-size: var(--text-lg);
+                font-weight: bold;
+            }
+        }
+
+        >.actions{
+            display: flex;
+            flex-direction: row;
+            gap: 5px;
         }
     }
 }
