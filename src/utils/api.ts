@@ -293,6 +293,15 @@ export interface CoreContestRankingRequest {
 export interface CoreContestRankingResponse {
     code: string;
     message: string;
+    contest: {
+        id: number;
+        platform: platform;
+        contestId: string;
+        contestName: string;
+        contestUrl: string;
+        totalCount: number;
+        time: string;
+    };
     data: CoreContestRankingData[];
     total: number;
 }
@@ -939,6 +948,15 @@ export default class API {
                     data: {
                         code: "",
                         message: "",
+                        contest: {
+                            id: 0,
+                            platform: "NowCoder",
+                            contestId: "",
+                            contestName: "",
+                            contestUrl: "",
+                            totalCount: 0,
+                            time: "",
+                        },
                         data: [],
                         total: 0
                     }
@@ -948,6 +966,10 @@ export default class API {
                         params: request
                     });
                     if (response.data.code === "0") {
+                        const time = Number(response.data.contest.time) * 1000;
+                        const timeObj = new Date(time);
+                        response.data.contest.time = timeObj.toLocaleString();
+
                         stdRes.success = true;
                         stdRes.message = "获取比赛排名成功";
                         stdRes.data = response.data;

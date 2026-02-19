@@ -4,11 +4,14 @@
             比赛 Contest
         </template>
         <div>
-            <div class="title">比赛信息</div>
-            <div>id = {{ id }}</div>
-            <div>需要以下接口：<br>1.查询用户排名，-1表示未参加<br>2.根据比赛id查询比赛信息<br></div>
-        </div>
-        <div>
+            <div class="contestInfo">
+                <div class="platform">{{ info.platform }}</div>
+                <div class="title">{{ info.contestName }}</div>
+                <div class="time">{{ info.time }}</div>
+                <div class="actions">
+                    <div class="btn def" @click="toContest(info.contestUrl)">跳转到比赛主页</div>
+                </div>
+            </div>
             <Rank :data="rankData" title="比赛排行榜" :is-joined="false"></Rank>
             <div class="pageNavigation" v-if="data">
                 <div class="group">
@@ -43,6 +46,7 @@ import BaseLayout from '@/components/BaseLayout.vue'
 import Rank from '@/components/Rank.vue'
 import API from '@/utils/api'
 import Toast from '@/utils/toast'
+import type { platform } from '@/utils/type'
 
 // 从url获取id参数
 const router = useRouter()
@@ -52,6 +56,24 @@ const id = route.params.id
 if (!id) {
     router.back();
 }
+
+const info = ref<{
+    id: number;
+    platform: platform;
+    contestId: string;
+    contestName: string;
+    contestUrl: string;
+    totalCount: number;
+    time: string;
+}>({
+    id: 0,
+    platform: 'NowCoder',
+    contestId: '',
+    contestName: '',
+    contestUrl: '',
+    totalCount: 0,
+    time: ""
+})
 
 const data = ref<{
     list: rankDataItem[],
@@ -113,8 +135,7 @@ const getRankData = async (page: number) => {
         }
         rankData.value.data = data;
 
-        console.log(rankData.value);
-
+        info.value = response.data.contest;
     }
 }
 
@@ -143,6 +164,10 @@ const rankData = ref<{
     "totalPage": 1
 })
 
+const toContest = (url: string) => {
+    window.open(url);
+}
+
 onMounted(() => {
     getRankData(1);
 })
@@ -151,11 +176,60 @@ onMounted(() => {
 <style scoped>
 @import '@/assets/css/navagation.css';
 
-.title {
-    width: 100%;
-    height: 50px;
-    line-height: 50px;
-    font-size: 1.5rem;
-    color: var(--text-default-color);
+.contestInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: calc(100%-40px);
+    padding: 20px;
+
+    >.platform {
+        color: var(--text-light-color);
+        font-size: var(--text-sm);
+    }
+
+    >.title {
+        color: var(--text-default-color);
+        font-size: var(--text-2xl);
+        font-weight: bold;
+    }
+
+    >.time {
+        color: var(--text-light-color);
+        font-size: var(--text-sm);
+    }
+
+    >.actions {
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        gap: 5px;
+    }
+}
+
+.btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: var(--background-color-2);
+    color: var(--text-secondary-color);
+    border: 1px solid var(--divider-color);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: var(--text-sm);
+    transition: all 0.2s ease;
+    -webkit-user-select: none;
+    user-select: none;
+
+    &.dan:hover {
+        background-color: #f44336;
+        color: white;
+        border-color: #f44336;
+    }
+
+    &.def:hover {
+        background-color: var(--neon-cyan);
+        color: black;
+        border-color: var(--neon-cyan);
+    }
 }
 </style>

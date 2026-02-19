@@ -16,14 +16,14 @@
                 <div class="content">
                     <div class="contestList" v-if="!loading">
                         <div class="contestItem" v-for="contest in data.list">
-                            <div class="info" @click="router.push({ path: '/contest/' + contest.contestId })">
+                            <div class="info" @click="router.push({ path: '/contest/' + contest.id })">
                                 <div class="platform">{{ contest.platform }}</div>
                                 <div class="title">{{ contest.contestName }}</div>
                                 <div class="time">{{ contest.time }}</div>
                             </div>
                             <div class="actions">
                                 <div class="btn def" @click="toContest(contest.contestUrl)">跳转到比赛主页</div>
-                                <div class="btn def" @click="router.push({ path: '/contest/' + contest.contestId })">
+                                <div class="btn def" @click="router.push({ path: '/contest/' + contest.id })">
                                     查看比赛信息</div>
                             </div>
                         </div>
@@ -248,6 +248,7 @@ onMounted(() => {
             >.title {
                 color: var(--text-default-color);
                 font-size: var(--text-lg);
+                font-weight: bold;
             }
 
             >.time {
