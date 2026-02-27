@@ -5,11 +5,11 @@
         </template>
         <div>
             <div class="contestInfo">
-                <div class="platform">{{ info.platform }}</div>
-                <div class="title">{{ info.contestName }}</div>
-                <div class="time">{{ info.time }}</div>
+                <div class="platform">{{ info.platform || "加载中" }}</div>
+                <div class="title">{{ info.contestName || "加载中" }}</div>
+                <div class="time">{{ info.time || "1970/1/1 00:00:00" }}</div>
                 <div class="actions">
-                    <div class="btn def" @click="toContest(info.contestUrl)">跳转到比赛主页</div>
+                    <div class="btn def" :class="loading ? 'dis' : ''" @click="toContest(info.contestUrl)">跳转到比赛主页</div>
                 </div>
             </div>
             <Rank :data="rankData" title="比赛排行榜" :is-joined="false"></Rank>
@@ -52,6 +52,9 @@ import type { platform } from '@/utils/type'
 const router = useRouter()
 const route = useRoute()
 const id = route.params.id
+
+// 加载状态，用于加载时禁用按键
+const loading = ref(false);
 
 if (!id) {
     router.back();
@@ -109,6 +112,8 @@ const getRankData = async (page: number) => {
         return;
     }
 
+    loading.value = true;
+
     const limit = 10
     const offset = (page - 1) * limit
 
@@ -137,6 +142,8 @@ const getRankData = async (page: number) => {
 
         info.value = response.data.contest;
     }
+
+    loading.value = false;
 }
 
 interface rankDataItem {
@@ -165,7 +172,9 @@ const rankData = ref<{
 })
 
 const toContest = (url: string) => {
-    window.open(url);
+    if (!loading.value) {
+        window.open(url);
+    }
 }
 
 onMounted(() => {
@@ -230,6 +239,10 @@ onMounted(() => {
         background-color: var(--neon-cyan);
         color: black;
         border-color: var(--neon-cyan);
+    }
+
+    &.dis{
+        cursor: not-allowed;
     }
 }
 </style>
