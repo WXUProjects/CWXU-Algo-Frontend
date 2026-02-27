@@ -298,6 +298,7 @@ export interface CoreContestRankingResponse {
         platform: platform;
         contestId: string;
         contestName: string;
+        avatar: string;
         contestUrl: string;
         totalCount: number;
         time: string;
@@ -310,6 +311,7 @@ export interface CoreContestRankingData {
     rank: number;
     userId: number;
     name: string;
+    avatar: string;
     score: number;
     acCount: number;
     totalCount: number;
@@ -954,6 +956,7 @@ export default class API {
                             contestId: "",
                             contestName: "",
                             contestUrl: "",
+                            avatar: "",
                             totalCount: 0,
                             time: "",
                         },

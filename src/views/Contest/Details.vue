@@ -127,12 +127,12 @@ const getRankData = async (page: number) => {
     if (response.success) {
         const data = [];
         for (const item of response.data.data) {
-            const user = await API.user.profile.getById(item.userId);
-            Toast.stdResponse(user, false);
+            // const user = await API.user.profile.getById(item.userId);
+            // Toast.stdResponse(user, false);
             data.push({
                 userId: item.userId,
-                avatar: user.data.avatar || '/images/defaultAvatar.png',
-                name: user.data.name,
+                avatar: item.avatar || '/images/defaultAvatar.png',
+                name: item.name,
                 rank: item.rank,
                 score: item.acCount,
                 change: 0
