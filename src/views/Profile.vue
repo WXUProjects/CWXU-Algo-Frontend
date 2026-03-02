@@ -740,7 +740,7 @@ onMounted(() => {
     >.top {
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: flex-start;
         justify-content: space-around;
 
         >.left,
