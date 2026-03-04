@@ -1010,16 +1010,16 @@ export default class API {
                         const data = JSON.parse(response.data.resp) as AgentSummaryRecentData;
                         stdRes.data = data;
                         if (response.data.code === 0) {
-                            stdRes.message = "获取最近小结成功";
+                            stdRes.message = "获取AI总结成功";
                         }
                         if (response.data.code === 1) {
-                            stdRes.message = "获取最近小结成功";
+                            stdRes.message = "获取AI总结成功";
                             stdRes.data.msg.push(response.data.msg)
                         }
                     }
                 } catch (error: any) {
                     console.log(error);
-                    stdRes.message = "获取最近提交失败";
+                    stdRes.message = "获取AI总结失败";
                 }
                 return stdRes;
             }
