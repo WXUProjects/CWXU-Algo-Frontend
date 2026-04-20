@@ -52,17 +52,6 @@
 
 @media screen and (max-width: 576px) {
   :root {
-    --text-xs: var(--text-xs-sm);
-    --text-sm: var(--text-sm-sm);
-    --text-base: var(--text-base-sm);
-    --text-lg: var(--text-lg-sm);
-    --text-xl: var(--text-xl-sm);
-    --text-2xl: var(--text-2xl-sm);
-  }
-}
-
-@media screen and (min-width: 576px) and (max-width: 767.98px) {
-  :root {
     --text-xs: var(--text-xs-md);
     --text-sm: var(--text-sm-md);
     --text-base: var(--text-base-md);
@@ -72,7 +61,7 @@
   }
 }
 
-@media screen and (min-width: 768px) and (max-width: 991.98px) {
+@media screen and (min-width: 576px) and (max-width: 767.98px) {
   :root {
     --text-xs: var(--text-xs-lg);
     --text-sm: var(--text-sm-lg);
@@ -80,6 +69,17 @@
     --text-lg: var(--text-lg-lg);
     --text-xl: var(--text-xl-lg);
     --text-2xl: var(--text-2xl-lg);
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991.98px) {
+  :root {
+    --text-xs: var(--text-xs-xl);
+    --text-sm: var(--text-sm-xl);
+    --text-base: var(--text-base-xl);
+    --text-lg: var(--text-lg-xl);
+    --text-xl: var(--text-xl-xl);
+    --text-2xl: var(--text-2xl-xl);
   }
 }
 

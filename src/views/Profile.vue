@@ -1283,8 +1283,9 @@ onMounted(() => {
 
                 >.avatar {
                     position: absolute;
-                    left: 20px;
-                    top: 150px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    top: 140px;
                     overflow: hidden;
                     border-radius: 50%;
                     width: 100px;
@@ -1306,7 +1307,7 @@ onMounted(() => {
                 >.info {
                     background: none;
                     box-shadow: none;
-                    padding: 75px 20px 0 20px;
+                    padding: 90px 20px 0 20px;
                     width: calc(100% - 40px);
 
                     >.name {
@@ -1368,6 +1369,16 @@ onMounted(() => {
 }
 
 @media (max-width:600px) {
+    .container > .top > .left > .avatar {
+        top: 120px;
+        width: 80px;
+        border-width: 6px;
+    }
+
+    .container > .top > .left > .info {
+        padding: 80px 16px 0 16px;
+    }
+
     .container {
         >.top {
             >.right {
