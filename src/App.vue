@@ -58,7 +58,7 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
-        <router-link to="/problem" class="section navigation-item" active-class="active">
+        <!-- <router-link to="/problem" class="section navigation-item" active-class="active">
           <font-awesome-icon icon="fa-solid fa-list" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -68,9 +68,9 @@
             <div class="item-description">上传或练习题目</div>
           </div>
           <div class="item-indicator">▶</div>
-        </router-link>
+        </router-link> -->
 
-        <router-link to="/star" class="section navigation-item" active-class="active" v-if="isLogin">
+        <!-- <router-link to="/star" class="section navigation-item" active-class="active" v-if="isLogin">
           <font-awesome-icon icon="fa-solid fa-star" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
@@ -80,7 +80,7 @@
             <div class="item-description">查看或管理您的收藏</div>
           </div>
           <div class="item-indicator">▶</div>
-        </router-link>
+        </router-link> -->
 
         <router-link to="/dashboard" class="section navigation-item" active-class="active" v-if="isLogin && isAdmin">
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
@@ -107,17 +107,21 @@
         </a>
 
         <!-- 主题切换 -->
-        <div class="section navigation-item" @click="setTheme(currentTheme === 'dark' ? 'light' : 'dark')">
-          <font-awesome-icon v-if="currentTheme === 'dark'" icon="fa-solid fa-sun" class="item-icon" />
-          <font-awesome-icon v-else icon="fa-solid fa-moon" class="item-icon" />
+        <div class="section navigation-item theme-switcher">
+          <font-awesome-icon icon="fa-solid fa-palette" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
               <span class="zh">主题</span>
-              <span class="en">{{ currentTheme === 'dark' ? 'Light_mode' : 'Dark_mode' }}</span>
+              <span class="en">Theme</span>
             </div>
-            <div class="item-description">切换主题</div>
+            <div class="theme-selector" @click.stop>
+              <div v-for="opt in themeOptions" :key="opt.key" class="theme-swatch"
+                :class="{ active: currentTheme === opt.key }" @click="setTheme(opt.key)">
+                <div class="swatch-dot" :style="{ background: themePreviewColors[opt.key] }"></div>
+                <span>{{ opt.label }}</span>
+              </div>
+            </div>
           </div>
-          <div class="item-indicator">▶</div>
         </div>
 
         <router-link to="/login" class="section navigation-item" active-class="active" v-if="!isLogin">
@@ -151,12 +155,11 @@
         <div class="system-info">
           <span class="info-item">v1.0.0</span>
           <span class="info-divider">|</span>
-          <span class="info-item">{{ new Date().getHours().toString().padStart(2, '0') }}:{{ new
-            Date().getMinutes().toString().padStart(2, '0') }}</span>
+          <span class="info-item">{{ currentTime }}</span>
         </div>
         <div class="logo-status">
           <div class="status-indicator" :class="{ 'status-online': true }"></div>
-          <span class="status-text">{{ currentTheme === 'dark' ? 'DARK_MODE' : 'LIGHT_MODE' }}</span>
+          <span class="status-text">{{ currentThemeLabel }}</span>
         </div>
       </div>
     </div>
@@ -193,7 +196,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, nextTick } from 'vue'
+import { ref, onMounted, onUnmounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
 import generateRainbowText from './utils/format'
 import { useUserStore } from '@/stores/user'
@@ -250,33 +253,53 @@ Welcome to CWXU - Algo
 ${rainbowInfo.string}
 `, ...rainbowText.format, ...rainbowInfo.format);
 
-// 从本地储存中获取主题
-const getTheme = (): 'dark' | 'light' => {
-  const theme = localStorage.getItem('theme');
-  if (theme) {
-    return theme as 'dark' | 'light';
-  } else {
-    // 如果本地储存中没有，则创建本地储存，默认为跟随系统
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      localStorage.setItem('theme', 'dark');
-      return 'dark';
-    } else {
-      localStorage.setItem('theme', 'light');
-      return 'light';
-    }
-  }
+// 主题系统
+type ThemeName = 'nordic' | 'github' | 'wxu-purple'
+
+const themeOptions: { key: ThemeName; label: string }[] = [
+  { key: 'github', label: '专业' },
+  { key: 'nordic', label: '极客' },
+  { key: 'wxu-purple', label: '锡院紫' },
+]
+
+const themePreviewColors: Record<ThemeName, string> = {
+  nordic: '#88C0D0',
+  github: '#0070F3',
+  'wxu-purple': '#7928CA',
 }
 
-// 设置主题
-const setTheme = (theme: 'dark' | 'light') => {
+const validThemes = new Set<string>(themeOptions.map(t => t.key))
+
+const getTheme = (): ThemeName => {
+  const theme = localStorage.getItem('theme');
+  if (theme && validThemes.has(theme)) {
+    return theme as ThemeName;
+  }
+  localStorage.setItem('theme', 'github');
+  return 'github';
+}
+
+const setTheme = (theme: ThemeName) => {
   localStorage.setItem('theme', theme);
   currentTheme.value = theme;
   document.documentElement.setAttribute('data-theme', theme);
 }
 
-const currentTheme = ref<'dark' | 'light'>(getTheme())
+const currentTheme = ref<ThemeName>(getTheme())
+
+const currentThemeLabel = computed(() => {
+  return themeOptions.find(t => t.key === currentTheme.value)?.label.toUpperCase() || 'DARK_MODE'
+})
 
 const annos = ref<Anno[]>([])
+
+const currentTime = ref('')
+let clockInterval: ReturnType<typeof setInterval> | null = null
+
+const updateClock = () => {
+  const now = new Date()
+  currentTime.value = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0')
+}
 
 const closeAnno = (id: number) => {
   AnnoStore.closeAnno(id);
@@ -284,6 +307,8 @@ const closeAnno = (id: number) => {
 }
 
 onMounted(() => {
+  updateClock()
+  clockInterval = setInterval(updateClock, 60000)
   setTheme(getTheme())
   userStore.syncStatus()
   AnnoStore.syncAnnos()
@@ -295,13 +320,17 @@ onMounted(() => {
   Bot.tip.loginTip();
   annos.value = AnnoStore.getStorageAnnos()
 })
+
+onUnmounted(() => {
+  if (clockInterval) clearInterval(clockInterval)
+})
 </script>
 
 <style scoped>
 /* 过渡动画 */
 .fade-enter-active,
 .fade-leave-active {
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fade-enter-from {
@@ -335,7 +364,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   z-index: 10;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, width 0.3s ease;
 }
 
 /* 侧边栏logo区域 */
@@ -415,7 +444,7 @@ onMounted(() => {
   cursor: pointer;
   text-decoration: none;
   color: var(--text-light-color);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
   position: relative;
   overflow: hidden;
 }
@@ -462,7 +491,7 @@ onMounted(() => {
 .item-icon {
   font-size: var(--text-lg);
   color: var(--section-default-color);
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
   min-width: 24px;
   text-align: center;
 }
@@ -503,11 +532,53 @@ onMounted(() => {
   text-overflow: ellipsis;
 }
 
+/* 主题选择器 */
+.theme-switcher {
+  cursor: default;
+}
+
+.theme-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.theme-swatch {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: var(--text-xs);
+  color: var(--text-light-color);
+  background-color: var(--section-background-color);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border: 1.5px solid transparent;
+}
+
+.theme-swatch:hover {
+  background-color: var(--background-color-3);
+}
+
+.theme-swatch.active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+}
+
+.swatch-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
 .item-indicator {
   font-size: var(--text-sm);
   color: var(--neon-cyan);
   opacity: 0.7;
-  transition: all 0.2s ease;
+  transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
 .navigation-item:hover .item-indicator {
@@ -575,7 +646,7 @@ onMounted(() => {
       font-size: var(--text-base);
       white-space: nowrap;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: background-color 0.2s ease, color 0.2s ease;
       -webkit-user-select: none;
       user-select: none;
       &:hover {
@@ -620,7 +691,7 @@ onMounted(() => {
       height: 30px;
       margin-left: 10px;
       border-radius: 10px;
-      transition: all 0.3s ease;
+      transition: background-color 0.3s ease;
 
       &:hover {
         background-color: #ffffff80;

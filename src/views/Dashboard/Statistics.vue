@@ -1,7 +1,9 @@
 <template>
     <div class="dashboardContent">
         <h2>数据统计</h2>
-        <div class="stats-grid">
+        <div style="position: relative;">
+            <LoadingOverlay :show="loadingStats" />
+            <div class="stats-grid">
             <div class="stat-card">
                 <div class="card-header">
                     <div class="card-title">
@@ -11,13 +13,6 @@
                 <div class="card-data">
                     <div class="data-value">{{ userCount }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
             <div class="stat-card">
                 <div class="card-header">
@@ -28,13 +23,6 @@
                 <div class="card-data">
                     <div class="data-value">{{ groupCount }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
             <div class="stat-card">
                 <div class="card-header">
@@ -45,13 +33,6 @@
                 <div class="card-data">
                     <div class="data-value">{{ periodData.ac.total }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
             <div class="stat-card">
                 <div class="card-header">
@@ -62,13 +43,6 @@
                 <div class="card-data">
                     <div class="data-value">{{ periodData.submit.total }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
             <div class="stat-card">
                 <div class="card-header">
@@ -196,13 +170,6 @@
                 <div class="card-data">
                     <div class="data-value">{{ periodData.ac.today }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
             <div class="stat-card">
                 <div class="card-header">
@@ -213,18 +180,15 @@
                 <div class="card-data">
                     <div class="data-value">{{ periodData.submit.today }}</div>
                 </div>
-                <!-- <div class="card-footer">
-                    <div class="footer-trend">
-                        <span class="trend-icon">-</span>
-                        <span class="trend-value"></span>
-                    </div>
-                    <div class="footer-info">since yesterday</div>
-                </div> -->
             </div>
         </div>
+        </div>
         <h2>提交趋势</h2>
-        <div class="chart-container">
-            <v-chart class="chart" :option="chartOption" autoresize />
+        <div style="position: relative;">
+            <LoadingOverlay :show="loadingChart" />
+            <div class="chart-container">
+                <v-chart class="chart" :option="chartOption" autoresize />
+            </div>
         </div>
     </div>
 </template>
@@ -232,6 +196,7 @@
 <script setup lang="ts">
 import API, { type CoreStatisticPeriodData, type Datum as DailyData } from '@/utils/api';
 import Toast from '@/utils/toast';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { computed, onMounted, ref } from 'vue';
 
 // 导入 ECharts 相关
@@ -273,6 +238,8 @@ export interface List {
     [property: string]: any;
 }
 
+const loadingStats = ref(true);
+const loadingChart = ref(true);
 const userCount = ref(0);
 
 const getUserCount = async () => {
@@ -314,9 +281,6 @@ const getPeriodData = async () => {
     periodData.value = response.data.data
 }
 
-/*
-卧槽了惊天大无语，传的明明是数字却变成字符串了，逆天
-*/
 const getTrendClass = (curr: number, prev: number): string => {
     curr = Number(curr);
     prev = Number(prev);
@@ -332,7 +296,6 @@ const getTrendClass = (curr: number, prev: number): string => {
 const getTrendValue = (curr: number, prev: number): string => {
     curr = Number(curr);
     prev = Number(prev);
-    // return (curr - prev >= 0 ? '+' : '') + ((curr - prev) / (prev === 0 ? 1 : prev) * 100).toFixed(2) + '%'
     return (curr - prev >= 0 ? '+' : '') + (curr - prev)
 }
 
@@ -358,14 +321,6 @@ const getGroupCount = async () => {
         groupCount.value = response.data.total;
     }
 }
-
-/*
-DailyData:
-{
-    count: number;
-    date: string; // YYYY-MM-DD
-}
-*/
 
 const acDataDaily = ref<DailyData[]>([])
 const submitDataDaily = ref<DailyData[]>([])
@@ -395,18 +350,15 @@ const getDailyData = async () => {
     }
 }
 
-// 计算最近30天的起始索引
 const calculateDefaultRange = (dates: string[]) => {
     if (dates.length <= 30) {
-        // 如果总数据少于等于30天，则显示全部数据
         return {
             startIndex: 0,
             endIndex: dates.length - 1
         };
     } else {
-        // 否则显示最后30天的数据
         const endIndex = dates.length - 1;
-        const startIndex = Math.max(0, endIndex - 29); // 30天包括最后一天
+        const startIndex = Math.max(0, endIndex - 29);
         return {
             startIndex,
             endIndex
@@ -415,19 +367,15 @@ const calculateDefaultRange = (dates: string[]) => {
 };
 
 const chartOption = computed(() => {
-    // 按日期排序数据
     const sortedAcData = [...acDataDaily.value].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
     const sortedSubmitData = [...submitDataDaily.value].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-    // 提取日期和数值
     const dates = sortedAcData.map(item => item.date);
     const acValues = sortedAcData.map(item => item.count);
     const submitValues = sortedSubmitData.map(item => item.count);
 
-    // 计算默认显示范围
     const { startIndex, endIndex } = calculateDefaultRange(dates);
 
-    // 计算默认缩放比例
     const startPercent = (startIndex / dates.length) * 100;
     const endPercent = (endIndex / dates.length) * 100;
 
@@ -464,9 +412,8 @@ const chartOption = computed(() => {
                 data: dates,
                 axisLabel: {
                     formatter: function (value: string) {
-                        // 格式化日期显示，只显示月份和日期
                         const date = new Date(value);
-                        return `${date.getMonth() + 1}-${date.getDate()}`;
+                        return (date.getMonth() + 1) + '-' + date.getDate();
                     }
                 },
                 splitLine: {
@@ -519,11 +466,21 @@ const chartOption = computed(() => {
     };
 });
 
-onMounted(() => {
-    getUserCount();
-    getPeriodData();
-    getGroupCount();
-    getDailyData()
+onMounted(async () => {
+    loadingStats.value = true;
+    loadingChart.value = true;
+    try {
+        await Promise.all([
+            getUserCount(),
+            getPeriodData(),
+            getGroupCount()
+        ]);
+        loadingStats.value = false;
+    } finally {
+        // loadingStats handled above
+    }
+    await getDailyData();
+    loadingChart.value = false;
 })
 </script>
 

@@ -4,33 +4,36 @@
             比赛 Contest
         </template>
         <div>
-            <div class="contestInfo">
+            <div class="contestInfo" style="position: relative;">
+                <LoadingOverlay :show="loadingInfo" />
                 <div class="platform">{{ info.platform || "加载中" }}</div>
                 <div class="title">{{ info.contestName || "加载中" }}</div>
                 <div class="time">{{ info.time || "1970/1/1 00:00:00" }}</div>
                 <div class="actions">
-                    <div class="btn def" :class="loading ? 'dis' : ''" @click="toContest(info.contestUrl)">跳转到比赛主页</div>
+                    <div class="btn def" :class="loadingInfo ? 'dis' : ''" @click="toContest(info.contestUrl)">跳转到比赛主页</div>
                 </div>
             </div>
-            <Rank :data="rankData" title="比赛排行榜" :is-joined="false"></Rank>
+            <div style="position: relative;">
+                <LoadingOverlay :show="loadingRank" />
+                <Rank :data="rankData" title="比赛排行榜" :is-joined="false"></Rank>
+            </div>
             <div class="pageNavigation" v-if="data">
                 <div class="group">
-                    <div class="pageButtons" v-if="data.currentPage != 1">
-                        <button @click="getRankData(data.currentPage - 1)">上一页</button>
-                    </div>
+                    <button class="page-nav-btn" :disabled="data.currentPage <= 1"
+                        @click="getRankData(data.currentPage - 1)">上一页</button>
                     <div class="pageButtons">
                         <button v-for="value in pages" :key="value" :class="value === data.currentPage ? 'active' : ''"
                             @click="value === data.currentPage ? null : getRankData(value)">{{ value
                             }}</button>
                     </div>
-                    <div class="pageButtons" v-if="data.currentPage != data.totalPage">
-                        <button @click="getRankData(data.currentPage + 1)">下一页</button>
-                    </div>
+                    <button class="page-nav-btn" :disabled="data.currentPage >= data.totalPage"
+                        @click="getRankData(data.currentPage + 1)">下一页</button>
                 </div>
                 <div class="group">
                     <div class="pageInput">
+                        <input type="number" min="1" :max="data.totalPage" v-model="jumppage"
+                            @keyup.enter="getRankData(jumppage)">
                         <button @click="getRankData(jumppage)">跳转</button>
-                        <input type="number" min="1" :max="data.totalPage" v-model="jumppage">
                     </div>
                     <div class="pageSum">共 {{ data.totalPage }} 页</div>
                 </div>
@@ -43,6 +46,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import BaseLayout from '@/components/BaseLayout.vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import Rank from '@/components/Rank.vue'
 import API from '@/utils/api'
 import Toast from '@/utils/toast'
@@ -54,7 +58,8 @@ const route = useRoute()
 const id = route.params.id
 
 // 加载状态，用于加载时禁用按键
-const loading = ref(false);
+const loadingInfo = ref(true);
+const loadingRank = ref(true);
 
 if (!id) {
     router.back();
@@ -112,7 +117,10 @@ const getRankData = async (page: number) => {
         return;
     }
 
-    loading.value = true;
+    loadingRank.value = true;
+    if (info.value.contestName === '') {
+        loadingInfo.value = true;
+    }
 
     const limit = 10
     const offset = (page - 1) * limit
@@ -125,11 +133,9 @@ const getRankData = async (page: number) => {
     Toast.stdResponse(response, false)
 
     if (response.success) {
-        const data = [];
+        const list: rankDataItem[] = [];
         for (const item of response.data.data) {
-            // const user = await API.user.profile.getById(item.userId);
-            // Toast.stdResponse(user, false);
-            data.push({
+            list.push({
                 userId: item.userId,
                 avatar: item.avatar || '/images/defaultAvatar.png',
                 name: item.name,
@@ -138,12 +144,19 @@ const getRankData = async (page: number) => {
                 change: 0
             })
         }
-        rankData.value.data = data;
+        rankData.value.data = list;
+
+        // 从 API 响应更新分页状态
+        const total = response.data.total || response.data.data.length;
+        data.value.total = total;
+        data.value.totalPage = Math.ceil(total / limit);
+        data.value.currentPage = page;
 
         info.value = response.data.contest;
+        loadingInfo.value = false;
     }
 
-    loading.value = false;
+    loadingRank.value = false;
 }
 
 interface rankDataItem {
@@ -172,7 +185,7 @@ const rankData = ref<{
 })
 
 const toContest = (url: string) => {
-    if (!loading.value) {
+    if (!loadingRank.value) {
         window.open(url);
     }
 }

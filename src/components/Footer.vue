@@ -17,11 +17,6 @@
                     </div>
                 </div>
                 <div class="footer-column">
-                    <h4>联系我们</h4>
-                    <p>QQ: 123456789</p>
-                    <p>Email: 123@example.com</p>
-                </div>
-                <div class="footer-column">
                     <h4>快速链接</h4>
                     <ul>
                         <li><router-link to="/">首页</router-link></li>

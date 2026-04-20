@@ -1,9 +1,11 @@
 <template>
     <BaseLayout>
         <Confirm ref="confirmRef" :message="'确定要退出登录吗？'" @confirm="logout" />
+        <Confirm ref="confirmUpdateRef" :title="'更新OJ数据'" :message="'确定要更新OJ数据吗？这可能需要一些时间。'" @confirm="doUpdateLog" />
         <div class="container">
             <div class="top">
-                <div class="left">
+                <div class="left" style="position: relative;">
+                    <LoadingOverlay :show="loadingProfile" />
                     <div class="background">
                         <div class="flow-emoji">
                             {{ '💯🏅🎯'.repeat(5) }}<br>
@@ -23,54 +25,14 @@
                             <div class="username">{{ user.username || "noob" }}</div>
                         </div>
                         <div class="details" v-if="user">
-                            <div class="item">
-                                <div class="name">AtCoder</div>
+                            <div class="item" v-for="oj in ojPlatforms" :key="oj.key">
+                                <div class="name">{{ oj.label }}</div>
                                 <div class="link"
-                                    :class="!(!user.links.AtCoder && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
-                                    <div v-if="!user.links.AtCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link v-else-if="!user.links.AtCoder && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=AtCoder">去绑定</router-link>
-                                    <a v-else-if="user.links.AtCoder" target="_blank" :href="user.links.AtCoder">主页</a>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="name">牛客</div>
-                                <div class="link"
-                                    :class="!(!user.links.NowCoder && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
-                                    <div v-if="!user.links.NowCoder && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link v-else-if="!user.links.NowCoder && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=NowCoder">去绑定</router-link>
-                                    <a v-else target="_blank" :href="user.links.NowCoder">主页</a>
-                                </div>
-                            </div>
-                            <!-- <div class="item">
-                                <div class="name">力扣</div>
-                                <div class="link" :class="!(!user.links.AtCoder && jwtUserInfo?.userId != user.userId)?'go':''">
-                                    <div v-if="!user.links.LeetCode && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link v-else-if="!user.links.LeetCode && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=LeetCode">去绑定</router-link>
-                                    <a v-else target="_blank" :href="user.links.LeetCode">主页</a>
-                                </div>
-                            </div> -->
-                            <div class="item">
-                                <div class="name">洛谷</div>
-                                <div class="link"
-                                    :class="!(!user.links.LuoGu && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
-                                    <div v-if="!user.links.LuoGu && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link v-else-if="!user.links.LuoGu && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=LuoGu">去绑定</router-link>
-                                    <a v-else target="_blank" :href="user.links.LuoGu">主页</a>
-                                </div>
-                            </div>
-                            <div class="item">
-                                <div class="name">CodeForces</div>
-                                <div class="link"
-                                    :class="!(!user.links.CodeForces && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
-                                    <div v-if="!user.links.CodeForces && jwtUserInfo?.userId != user.userId">未绑定</div>
-                                    <router-link
-                                        v-else-if="!user.links.CodeForces && jwtUserInfo?.userId == user.userId"
-                                        to="/changeProfile?oj=CodeForces">去绑定</router-link>
-                                    <a v-else target="_blank" :href="user.links.CodeForces">主页</a>
+                                    :class="!(!user.links[oj.key] && jwtUserInfo?.userId != user.userId) ? 'go' : ''">
+                                    <div v-if="!user.links[oj.key] && jwtUserInfo?.userId != user.userId">未绑定</div>
+                                    <router-link v-else-if="!user.links[oj.key] && jwtUserInfo?.userId == user.userId"
+                                        :to="`/changeProfile?oj=${oj.key}`">去绑定</router-link>
+                                    <a v-else target="_blank" :href="user.links[oj.key]">主页</a>
                                 </div>
                             </div>
                         </div>
@@ -85,13 +47,14 @@
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
-                        <button class="btn def" @click="updateLog()">更新OJ数据</button>
+                        <button class="btn def" @click="showUpdateConfirm">更新OJ数据</button>
                         <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
                         <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
                     </div>
                 </div>
                 <div class="right">
-                    <div class="section">
+                    <div class="section" style="position: relative;">
+                        <LoadingOverlay :show="loadingStats" />
                         <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
@@ -149,7 +112,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="section">
+                    <div class="section" style="position: relative;">
+                        <LoadingOverlay :show="loadingHeatmap" />
                         <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
@@ -171,37 +135,8 @@
                                 @changeYear="handleYearChange"></Calendar>
                         </div>
                     </div>
-                    <!-- <div class="section">
-                        <div class="header">
-                            <div class="header-title">
-                                <span class="title-icon">
-                                    <font-awesome-icon icon="fa-solid fa-trophy" />
-                                </span>
-                                <span class="title-text">排行</span>
-                            </div>
-                        </div>
-                        <div class="content">
-                            <div class="ranks">
-                                <div class="rank">
-                                    <div class="title">生涯</div>
-                                    <div class="value">#1</div>
-                                </div>
-                                <div class="rank">
-                                    <div class="title">本周排行</div>
-                                    <div class="value">#1</div>
-                                </div>
-                                <div class="rank">
-                                    <div class="title">本月排行</div>
-                                    <div class="value">#1</div>
-                                </div>
-                                <div class="rank">
-                                    <div class="title">年度排行</div>
-                                    <div class="value">#1</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> -->
-                    <div class="section">
+                    <div class="section" style="position: relative;">
+                        <LoadingOverlay :show="loadingActivities" />
                         <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
@@ -226,7 +161,8 @@
                             <div v-else>暂无近期动态</div>
                         </div>
                     </div>
-                    <div class="section">
+                    <div class="section" style="position: relative;">
+                        <LoadingOverlay :show="loadingContests" />
                         <div class="header">
                             <div class="header-title">
                                 <span class="title-icon">
@@ -255,7 +191,7 @@
                         </div>
                     </div>
                     <div class="moblie-actions" v-if="jwtUserInfo?.userId == user.userId">
-                        <button class="btn def" @click="updateLog()">更新OJ数据</button>
+                        <button class="btn def" @click="showUpdateConfirm">更新OJ数据</button>
                         <button class="btn def" @click="router.push('/changeprofile')">编辑个人资料</button>
                         <button class="btn dan" @click="showLogoutConfirm">退出登录</button>
                     </div>
@@ -274,6 +210,7 @@ import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
 import Confirm from '@/components/confirm.vue'
+import LoadingOverlay from '@/components/LoadingOverlay.vue'
 import { useUserStore } from '@/stores/user';
 import API from '@/utils/api';
 import type { CoreContestListData, CoreStatisticPeriodData, CoreSubmitLogGetByIdData } from '@/utils/api';
@@ -311,6 +248,19 @@ const user = ref<User>({
 })
 
 const confirmRef = ref()
+const confirmUpdateRef = ref()
+const loadingProfile = ref(true)
+const loadingStats = ref(true)
+const loadingHeatmap = ref(true)
+const loadingActivities = ref(true)
+const loadingContests = ref(true)
+
+const ojPlatforms = [
+    { key: 'AtCoder' as const, label: 'AtCoder' },
+    { key: 'NowCoder' as const, label: '牛客' },
+    { key: 'LuoGu' as const, label: '洛谷' },
+    { key: 'CodeForces' as const, label: 'CodeForces' },
+]
 
 interface ActivityItem {
     title: string;
@@ -375,6 +325,7 @@ const activities = ref<ActivityItem[]>([
 ])
 
 const getSubmitInfo = async () => {
+    loadingActivities.value = true;
     const response = await API.core.submitLog.getById(user.value.userId, -1, 10);
     Toast.stdResponse(response, false);
 
@@ -403,15 +354,18 @@ const getSubmitInfo = async () => {
                 time: time,
             });
         });
+        loadingActivities.value = false;
     }
 }
 
 // 获取用户信息
 const getUserInfo = async () => {
+    loadingProfile.value = true;
     const response = await API.user.profile.getById(user.value.userId);
 
     if (response.success) {
         user.value = response.data;
+        loadingProfile.value = false;
     }
 
     Toast.stdResponse(response, false);
@@ -441,6 +395,7 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
+    loadingHeatmap.value = true;
     const dateObj = new Date();
     const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
 
@@ -466,6 +421,7 @@ const getHeatmapData = async () => {
 
     if (response2.success) {
         acData.value = response2.data.data.filter(item => item.count > 0);
+        loadingHeatmap.value = false;
     }
 }
 
@@ -575,7 +531,7 @@ const data = ref<Data>({
 })
 
 const getGrowClass = (grow: number | undefined) => {
-    if (grow) {
+    if (grow !== undefined && grow !== null) {
         if (grow === 0) {
             return "equal";
         } else if (grow > 0) {
@@ -589,9 +545,11 @@ const getGrowClass = (grow: number | undefined) => {
 const getData = async () => {
     const userId = user.value.userId
 
-    const userResponse = await API.core.statistic.period(userId);
-    const globalResponse = await API.core.statistic.period(-1);
-    const userCountResponse = await API.user.profile.list(1);
+    const [userResponse, globalResponse, userCountResponse] = await Promise.all([
+        API.core.statistic.period(userId),
+        API.core.statistic.period(-1),
+        API.user.profile.list(1)
+    ]);
 
     Toast.stdResponse(userResponse, false);
     Toast.stdResponse(globalResponse, false);
@@ -679,6 +637,7 @@ const getData = async () => {
                 }
             }
         }
+        loadingStats.value = false;
     }
 }
 
@@ -687,9 +646,18 @@ const updateLog = async () => {
     Toast.stdResponse(response);
 }
 
+const showUpdateConfirm = () => {
+    confirmUpdateRef.value?.show()
+}
+
+const doUpdateLog = () => {
+    updateLog()
+}
+
 const contests = ref<CoreContestListData[]>([])
 
 const getContests = async () => {
+    loadingContests.value = true;
     const limit = 5;
     const offset = 0;
     const userId = user.value.userId;
@@ -699,6 +667,7 @@ const getContests = async () => {
 
     if (response.success) {
         contests.value = response.data.data;
+        loadingContests.value = false;
     }
 }
 
@@ -725,7 +694,7 @@ onMounted(() => {
     } else {
         user.value.userId = JWT.getUserInfo()!.userId;
     }
-    getUserInfo()
+    getUserInfo();
 })
 </script>
 

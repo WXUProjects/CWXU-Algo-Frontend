@@ -20,7 +20,8 @@
           </div>
         </div>
 
-        <div class="stats-grid">
+        <div class="stats-grid" style="position: relative;">
+          <LoadingOverlay :show="loadingStats" />
           <Stars class="stars" />
           <!-- 生涯统计 -->
           <div class="stat-card">
@@ -163,7 +164,8 @@
               </div>
             </div>
 
-            <div class="section-secondary-container">
+            <div class="section-secondary-container" style="position: relative;">
+              <LoadingOverlay :show="loadingHeatmap" />
               <Calendar v-if="currentCalendar === 0" :data="submitData" :year="dynamicYear"
                 @changeYear="handleYearChange"></Calendar>
               <Calendar v-if="currentCalendar === 1" :data="acData" :year="dynamicYear" @changeYear="handleYearChange">
@@ -282,7 +284,8 @@
               </div>
             </div>
 
-            <div class="section-secondary-container">
+            <div class="section-secondary-container" style="position: relative;">
+              <LoadingOverlay :show="loadingAi" />
               <div v-for="item in aiSummary" class="analyseItem"> {{ item }}</div>
               <div class="aiTip">内容由AI生成，请仔细甄别。</div>
               <!-- <div v-for="item in analyse" v-html="item" class="analyseItem"></div> -->
@@ -305,9 +308,14 @@ import Toast from '@/utils/toast';
 import Analyse from '@/utils/analyse';
 import { useUserStore } from '@/stores/user';
 import Stars from '@/components/Stars.vue';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
+
+const loadingStats = ref(true)
+const loadingHeatmap = ref(true)
+const loadingAi = ref(true)
 
 interface HeatmapData {
   date: string;
@@ -330,6 +338,7 @@ const padZero = (num: number): string => {
 }
 
 const getHeatmapData = async () => {
+  loadingHeatmap.value = true;
   const dateObj = new Date();
   const date = dateObj.getFullYear() + padZero(dateObj.getMonth() + 1) + padZero(dateObj.getDate());
 
@@ -357,6 +366,7 @@ const getHeatmapData = async () => {
 
   if (response2.success) {
     acData.value = response2.data.data.filter(item => item.count > 0);
+    loadingHeatmap.value = false;
   }
 }
 
@@ -413,23 +423,28 @@ const currentPeriodData = computed<CoreStatisticPeriodItem>(() => {
 })
 
 const getPeriodData = async () => {
+  loadingStats.value = true;
   const userId = JWT.getUserInfo()?.userId || -1;
   const response = await API.core.statistic.period(userId);
   Toast.stdResponse(response, false);
 
   periodData.value = response.data.data
   analyse.value = Analyse.period(response.data.data)
+  loadingStats.value = false;
 }
 
 const getAiSummary = async () =>{
+  loadingAi.value = true;
   const userId = JWT.getUserInfo()?.userId
   if (!userId) {
     aiSummary.value = ["登录后查看AI总结"]
+    loadingAi.value = false;
     return
   }
   const response = await API.agent.summary.recent(userId);
   Toast.stdResponse(response, false);
   aiSummary.value = response.data.msg;
+  loadingAi.value = false;
 }
 
 /*
@@ -466,22 +481,7 @@ const getTrend = (curr: number, prev: number): string => {
   }
 }
 
-// 获取当前主题
-const getCurrentTheme = () => {
-  const theme = localStorage.getItem('theme')
-  return theme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-}
-
-const currentTheme = ref(getCurrentTheme())
-
-// 监听主题变化
-const checkTheme = () => {
-  currentTheme.value = getCurrentTheme()
-}
-
 onMounted(() => {
-  // 初始检查
-  checkTheme()
   getHeatmapData()
   getPeriodData()
   getAiSummary()
@@ -572,23 +572,18 @@ onMounted(() => {
 }
 
 .stat-card {
-  background-color: rgba(255, 255, 255, 0.05);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
+  background-color: rgba(255, 255, 255, 0.08);
   position: relative;
   padding: 20px;
   border-radius: 12px;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-
-  transform-style: preserve-3d;
-  transform-origin: center center;
 }
 
 .stat-card:hover {
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  transform: perspective(1000px) translateY(-4px) scale(1.05) rotateX(8deg);
+  transform: translateY(-4px) scale(1.02);
 }
 
 .stat-card:hover::after {
@@ -914,19 +909,6 @@ onMounted(() => {
 
   .data-value {
     font-size: 2rem;
-  }
-}
-
-/* 动画效果 */
-@keyframes pulse {
-
-  0%,
-  100% {
-    opacity: 1;
-  }
-
-  50% {
-    opacity: 0.7;
   }
 }
 

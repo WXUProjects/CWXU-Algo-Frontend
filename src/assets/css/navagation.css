@@ -69,6 +69,28 @@
     border-color: var(--input-active-color)
 }
 
+.page-nav-btn {
+    font-size: var(--text-sm);
+    text-align: center;
+    border: 1px solid var(--divider-color);
+    border-radius: 5px;
+    padding: 5px 10px;
+    background-color: var(--background-color-1);
+    color: var(--text-default-color);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.3s ease, opacity 0.2s ease;
+}
+
+.page-nav-btn:hover:not(:disabled) {
+    border-color: var(--input-active-color);
+}
+
+.page-nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
 .pageSum {
     font-size: var(--text-sm);
     color: var(--text-default-color);

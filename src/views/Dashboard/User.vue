@@ -13,42 +13,38 @@
                 </div>
             </div>
             <div class="content">
-                <table style="margin-bottom: 10px;">
-                    <thead>
-                        <tr>
-                            <th style="width: 50px;">ID</th>
-                            <th style="width: 50px;">组ID</th>
-                            <th>头像</th>
-                            <th style="width: 100px;">用户名</th>
-                            <th style="width: 100px;">姓名</th>
-                            <th style="width: 200px;">最后提交日期</th>
-                            <th>操作</th>
+                <div style="position: relative;">
+                    <LoadingOverlay :show="loading" />
+                    <table style="margin-bottom: 10px;">
+                        <thead>
+                            <tr>
+                                <th style="width: 60px;">头像</th>
+                                <th style="width: 120px;">用户名</th>
+                                <th style="width: 120px;">姓名</th>
+                                <th style="width: 360px;">最后提交日期</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tr v-for="item in data?.list" @click="router.push(`/profile?id=${item.userId}`)" style="cursor: pointer;">
+                            <td>
+                                <div class="avatar">
+                                    <img :src="item.avatar || '/images/defaultAvatar.png'" alt="">
+                                </div>
+                            </td>
+                            <td>{{ item.username }}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ formatDate(item.lastSubmit) }}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn btn-primary">编辑</button>
+                                    <button class="btn btn-primary"
+                                        @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
+                                    <button class="btn btn-danger">删除</button>
+                                </div>
+                            </td>
                         </tr>
-                    </thead>
-                    <tr v-for="item in data?.list">
-                        <td>{{ item.userId }}</td>
-                        <td>{{ item.groupId }}</td>
-                        <td>
-                            <div class="avatar" v-if="item.avatar">
-                                <img :src="item.avatar || '/images/defaultAvatar.png'" alt="">
-                            </div>
-                            <template v-else>
-                                默认头像
-                            </template>
-                        </td>
-                        <td>{{ item.username }}</td>
-                        <td>{{ item.name }}</td>
-                        <td>{{ formatDate(item.lastSubmit) }}</td>
-                        <td>
-                            <div class="actions">
-                                <button class="btn btn-primary">编辑</button>
-                                <button class="btn btn-primary"
-                                    @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
-                                <button class="btn btn-danger">删除</button>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                    </table>
+                </div>
                 <div class="pageNavigation" v-if="data">
                     <div class="group">
                         <div class="pageButtons" v-if="data.currentPage != 1">
@@ -79,10 +75,12 @@
 <script setup lang="ts">
 import API from '@/utils/api';
 import Toast from '@/utils/toast';
+import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
+const loading = ref(true);
 
 interface Response {
     list: User[];
@@ -120,6 +118,7 @@ const pages = computed(() => {
 })
 
 const getData = async (page: number) => {
+    loading.value = true;
     const response = await API.user.profile.list(page);
     Toast.stdResponse(response, false);
 
@@ -129,6 +128,7 @@ const getData = async (page: number) => {
         data.value.currentPage = page;
         data.value.totalPage = Math.ceil(data.value.total / 5);
     }
+    loading.value = false;
 };
 
 const formatDate = (date: string) => {
@@ -208,7 +208,7 @@ onMounted(() => {
                 font-size: var(--text-base);
                 white-space: nowrap;
                 cursor: pointer;
-                transition: all 0.2s ease;
+                transition: background-color 0.2s ease, color 0.2s ease;
                 -webkit-user-select: none;
                 user-select: none;
 
@@ -240,9 +240,10 @@ onMounted(() => {
     }
 
     .avatar {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
         overflow: hidden;
+        border-radius: 6px;
 
         >img {
             width: 100%;
@@ -252,8 +253,7 @@ onMounted(() => {
     }
 
     .actions {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        display: flex;
         gap: 8px;
     }
 
@@ -264,8 +264,7 @@ onMounted(() => {
         border: 1px solid var(--divider-color);
         color: var(--text-default-color);
         background-color: var(--background-color-1);
-
-        transition: all 0.2s ease;
+        transition: background-color 0.2s ease;
     }
 
     .btn-primary:hover {
