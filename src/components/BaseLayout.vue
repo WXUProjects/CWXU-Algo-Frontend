@@ -25,13 +25,6 @@ import Footer from './Footer.vue'
     color: var(--text-default-color);
 }
 
-@keyframes slideIn {
-    100% {
-        opacity: 1;
-        transform: translate(0px);
-    }
-}
-
 @media (max-width:860px) {
     .view-content {
         justify-content: center;

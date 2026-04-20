@@ -33,23 +33,22 @@
                         </div>
                         <div class="pageNavigation" v-if="data">
                             <div class="group">
-                                <div class="pageButtons" v-if="data.currentPage != 1">
-                                    <button @click="getContestList(data.currentPage - 1)">上一页</button>
-                                </div>
+                                <button class="page-nav-btn" :disabled="data.currentPage <= 1"
+                                    @click="getContestList(data.currentPage - 1)">上一页</button>
                                 <div class="pageButtons">
                                     <button v-for="value in pages" :key="value"
                                         :class="value === data.currentPage ? 'active' : ''"
                                         @click="value === data.currentPage ? null : getContestList(value)">{{ value
                                         }}</button>
                                 </div>
-                                <div class="pageButtons" v-if="data.currentPage != data.totalPage">
-                                    <button @click="getContestList(data.currentPage + 1)">下一页</button>
-                                </div>
+                                <button class="page-nav-btn" :disabled="data.currentPage >= data.totalPage"
+                                    @click="getContestList(data.currentPage + 1)">下一页</button>
                             </div>
                             <div class="group">
                                 <div class="pageInput">
+                                    <input type="number" min="1" :max="data.totalPage" v-model="jumppage"
+                                        @keyup.enter="getContestList(jumppage)">
                                     <button @click="getContestList(jumppage)">跳转</button>
-                                    <input type="number" min="1" :max="data.totalPage" v-model="jumppage">
                                 </div>
                                 <div class="pageSum">共 {{ data.totalPage }} 页</div>
                             </div>
@@ -63,7 +62,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from 'vue'
+import { ref, computed, watch } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue'
 import type { CoreContestListData } from '@/utils/api';
 import API from '@/utils/api';
@@ -192,17 +191,7 @@ watch(() => route.query.id, async () => {
     if (userMode.value) {
         getUser();
     }
-})
-
-onMounted(() => {
-    if (id.value) {
-        userMode.value = true;
-    }
-    getContestList(1);
-    if (userMode.value) {
-        getUser();
-    }
-})
+}, { immediate: true })
 </script>
 
 <style scoped>

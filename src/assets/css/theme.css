@@ -1,53 +1,112 @@
+/* 默认主题 = 专业（白底克莱因蓝） */
 :root {
-    --background-color-1: #f8f9fa;
-    --background-color-2: #e9ecef;
-    --background-color-3: #dcdde3;
-    --background-header: linear-gradient(45deg, oklch(from var(--neon-cyan) 1 c h / 0.5) 0%, #ffffff 100px, #ffffff calc(100% - 100px), oklch(from var(--neon-cyan) 1 c h / 0.5) 100%);
+    --background-color-1: #FFFFFF;
+    --background-color-2: #FCFCFD;
+    --background-color-3: #F1F2F5;
+    --background-header: linear-gradient(45deg, rgba(0, 112, 243, 0.06) 0%, #ffffff 100px, #ffffff calc(100% - 100px), rgba(0, 112, 243, 0.06) 100%);
     --background-color-header: #ffffff;
     --background-color-content: #ffffff;
-    --divider-color: #ced4da;
-    --section-background-color: rgba(13, 17, 23, 0.05);
-    --section-active-color: #00d0d0;
-    --section-default-color: #6a737d;
+    --divider-color: #E5E7EB;
+    --section-background-color: rgba(0, 0, 0, 0.025);
+    --section-active-color: #0070F3;
+    --section-default-color: #6B7280;
 
-    --text-default-color: #24292e;
-    --text-light-color: #6a737d;
+    --text-default-color: #111827;
+    --text-light-color: #6B7280;
     --text-reverse-color: #ffffff;
 
-    --text-link-color: #005cc5;
-    --input-active-color: #0366d6;
+    --text-link-color: #0070F3;
+    --input-active-color: #0070F3;
 
-    --card-icon-background-color: #d1d5da;
+    --card-icon-background-color: #E5E7EB;
 
-    --neon-cyan: #00d0d0;
+    --neon-cyan: #0070F3;
 
-    --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
+    --gradient-cyber: linear-gradient(135deg, #0070F3 0%, #7928CA 50%, #0070F3 100%);
+
+    --text-secondary-color: var(--text-light-color);
+    --border-color: var(--divider-color);
 }
 
-[data-theme="dark"] {
-    --background-color-1: #0d1117;
-    --background-color-2: #161b22;
-    --background-color-3: #21262d;
-    --background-header: linear-gradient(45deg, oklch(from var(--neon-cyan) 1 c h / 0.2) 0%, #161b22 100px, #161b22 calc(100% - 100px), oklch(from var(--neon-cyan) 1 c h / 0.2) 100%);
-    --background-color-header: #161b22;
-    --background-color-content: #161b22;
-    --divider-color: #222527;
-    --section-background-color: rgba(255, 255, 255, 0.05);
-    --section-active-color: #00ffff;
-    --section-default-color: #8b949e;
+/* 极客 — Nord 暗色主题 */
+[data-theme="nordic"] {
+    --background-color-1: #2E3440;
+    --background-color-2: #3B4252;
+    --background-color-3: #434C5E;
+    --background-header: linear-gradient(45deg, rgba(136, 192, 208, 0.1) 0%, #3B4252 100px, #3B4252 calc(100% - 100px), rgba(136, 192, 208, 0.1) 100%);
+    --background-color-header: #3B4252;
+    --background-color-content: #3B4252;
+    --divider-color: #434C5E;
+    --section-background-color: rgba(136, 192, 208, 0.06);
+    --section-active-color: #88C0D0;
+    --section-default-color: #D8DEE9;
 
-    --text-default-color: #c9d1d9;
-    --text-light-color: #8b949e;
-    --text-reverse-color: #131415;
+    --text-default-color: #ECEFF4;
+    --text-light-color: #D8DEE9;
+    --text-reverse-color: #2E3440;
 
-    --text-link-color: #58a6ff;
-    --input-active-color: #1f6feb;
+    --text-link-color: #88C0D0;
+    --input-active-color: #88C0D0;
 
-    --card-icon-background-color: #30363d;
+    --card-icon-background-color: #434C5E;
 
-    --neon-cyan: #00ffff;
+    --neon-cyan: #88C0D0;
 
-    --gradient-cyber: linear-gradient(135deg, #00ffff 0%, #0088ff 50%, #ff00ff 100%);
+    --gradient-cyber: linear-gradient(135deg, #88C0D0 0%, #81A1C1 50%, #5E81AC 100%);
+}
+
+/* 专业 — GitHub/Vercel 风格 */
+[data-theme="github"] {
+    --background-color-1: #FFFFFF;
+    --background-color-2: #FCFCFD;
+    --background-color-3: #F1F2F5;
+    --background-header: linear-gradient(45deg, rgba(0, 112, 243, 0.06) 0%, #ffffff 100px, #ffffff calc(100% - 100px), rgba(0, 112, 243, 0.06) 100%);
+    --background-color-header: #ffffff;
+    --background-color-content: #ffffff;
+    --divider-color: #E5E7EB;
+    --section-background-color: rgba(0, 0, 0, 0.025);
+    --section-active-color: #0070F3;
+    --section-default-color: #6B7280;
+
+    --text-default-color: #111827;
+    --text-light-color: #6B7280;
+    --text-reverse-color: #ffffff;
+
+    --text-link-color: #0070F3;
+    --input-active-color: #0070F3;
+
+    --card-icon-background-color: #E5E7EB;
+
+    --neon-cyan: #0070F3;
+
+    --gradient-cyber: linear-gradient(135deg, #0070F3 0%, #7928CA 50%, #0070F3 100%);
+}
+
+/* 锡院紫 — 清华紫浅色，参考 Gemini 对比度建议 */
+[data-theme="wxu-purple"] {
+    --background-color-1: #FFFFFF;
+    --background-color-2: #FDFCFF;
+    --background-color-3: #F3E8FF;
+    --background-header: linear-gradient(45deg, rgba(121, 40, 202, 0.08) 0%, #ffffff 100px, #ffffff calc(100% - 100px), rgba(121, 40, 202, 0.08) 100%);
+    --background-color-header: #ffffff;
+    --background-color-content: #ffffff;
+    --divider-color: #E9D5FF;
+    --section-background-color: rgba(121, 40, 202, 0.04);
+    --section-active-color: #7928CA;
+    --section-default-color: #6B7280;
+
+    --text-default-color: #1E1B4B;
+    --text-light-color: #6B5B8A;
+    --text-reverse-color: #ffffff;
+
+    --text-link-color: #7928CA;
+    --input-active-color: #7928CA;
+
+    --card-icon-background-color: #E9D5FF;
+
+    --neon-cyan: #7928CA;
+
+    --gradient-cyber: linear-gradient(135deg, #8B5CF6 0%, #7928CA 50%, #A78BFA 100%);
 }
 
 body {

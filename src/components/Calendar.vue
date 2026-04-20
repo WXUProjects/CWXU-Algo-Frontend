@@ -257,7 +257,7 @@ const emit = defineEmits<{
     width: 10px;
     height: 10px;
     border-radius: 2px;
-    background-color: var(--background-color-1);
+    background-color: var(--divider-color);
     cursor: pointer;
 }
 

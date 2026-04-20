@@ -36,9 +36,10 @@ export default class AnnoStore {
         const newAnnos = getAnnos();
         // 比较newAnnos和annos，如果newAnnos有新的公告，则添加到annos中
         newAnnos.forEach(newAnno => {
-            if(!annos.find(anno => anno.id === newAnno.id) || newAnno.isclosed){
+            const existing = annos.find(anno => anno.id === newAnno.id);
+            if (!existing) {
                 annos.push(newAnno);
-            };
+            }
         })
         this.setStorageAnnos(annos);
     }

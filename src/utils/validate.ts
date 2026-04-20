@@ -1,12 +1,6 @@
 export default class Validate {
-    static checkEmali(email: string): boolean {
-        if (!email) {
-            return false;
-        }
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            return false;
-        }
-        return true;
+    static checkEmail(email: string): boolean {
+        if (!email) return false;
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     }
 }
