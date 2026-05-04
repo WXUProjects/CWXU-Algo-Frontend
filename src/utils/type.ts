@@ -2,7 +2,7 @@
  * 常用类型
 */
 
-export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
+export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces" | "QOJ";
 
 export type Links = {
     [Key in platform]: string;

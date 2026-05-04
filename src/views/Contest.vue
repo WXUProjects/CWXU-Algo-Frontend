@@ -88,7 +88,8 @@ const user = ref<User>({
         NowCoder: '',
         LeetCode: '',
         LuoGu: '',
-        CodeForces: ''
+        CodeForces: '',
+        QOJ: ''
     },
     userId: -1,
     username: ''
@@ -170,7 +171,8 @@ watch(() => route.query.id, async () => {
             NowCoder: '',
             LeetCode: '',
             LuoGu: '',
-            CodeForces: ''
+            CodeForces: '',
+            QOJ: ''
         },
         userId: -1,
         username: ''

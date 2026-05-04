@@ -2,7 +2,7 @@
  * 格式化链接工具类
 */ 
 
-export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces";
+export type platform = "AtCoder" | "NowCoder" | "LeetCode" | "LuoGu" | "CodeForces" | "QOJ";
 
 export default class Link {
     static getPlatformHomeLink = (platform: platform, username: string) => {
@@ -17,6 +17,8 @@ export default class Link {
                 return "https://www.luogu.com.cn/user/" + username;
             case "CodeForces":
                 return "https://CodeForces.com/profile/" + username;
+            case "QOJ":
+                return "https://qoj.ac/user/profile/" + username;
         };
     }
 
@@ -34,6 +36,8 @@ export default class Link {
                 return `https://www.luogu.com.cn/record/${submitId}`;
             case "CodeForces":
                 return `https://CodeForces.com/contest/${contest}/submission/${submitId}`;
+            case "QOJ":
+                return `https://qoj.ac/submission/${submitId}`;
             default:
                 return "";
         }

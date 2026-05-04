@@ -44,6 +44,7 @@
                             <a class="item" v-if="user.links.CodeForces" target="_blank"
                                 :href="user.links.CodeForces">CodeForces</a>
                             <a class="item" v-if="user.links.LuoGu" target="_blank" :href="user.links.LuoGu">洛谷</a>
+                            <a class="item" v-if="user.links.QOJ" target="_blank" :href="user.links.QOJ">QOJ</a>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -241,7 +242,8 @@ const user = ref<User>({
         NowCoder: "",
         LuoGu: "",
         CodeForces: "",
-        LeetCode: ""
+        LeetCode: "",
+        QOJ: ""
     },
     userId: 0,
     username: ""
@@ -260,6 +262,7 @@ const ojPlatforms = [
     { key: 'NowCoder' as const, label: '牛客' },
     { key: 'LuoGu' as const, label: '洛谷' },
     { key: 'CodeForces' as const, label: 'CodeForces' },
+    { key: 'QOJ' as const, label: 'QOJ' },
 ]
 
 interface ActivityItem {

@@ -452,6 +452,7 @@ export default class API {
                             NowCoder: "",
                             LuoGu: "",
                             LeetCode: "",
+                            QOJ: "",
                         },
                         userId: 0,
                         username: ""
