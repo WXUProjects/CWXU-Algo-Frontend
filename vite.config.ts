@@ -40,7 +40,7 @@ export default defineConfig(({ mode }) => {
       // 将 /api 请求代理到 http://dev.algo.zhiyuansofts.cn/v1 上
       proxy: {
         '/api': {
-          target: env.VITE_API_URL,
+          target: 'http://127.0.0.1:8080',
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, '/v1'),
         }

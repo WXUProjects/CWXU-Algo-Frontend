@@ -28,6 +28,18 @@ const adminGuard = (to: any, from: any, next: any) => {
   }
 }
 
+// 教练守卫路由
+const coachGuard = (to: any, from: any, next: any) => {
+  const userStore = useUserStore()
+  if (userStore.isAdmin || userStore.isCoach) {
+    next()
+  } else {
+    next({
+      name: 'Home',
+    })
+  }
+}
+
 const routes = [
   {
     path: '/',
@@ -70,7 +82,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('@/views/Dashboard.vue'),
-    beforeEnter: adminGuard,
+    beforeEnter: coachGuard,
     redirect: '/dashboard/statistics',
     children: [{
       path: 'group',

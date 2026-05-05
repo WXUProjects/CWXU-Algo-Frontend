@@ -39,10 +39,10 @@
                                 <td @click="router.push(`/profile?id=${item.userId}`)">{{ formatDate(item.lastSubmit) }}</td>
                                 <td>
                                     <div class="actions" @click.stop>
-                                        <button class="btn btn-primary" @click="openRoleModal(item)">编辑</button>
+                                        <button class="btn btn-primary" @click="openEditModal(item)">{{ userStore.isAdmin ? '改角色' : '改分组' }}</button>
                                         <button class="btn btn-primary"
                                             @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
-                                        <button class="btn btn-danger">删除</button>
+                                        <button v-if="userStore.isAdmin" class="btn btn-danger">删除</button>
                                     </div>
                                 </td>
                             </tr>
@@ -103,6 +103,35 @@
             </div>
         </div>
     </div>
+
+    <!-- 分组选择弹窗 -->
+    <div class="modal-overlay" v-if="showGroupModal" @click="closeGroupModal">
+        <div class="modal" @click.stop>
+            <div class="modal-header">
+                <span>更改用户分组</span>
+                <button class="modal-close" @click="closeGroupModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-user">
+                    <span class="label">用户：</span>
+                    <span>{{ selectedUser?.name }} ({{ selectedUser?.username }})</span>
+                </div>
+                <div class="modal-role">
+                    <span class="label">分组：</span>
+                    <div class="role-options">
+                        <div v-for="group in groups" :key="group.id" class="role-option"
+                            :class="{ active: selectedGroupId === group.id }" @click="selectedGroupId = group.id">
+                            {{ group.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" @click="handleGroupConfirm" :disabled="groupLoading">确认</button>
+                <button class="btn" @click="closeGroupModal">取消</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -112,8 +141,10 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import type { UserRole } from '@/utils/api';
+import { useUserStore } from '@/stores/user';
 
 const router = useRouter();
+const userStore = useUserStore();
 const loading = ref(true);
 
 interface Response {
@@ -148,6 +179,12 @@ const showRoleModal = ref(false);
 const selectedUser = ref<User | null>(null);
 const selectedRoleId = ref<number>(0);
 const roleLoading = ref(false);
+
+// 分组相关
+const groups = ref<{ id: number; name: string }[]>([]);
+const showGroupModal = ref(false);
+const selectedGroupId = ref<number>(0);
+const groupLoading = ref(false);
 
 const pages = computed(() => {
     if (!data.value) return [];
@@ -186,16 +223,28 @@ const loadRoles = async () => {
     }
 };
 
-const openRoleModal = async (user: User) => {
+const openEditModal = async (user: User) => {
     selectedUser.value = user;
-    selectedRoleId.value = user.roleId ?? 0;
-    // 获取完整用户信息（包含 roleId）
-    const resp = await API.user.profile.getById(user.userId);
-    if (resp.success && resp.data.roleId !== undefined) {
-        selectedRoleId.value = resp.data.roleId;
-        selectedUser.value!.roleId = resp.data.roleId;
+    if (userStore.isAdmin) {
+        // 获取完整用户信息（包含 roleId）
+        const resp = await API.user.profile.getById(user.userId);
+        if (resp.success && resp.data.roleId !== undefined) {
+            selectedRoleId.value = resp.data.roleId;
+        }
+        showRoleModal.value = true;
+    } else {
+        // 教练：获取分组列表 + 当前用户分组
+        selectedGroupId.value = user.groupId;
+        await loadGroups();
+        showGroupModal.value = true;
     }
-    showRoleModal.value = true;
+};
+
+const loadGroups = async () => {
+    const resp = await API.user.group.list(1);
+    if (resp.success) {
+        groups.value = resp.data.list.map((g: any) => ({ id: g.id, name: g.name }));
+    }
 };
 
 const closeRoleModal = () => {
@@ -215,6 +264,27 @@ const handleRoleConfirm = async () => {
     roleLoading.value = false;
     if (response.success) {
         closeRoleModal();
+        refresh();
+    }
+};
+
+const closeGroupModal = () => {
+    showGroupModal.value = false;
+    selectedUser.value = null;
+    selectedGroupId.value = 0;
+};
+
+const handleGroupConfirm = async () => {
+    if (!selectedUser.value) return;
+    groupLoading.value = true;
+    const response = await API.user.profile.moveGroup({
+        userId: selectedUser.value.userId,
+        groupId: selectedGroupId.value
+    });
+    Toast.stdResponse(response);
+    groupLoading.value = false;
+    if (response.success) {
+        closeGroupModal();
         refresh();
     }
 };
