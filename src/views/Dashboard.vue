@@ -31,6 +31,13 @@ TODO:
                         <div class="en">User</div>
                     </div>
                 </router-link>
+                <router-link v-if="userStore.isCoach" to="/dashboard/user" class="section" active-class="active">
+                    <font-awesome-icon icon="fa-solid fa-user" class="section-icon" />
+                    <div class="title">
+                        <div class="zh">队员管理</div>
+                        <div class="en">Member</div>
+                    </div>
+                </router-link>
             </div>
             <router-view v-slot="{ Component }">
                 <transition name="fade" mode="out-in">

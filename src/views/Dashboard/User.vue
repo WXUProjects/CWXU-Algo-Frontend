@@ -6,7 +6,7 @@
                     <span class="title-icon">
                         <font-awesome-icon icon="fa-solid fa-user" />
                     </span>
-                    <span class="title-text">用户管理</span>
+                    <span class="title-text">{{ userStore.isCoach ? '队员管理' : '用户管理' }}</span>
                 </div>
                 <div class="header-tabs">
                     <span class="tab" @click="refresh">刷新</span>
@@ -21,7 +21,7 @@
                                 <th style="width: 60px;">头像</th>
                                 <th style="width: 120px;">用户名</th>
                                 <th style="width: 120px;">姓名</th>
-                                <th style="width: 120px;">角色</th>
+                                <th style="width: 120px;">{{ userStore.isCoach ? '分组' : '角色' }}</th>
                                 <th style="width: 240px;">最后提交日期</th>
                                 <th>操作</th>
                             </tr>
@@ -35,7 +35,7 @@
                                 </td>
                                 <td @click="router.push(`/profile?id=${item.userId}`)">{{ item.username }}</td>
                                 <td @click="router.push(`/profile?id=${item.userId}`)">{{ item.name }}</td>
-                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ getRoleName(item.roleId) }}</td>
+                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ userStore.isCoach ? getGroupName(item.groupId) : getRoleName(item.roleId) }}</td>
                                 <td @click="router.push(`/profile?id=${item.userId}`)">{{ formatDate(item.lastSubmit) }}</td>
                                 <td>
                                     <div class="actions" @click.stop>
@@ -216,6 +216,11 @@ const getRoleName = (roleId: number | undefined) => {
     return role?.name || `角色${roleId}`;
 };
 
+const getGroupName = (groupId: number) => {
+    const group = groups.value.find(g => g.id === groupId);
+    return group?.name || `组${groupId}`;
+};
+
 const loadRoles = async () => {
     const response = await API.user.role.list();
     if (response.success) {
@@ -307,6 +312,7 @@ const refresh = () => {
 onMounted(() => {
     getData(1);
     loadRoles();
+    loadGroups();
 });
 </script>
 

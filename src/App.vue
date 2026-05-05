@@ -82,14 +82,14 @@
           <div class="item-indicator">▶</div>
         </router-link> -->
 
-        <router-link to="/dashboard" class="section navigation-item" active-class="active" v-if="isLogin && isAdmin">
+        <router-link to="/dashboard" class="section navigation-item" active-class="active" v-if="isLogin && (isAdmin || isCoach)">
           <font-awesome-icon icon="fa-solid fa-gauge-high" class="item-icon" />
           <div class="item-content">
             <div class="item-title">
-              <span class="zh">后台管理</span>
-              <span class="en">Dashboard</span>
+              <span class="zh">{{ isAdmin ? '后台管理' : '教练管理' }}</span>
+              <span class="en">{{ isAdmin ? 'Dashboard' : 'Coach' }}</span>
             </div>
-            <div class="item-description">管理学生和小组</div>
+            <div class="item-description">{{ isAdmin ? '管理学生和小组' : '管理队员和分组' }}</div>
           </div>
           <div class="item-indicator">▶</div>
         </router-link>
@@ -213,6 +213,7 @@ const userStore = useUserStore()
 
 const isLogin = computed(() => userStore.isLogin)
 const isAdmin = computed(() => userStore.isAdmin)
+const isCoach = computed(() => userStore.isCoach)
 
 // 获取当前路由名称用于显示
 const currentRouteName = computed(() => {
