@@ -548,6 +548,19 @@ export default class API {
                     "移动用户组失败",
                     null
                 );
+            },
+            setEmailEnabled: async (userId: number, enabled: boolean): Promise<stdResponse> => {
+                return apiCall(
+                    () => axios.post('/api/user/profile/set-email-enabled', { userId, enabled }, {
+                        headers: { Authorization: `Bearer ${JWT.token}` }
+                    }),
+                    (response) => {
+                        if (response.status !== 200) return { message: "设置邮箱通知失败" };
+                        return { message: response.data.message || "设置邮箱通知成功" };
+                    },
+                    "设置邮箱通知失败",
+                    null
+                );
             }
         },
         group: {

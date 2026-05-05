@@ -14,6 +14,13 @@
                     <label>邮箱</label>
                     <input type="text" placeholder="Email" v-model="formData.email">
                 </div>
+                <div class="item email-enabled">
+                    <label>邮件通知</label>
+                    <div class="switch" :class="{ active: emailEnabled }" @click="handleEmailToggle">
+                        <div class="slider"></div>
+                    </div>
+                    <span class="email-hint">{{ emailEnabled ? '已开启' : '已关闭' }}</span>
+                </div>
                 <div class="actions">
                     <button @click="handleConfirm" :disabled="wait">确认</button>
                     <button @click="handleCancel">返回</button>
@@ -85,6 +92,17 @@ const formData = ref<FormData>({
     email: user.value.email,
     avatar: user.value.avatar
 })
+
+const emailEnabled = ref<boolean>(user.value.emailEnabled ?? false)
+
+const handleEmailToggle = async () => {
+    const newValue = !emailEnabled.value
+    const response = await API.user.profile.setEmailEnabled(user.value.userId, newValue)
+    Toast.stdResponse(response)
+    if (response.success) {
+        emailEnabled.value = newValue
+    }
+}
 
 const ojData = ref({
     userId: user.value.userId,
@@ -267,6 +285,46 @@ const handleOjConfirm = async () => {
             display: flex;
             flex-direction: row-reverse;
             gap: 10px;
+        }
+
+        >.email-enabled {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            >.switch {
+                position: relative;
+                width: 44px;
+                height: 24px;
+                background-color: var(--divider-color);
+                border-radius: 12px;
+                cursor: pointer;
+                transition: background-color 0.3s;
+
+                &.active {
+                    background-color: var(--success-color, #4caf50);
+                }
+
+                >.slider {
+                    position: absolute;
+                    top: 2px;
+                    left: 2px;
+                    width: 20px;
+                    height: 20px;
+                    background-color: white;
+                    border-radius: 50%;
+                    transition: transform 0.3s;
+                }
+
+                &.active >.slider {
+                    transform: translateX(20px);
+                }
+            }
+
+            >.email-hint {
+                font-size: var(--text-sm);
+                color: var(--text-light-color);
+            }
         }
     }
 }

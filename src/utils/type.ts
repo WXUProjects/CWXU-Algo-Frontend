@@ -11,6 +11,7 @@ export type Links = {
 export interface User {
     avatar: string;
     email: string;
+    emailEnabled?: boolean;
     groupId: string;
     name: string;
     spiders: Spider[];
