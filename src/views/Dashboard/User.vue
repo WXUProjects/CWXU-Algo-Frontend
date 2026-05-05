@@ -21,28 +21,32 @@
                                 <th style="width: 60px;">头像</th>
                                 <th style="width: 120px;">用户名</th>
                                 <th style="width: 120px;">姓名</th>
-                                <th style="width: 360px;">最后提交日期</th>
+                                <th style="width: 120px;">角色</th>
+                                <th style="width: 240px;">最后提交日期</th>
                                 <th>操作</th>
                             </tr>
                         </thead>
-                        <tr v-for="item in data?.list" @click="router.push(`/profile?id=${item.userId}`)" style="cursor: pointer;">
-                            <td>
-                                <div class="avatar">
-                                    <img :src="item.avatar || '/images/defaultAvatar.png'" alt="">
-                                </div>
-                            </td>
-                            <td>{{ item.username }}</td>
-                            <td>{{ item.name }}</td>
-                            <td>{{ formatDate(item.lastSubmit) }}</td>
-                            <td>
-                                <div class="actions">
-                                    <button class="btn btn-primary">编辑</button>
-                                    <button class="btn btn-primary"
-                                        @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
-                                    <button class="btn btn-danger">删除</button>
-                                </div>
-                            </td>
-                        </tr>
+                        <tbody>
+                            <tr v-for="item in data?.list" style="cursor: pointer;">
+                                <td @click="router.push(`/profile?id=${item.userId}`)">
+                                    <div class="avatar">
+                                        <img :src="item.avatar || '/images/defaultAvatar.png'" alt="">
+                                    </div>
+                                </td>
+                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ item.username }}</td>
+                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ item.name }}</td>
+                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ getRoleName(item.roleId) }}</td>
+                                <td @click="router.push(`/profile?id=${item.userId}`)">{{ formatDate(item.lastSubmit) }}</td>
+                                <td>
+                                    <div class="actions" @click.stop>
+                                        <button class="btn btn-primary" @click="openRoleModal(item)">编辑</button>
+                                        <button class="btn btn-primary"
+                                            @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
+                                        <button class="btn btn-danger">删除</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
                     </table>
                 </div>
                 <div class="pageNavigation" v-if="data">
@@ -70,6 +74,35 @@
             </div>
         </div>
     </div>
+
+    <!-- 角色选择弹窗 -->
+    <div class="modal-overlay" v-if="showRoleModal" @click="closeRoleModal">
+        <div class="modal" @click.stop>
+            <div class="modal-header">
+                <span>设置用户角色</span>
+                <button class="modal-close" @click="closeRoleModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-user">
+                    <span class="label">用户：</span>
+                    <span>{{ selectedUser?.name }} ({{ selectedUser?.username }})</span>
+                </div>
+                <div class="modal-role">
+                    <span class="label">角色：</span>
+                    <div class="role-options">
+                        <div v-for="role in roles" :key="role.roleId" class="role-option"
+                            :class="{ active: selectedRoleId === role.roleId }" @click="selectedRoleId = role.roleId">
+                            {{ role.name }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" @click="handleRoleConfirm" :disabled="roleLoading">确认</button>
+                <button class="btn" @click="closeRoleModal">取消</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -78,6 +111,7 @@ import Toast from '@/utils/toast';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { computed, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
+import type { UserRole } from '@/utils/api';
 
 const router = useRouter();
 const loading = ref(true);
@@ -94,6 +128,7 @@ interface User {
     groupId: number;
     lastSubmit: string;
     name: string;
+    roleId?: number;
     userId: number;
     username: string;
 }
@@ -106,6 +141,13 @@ const data = ref<Response>({
 });
 
 const jumppage = ref(1);
+
+// 角色相关
+const roles = ref<UserRole[]>([]);
+const showRoleModal = ref(false);
+const selectedUser = ref<User | null>(null);
+const selectedRoleId = ref<number>(0);
+const roleLoading = ref(false);
 
 const pages = computed(() => {
     if (!data.value) return [];
@@ -131,6 +173,52 @@ const getData = async (page: number) => {
     loading.value = false;
 };
 
+const getRoleName = (roleId: number | undefined) => {
+    if (roleId === undefined) return '未知';
+    const role = roles.value.find(r => r.roleId === roleId);
+    return role?.name || `角色${roleId}`;
+};
+
+const loadRoles = async () => {
+    const response = await API.user.role.list();
+    if (response.success) {
+        roles.value = response.data.roles;
+    }
+};
+
+const openRoleModal = async (user: User) => {
+    selectedUser.value = user;
+    selectedRoleId.value = user.roleId ?? 0;
+    // 获取完整用户信息（包含 roleId）
+    const resp = await API.user.profile.getById(user.userId);
+    if (resp.success && resp.data.roleId !== undefined) {
+        selectedRoleId.value = resp.data.roleId;
+        selectedUser.value!.roleId = resp.data.roleId;
+    }
+    showRoleModal.value = true;
+};
+
+const closeRoleModal = () => {
+    showRoleModal.value = false;
+    selectedUser.value = null;
+    selectedRoleId.value = 0;
+};
+
+const handleRoleConfirm = async () => {
+    if (!selectedUser.value) return;
+    roleLoading.value = true;
+    const response = await API.user.role.setUserRole({
+        userId: selectedUser.value.userId,
+        roleId: selectedRoleId.value
+    });
+    Toast.stdResponse(response);
+    roleLoading.value = false;
+    if (response.success) {
+        closeRoleModal();
+        refresh();
+    }
+};
+
 const formatDate = (date: string) => {
     return new Date(Number(date) * 1000).toLocaleString('sv-SE', {
         year: 'numeric',
@@ -148,6 +236,7 @@ const refresh = () => {
 
 onMounted(() => {
     getData(1);
+    loadRoles();
 });
 </script>
 
@@ -265,6 +354,7 @@ onMounted(() => {
         color: var(--text-default-color);
         background-color: var(--background-color-1);
         transition: background-color 0.2s ease;
+        cursor: pointer;
     }
 
     .btn-primary:hover {
@@ -274,6 +364,103 @@ onMounted(() => {
     .btn-danger:hover {
         background-color: #f00;
         color: #fff;
+    }
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: var(--background-color-1);
+    border: 1px solid var(--divider-color);
+    border-radius: 8px;
+    width: 400px;
+    max-width: 90vw;
+
+    .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px;
+        border-bottom: 1px solid var(--divider-color);
+        font-size: var(--text-base);
+        font-weight: 600;
+    }
+
+    .modal-close {
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: var(--text-light-color);
+        padding: 0;
+        line-height: 1;
+
+        &:hover {
+            color: var(--text-default-color);
+        }
+    }
+
+    .modal-body {
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+
+        .modal-user {
+            font-size: var(--text-base);
+        }
+
+        .label {
+            color: var(--text-light-color);
+        }
+
+        .role-options {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .role-option {
+            padding: 8px 16px;
+            border: 1px solid var(--divider-color);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: var(--text-sm);
+            transition: all 0.2s;
+            background-color: var(--background-color-1);
+            color: var(--text-default-color);
+
+            &:hover {
+                background-color: var(--background-color-2);
+            }
+
+            &.active {
+                background-color: var(--neon-cyan);
+                color: var(--background-color-1);
+                border-color: var(--neon-cyan);
+            }
+        }
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 16px;
+        border-top: 1px solid var(--divider-color);
     }
 }
 </style>

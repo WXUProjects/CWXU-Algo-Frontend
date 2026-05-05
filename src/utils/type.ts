@@ -14,6 +14,7 @@ export interface User {
     emailEnabled?: boolean;
     groupId: string;
     name: string;
+    roleId?: number;
     spiders: Spider[];
     links: Links;
     userId: number;

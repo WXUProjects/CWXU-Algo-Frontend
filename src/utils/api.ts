@@ -229,6 +229,28 @@ export interface UserGroupUser {
     [property: string]: any;
 }
 
+export interface UserRoleListResponse {
+    roles: UserRole[];
+    [property: string]: any;
+}
+
+export interface UserRole {
+    roleId: number;
+    name: string;
+    [property: string]: any;
+}
+
+export interface UserRoleSetRequest {
+    userId: number;
+    roleId: number;
+}
+
+export interface UserRoleSetResponse {
+    code: number;
+    message: string;
+    [property: string]: any;
+}
+
 export interface UserProfileGetByNameResponse {
     list: UserProfileGetByNameList[];
     [property: string]: any;
@@ -559,6 +581,32 @@ export default class API {
                         return { message: response.data.message || "设置邮箱通知成功" };
                     },
                     "设置邮箱通知失败",
+                    null
+                );
+            }
+        },
+        role: {
+            list: async (): Promise<stdResponse<UserRoleListResponse>> => {
+                return apiCall<UserRoleListResponse>(
+                    () => axios.get<UserRoleListResponse>('/api/user/role/list'),
+                    (response) => {
+                        if (response.status !== 200) return { message: "获取角色列表失败" };
+                        return { data: response.data, message: "" };
+                    },
+                    "获取角色列表失败",
+                    { roles: [] }
+                );
+            },
+            setUserRole: async (request: UserRoleSetRequest): Promise<stdResponse> => {
+                return apiCall(
+                    () => axios.post<UserRoleSetResponse>('/api/user/role/set-user-role', request, {
+                        headers: { Authorization: `Bearer ${JWT.token}` }
+                    }),
+                    (response) => {
+                        if (response.status !== 200) return { message: "设置角色失败" };
+                        return { message: response.data.message || "设置角色成功" };
+                    },
+                    "设置角色失败",
                     null
                 );
             }
