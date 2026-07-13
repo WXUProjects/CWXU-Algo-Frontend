@@ -31,15 +31,14 @@
             <div class="info">
                 <div class="title">绑定OJ账号</div>
                 <div class="desc">
-                    目前仅支持以下平台绑定：AtCoder, 牛客, QOJ。<br>
-                    <!-- 目前仅支持以下平台绑定：AtCoder, LuoGu, NowCoder, CodeForces, LeetCode。<br> -->
+                    目前仅支持以下平台绑定：AtCoder, 牛客, QOJ, 力扣 等。<br>
                     如何填写用户名？<br>
                     AtCoder:填写用户名，例如您的主页是https://atcoder.jp/users/AoralsFout，那么你就填AoralsFout<br>
                     LuoGu: 填写您的用户名(非用户编号)<br>
                     牛客: 填写您的用户id，例如您的主页是https://ac.nowcoder.com/acm/contest/profile/978880410，那么你就填978880410<br>
                     CodeForces: 填写您的用户名，例如您的主页是https://CodeForces.com/profile/AoralsFout，那么你就填AoralsFout<br>
                     QOJ: 填写您的用户名，例如您的主页是https://qoj.ac/user/profile/sanenchen，那么你就填sanenchen<br>
-                    <!-- LeetCode: 填写您的用户id，例如您的主页是https://leetcode.cn/u/musing-i2hodesdmx/，那么你就填musing-i2hodesdmx -->
+                    力扣: 填写用户 slug，例如主页是https://leetcode.cn/u/sanenchen-o/，则填 sanenchen-o（力扣只计入热力图/总做题数/总提交，不展示提交明细）
                 </div>
                 <div class="item">
                     <label>选择平台</label>
@@ -51,7 +50,7 @@
                             <div class="option" @click="ojData.platform = 'NowCoder'">牛客</div>
                             <div class="option" @click="ojData.platform = 'CodeForces'">CodeForces</div>
                             <div class="option" @click="ojData.platform = 'QOJ'">QOJ</div>
-                            <!-- <div class="option" @click="ojData.platform = 'LeetCode'">力扣</div> -->
+                            <div class="option" @click="ojData.platform = 'LeetCode'">力扣</div>
                         </div>
                     </div>
                 </div>
@@ -126,9 +125,9 @@ switch (oj) {
     case "QOJ":
         ojData.value.platform = "QOJ"
         break;
-    // case "LeetCode":
-    //     ojData.value.platform = "LeetCode"
-    //     break;
+    case "LeetCode":
+        ojData.value.platform = "LeetCode"
+        break;
     default:
         ojData.value.platform = "AtCoder"
 }
