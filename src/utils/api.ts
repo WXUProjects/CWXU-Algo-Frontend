@@ -117,6 +117,13 @@ export interface CodeSpiderUpdateResponse {
     [property: string]: any;
 }
 
+export interface CodeSpiderUpdateAllResponse {
+    code: number | string;
+    message: string;
+    count?: number;
+    [property: string]: any;
+}
+
 export interface CoreStatisticHeatmapRequest {
     endDate: string;
     isAc: boolean;
@@ -772,6 +779,24 @@ export default class API {
                     },
                     "更新数据失败",
                     null
+                );
+            },
+            // 管理员：一键全量更新所有已绑定 OJ 的用户
+            updateAll: async (): Promise<stdResponse<CodeSpiderUpdateAllResponse>> => {
+                if (!JWT.isValid()) {
+                    return { message: "用户未登录", success: false, data: { code: 1, message: "用户未登录", count: 0 } };
+                }
+                return apiCall<CodeSpiderUpdateAllResponse>(
+                    () => axios.post<CodeSpiderUpdateAllResponse>('/api/core/spider/update-all',
+                        {},
+                        { headers: { Authorization: `Bearer ${JWT.token}` } }
+                    ),
+                    (response) => {
+                        if (response.status !== 200) return { message: "全局更新失败" };
+                        return { data: response.data, message: response.data.message || "全局更新已触发" };
+                    },
+                    "全局更新失败",
+                    { code: 1, message: "全局更新失败", count: 0 }
                 );
             }
         },

@@ -45,6 +45,8 @@
                                 :href="user.links.CodeForces">CodeForces</a>
                             <a class="item" v-if="user.links.LuoGu" target="_blank" :href="user.links.LuoGu">洛谷</a>
                             <a class="item" v-if="user.links.QOJ" target="_blank" :href="user.links.QOJ">QOJ</a>
+                            <a class="item" v-if="user.links.LeetCode" target="_blank"
+                                :href="user.links.LeetCode">力扣</a>
                         </div>
                     </div>
                     <div class="actions" v-if="jwtUserInfo?.userId == user.userId">
@@ -263,6 +265,7 @@ const ojPlatforms = [
     { key: 'LuoGu' as const, label: '洛谷' },
     { key: 'CodeForces' as const, label: 'CodeForces' },
     { key: 'QOJ' as const, label: 'QOJ' },
+    { key: 'LeetCode' as const, label: '力扣' },
 ]
 
 interface ActivityItem {

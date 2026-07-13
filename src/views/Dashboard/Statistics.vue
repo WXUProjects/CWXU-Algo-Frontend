@@ -1,6 +1,34 @@
 <template>
     <div class="dashboardContent">
-        <h2>数据统计</h2>
+        <div class="page-header">
+            <h2>数据统计</h2>
+            <div class="header-actions" v-if="userStore.isAdmin">
+                <button class="btn btn-primary" @click="showUpdateAllConfirm = true" :disabled="updatingAll">
+                    {{ updatingAll ? '触发中...' : '一键全局更新' }}
+                </button>
+            </div>
+        </div>
+
+        <!-- 管理员全局更新确认 -->
+        <div class="modal-overlay" v-if="showUpdateAllConfirm" @click="showUpdateAllConfirm = false">
+            <div class="modal" @click.stop>
+                <div class="modal-header">
+                    <span>一键全局更新</span>
+                    <button class="modal-close" @click="showUpdateAllConfirm = false">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p>将为所有已绑定 OJ 的用户触发<strong>全量</strong>数据更新，可能耗时较长并产生较多抓取请求。</p>
+                    <p>确定继续？</p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-primary" @click="doUpdateAll" :disabled="updatingAll">
+                        {{ updatingAll ? '触发中...' : '确认更新' }}
+                    </button>
+                    <button class="btn" @click="showUpdateAllConfirm = false" :disabled="updatingAll">取消</button>
+                </div>
+            </div>
+        </div>
+
         <div style="position: relative;">
             <LoadingOverlay :show="loadingStats" />
             <div class="stats-grid">
@@ -198,6 +226,7 @@ import API, { type CoreStatisticPeriodData, type Datum as DailyData } from '@/ut
 import Toast from '@/utils/toast';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import { computed, onMounted, ref } from 'vue';
+import { useUserStore } from '@/stores/user';
 
 // 导入 ECharts 相关
 import { use } from 'echarts/core';
@@ -222,6 +251,24 @@ use([
     GridComponent,
     DataZoomComponent,
 ]);
+
+const userStore = useUserStore();
+const showUpdateAllConfirm = ref(false);
+const updatingAll = ref(false);
+
+const doUpdateAll = async () => {
+    if (updatingAll.value) return;
+    updatingAll.value = true;
+    try {
+        const response = await API.core.spider.updateAll();
+        Toast.stdResponse(response);
+        if (response.success) {
+            showUpdateAllConfirm.value = false;
+        }
+    } finally {
+        updatingAll.value = false;
+    }
+};
 
 export interface Response {
     list: List[];
@@ -490,6 +537,88 @@ onMounted(async () => {
     border: 1px solid var(--divider-color);
     color: var(--text-default-color);
     padding: 10px;
+
+    .page-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+
+    .header-actions {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        font-size: var(--text-sm);
+        padding: 8px 14px;
+        border: 1px solid var(--divider-color);
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-default-color);
+        cursor: pointer;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background-color: var(--background-color-2);
+    }
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        padding: 16px;
+    }
+
+    .modal {
+        width: min(420px, 100%);
+        background: var(--background-color);
+        border: 1px solid var(--divider-color);
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 16px;
+        border-bottom: 1px solid var(--divider-color);
+        font-weight: 700;
+    }
+
+    .modal-close {
+        border: none;
+        background: transparent;
+        color: var(--text-default-color);
+        font-size: 1.4rem;
+        cursor: pointer;
+        line-height: 1;
+    }
+
+    .modal-body {
+        padding: 16px;
+        line-height: 1.6;
+        color: var(--text-default-color);
+    }
+
+    .modal-footer {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        padding: 12px 16px 16px;
+    }
 
     .stats-grid {
         display: grid;
