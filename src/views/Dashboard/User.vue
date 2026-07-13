@@ -42,7 +42,8 @@
                                         <button class="btn btn-primary" @click="openEditModal(item)">{{ userStore.isAdmin ? '改角色' : '改分组' }}</button>
                                         <button class="btn btn-primary"
                                             @click="router.push(`/profile?id=${item.userId}`)">个人资料</button>
-                                        <button v-if="userStore.isAdmin" class="btn btn-danger">删除</button>
+                                        <button v-if="userStore.isAdmin" class="btn btn-danger"
+                                            @click="openDeleteModal(item)">删除</button>
                                     </div>
                                 </td>
                             </tr>
@@ -132,6 +133,26 @@
             </div>
         </div>
     </div>
+
+    <!-- 删除用户确认 -->
+    <div class="modal-overlay" v-if="showDeleteModal" @click="closeDeleteModal">
+        <div class="modal" @click.stop>
+            <div class="modal-header">
+                <span>删除用户</span>
+                <button class="modal-close" @click="closeDeleteModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>确定删除用户 <strong>{{ deletingUser?.name }}</strong>（{{ deletingUser?.username }}）？</p>
+                <p style="opacity: .75; margin-top: 8px;">此为软删除，不可通过本页面恢复。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-danger" @click="confirmDelete" :disabled="deleteLoading">
+                    {{ deleteLoading ? '删除中...' : '确认删除' }}
+                </button>
+                <button class="btn" @click="closeDeleteModal" :disabled="deleteLoading">取消</button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -185,6 +206,11 @@ const groups = ref<{ id: number; name: string }[]>([]);
 const showGroupModal = ref(false);
 const selectedGroupId = ref<number>(0);
 const groupLoading = ref(false);
+
+// 删除相关
+const showDeleteModal = ref(false);
+const deletingUser = ref<User | null>(null);
+const deleteLoading = ref(false);
 
 const pages = computed(() => {
     if (!data.value) return [];
@@ -290,6 +316,29 @@ const handleGroupConfirm = async () => {
     groupLoading.value = false;
     if (response.success) {
         closeGroupModal();
+        refresh();
+    }
+};
+
+const openDeleteModal = (user: User) => {
+    deletingUser.value = user;
+    showDeleteModal.value = true;
+};
+
+const closeDeleteModal = () => {
+    if (deleteLoading.value) return;
+    showDeleteModal.value = false;
+    deletingUser.value = null;
+};
+
+const confirmDelete = async () => {
+    if (!deletingUser.value) return;
+    deleteLoading.value = true;
+    const response = await API.user.profile.delete(deletingUser.value.userId);
+    Toast.stdResponse(response);
+    deleteLoading.value = false;
+    if (response.success) {
+        closeDeleteModal();
         refresh();
     }
 };

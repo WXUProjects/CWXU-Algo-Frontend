@@ -610,6 +610,22 @@ export default class API {
                     "设置邮箱通知失败",
                     null
                 );
+            },
+            delete: async (userId: number): Promise<stdResponse> => {
+                if (!JWT.isValid()) {
+                    return { message: "用户未登录", success: false, data: null };
+                }
+                return apiCall(
+                    () => axios.post('/api/user/profile/delete', { userId }, {
+                        headers: { Authorization: `Bearer ${JWT.token}` }
+                    }),
+                    (response) => {
+                        if (response.status !== 200) return { message: "删除用户失败" };
+                        return { message: response.data.message || "删除用户成功" };
+                    },
+                    "删除用户失败",
+                    null
+                );
             }
         },
         role: {
@@ -639,10 +655,10 @@ export default class API {
             }
         },
         group: {
-            list: async (page: number): Promise<stdResponse<UserGroupListResponse>> => {
+            list: async (page: number, size = 20): Promise<stdResponse<UserGroupListResponse>> => {
                 return apiCall<UserGroupListResponse>(
                     () => axios.get<UserGroupListResponse>('/api/user/group/list', {
-                        params: { pageNum: page, pageSize: 5 },
+                        params: { page, size },
                         headers: { Authorization: `Bearer ${JWT.token}` }
                     }),
                     (response) => {
