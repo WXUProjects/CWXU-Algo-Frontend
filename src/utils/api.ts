@@ -1093,28 +1093,34 @@ export default class API {
                 );
             },
             progress: async (): Promise<stdResponse<ProblemProgress>> => {
-                return apiCall<ProblemProgress>(
-                    () => axios.get('/api/core/problem/progress', {
+                const empty: ProblemProgress = { items: [], recentFailed: [], total: 0, paused: false, activeJobs: [], queues: [], inProgress: [] };
+                const stdRes: stdResponse<ProblemProgress> = { message: "", success: false, data: empty };
+                try {
+                    const response = await axios.get('/api/core/problem/progress', {
                         headers: { Authorization: `Bearer ${JWT.token}` },
-                    }),
-                    (response) => {
-                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取进度失败" };
-                        return {
-                            data: {
-                                items: response.data.items || [],
-                                recentFailed: response.data.recentFailed || [],
-                                total: Number(response.data.total) || 0,
-                                paused: !!response.data.paused,
-                                activeJobs: response.data.activeJobs || [],
-                                queues: response.data.queues || [],
-                                inProgress: response.data.inProgress || [],
-                            },
-                            message: "获取进度成功",
-                        };
-                    },
-                    "获取进度失败",
-                    { items: [], recentFailed: [], total: 0, paused: false, activeJobs: [], queues: [], inProgress: [] }
-                );
+                    });
+                    if (String(response.data.code) !== "0") {
+                        stdRes.message = response.data.message || "获取进度失败";
+                        return stdRes;
+                    }
+                    stdRes.success = true;
+                    stdRes.message = "获取进度成功";
+                    stdRes.data = {
+                        items: response.data.items || [],
+                        recentFailed: response.data.recentFailed || [],
+                        total: Number(response.data.total) || 0,
+                        paused: !!response.data.paused,
+                        activeJobs: response.data.activeJobs || [],
+                        queues: response.data.queues || [],
+                        inProgress: response.data.inProgress || [],
+                    };
+                } catch (error: any) {
+                    console.error(error);
+                    const status = error?.response?.status;
+                    if (status === 401) stdRes.message = "未登录或登录已过期";
+                    else stdRes.message = error?.response?.data?.message || "获取进度失败";
+                }
+                return stdRes;
             },
             backfill: async (limit = 0) => {
                 return apiCall(

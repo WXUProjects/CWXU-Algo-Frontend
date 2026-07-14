@@ -9,7 +9,7 @@
                     <span class="title-text">题库</span>
                 </div>
                 <div class="header-actions">
-                    <button class="btn def" @click="sort = sort === 'latest_desc' ? 'latest_asc' : 'latest_desc'; load()">
+                    <button class="btn def" @click="toggleSort">
                         最近提交 {{ sort === 'latest_desc' ? '↓' : '↑' }}
                     </button>
                     <button class="btn def" @click="showFilter = !showFilter">筛选</button>
@@ -35,7 +35,7 @@
                     <label class="chk"><input type="radio" value="NONE" v-model="userStatus" /> 未做</label>
                 </div>
                 <div class="filter-row">
-                    <button class="btn def" @click="page = 1; load()">应用</button>
+                    <button class="btn def" @click="applyFilter">应用</button>
                 </div>
             </div>
 
@@ -71,10 +71,32 @@
                     </tbody>
                 </table>
                 <div v-if="!loading && list.length === 0" class="empty">暂无题目</div>
-                <div class="pager">
-                    <button class="btn def" :disabled="page <= 1" @click="page--; load()">上一页</button>
-                    <span>{{ page }} / {{ totalPages }}</span>
-                    <button class="btn def" :disabled="page >= totalPages" @click="page++; load()">下一页</button>
+
+                <div class="pageNavigation" v-if="totalPages > 0">
+                    <div class="group">
+                        <div class="pageButtons">
+                            <button :disabled="page <= 1" @click="goPage(page - 1)">上一页</button>
+                        </div>
+                        <div class="pageButtons">
+                            <button
+                                v-for="p in pageNumbers"
+                                :key="String(p)"
+                                :class="{ active: p === page, ellipsis: p === '...' }"
+                                :disabled="p === '...'"
+                                @click="p !== '...' && goPage(Number(p))"
+                            >{{ p }}</button>
+                        </div>
+                        <div class="pageButtons">
+                            <button :disabled="page >= totalPages" @click="goPage(page + 1)">下一页</button>
+                        </div>
+                    </div>
+                    <div class="group">
+                        <div class="pageInput">
+                            <button @click="jumpTo">跳转</button>
+                            <input type="number" min="1" :max="totalPages" v-model.number="jumpPage" @keyup.enter="jumpTo">
+                        </div>
+                        <div class="pageSum">共 {{ totalPages }} 页 · {{ total }} 题</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,11 +109,12 @@ import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import API, { type ProblemInfo } from '@/utils/api';
 import Toast from '@/utils/toast';
 import { useUserStore } from '@/stores/user';
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import JWT from '@/utils/jwt';
 
 const router = useRouter();
+const route = useRoute();
 const userStore = useUserStore();
 
 const platforms = ['CodeForces', 'AtCoder', 'LuoGu', 'NowCoder', 'QOJ', 'LeetCode'];
@@ -105,7 +128,34 @@ const list = ref<ProblemInfo[]>([]);
 const page = ref(1);
 const pageSize = 20;
 const total = ref(0);
+const jumpPage = ref(1);
 const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)));
+
+/** 页码指示器：1 … 4 5 [6] 7 8 … 20 */
+const pageNumbers = computed(() => {
+    const totalP = totalPages.value;
+    const cur = page.value;
+    if (totalP <= 9) {
+        return Array.from({ length: totalP }, (_, i) => i + 1) as (number | string)[];
+    }
+    const set = new Set<number>();
+    set.add(1);
+    set.add(totalP);
+    for (let i = cur - 2; i <= cur + 2; i++) {
+        if (i >= 1 && i <= totalP) set.add(i);
+    }
+    const sorted = Array.from(set).sort((a, b) => a - b);
+    const out: (number | string)[] = [];
+    for (let i = 0; i < sorted.length; i++) {
+        const curN = sorted[i]!;
+        if (i > 0) {
+            const prevN = sorted[i - 1]!;
+            if (curN - prevN > 1) out.push('...');
+        }
+        out.push(curN);
+    }
+    return out;
+});
 
 const formatTime = (ts: number) => {
     if (!ts) return '-';
@@ -121,7 +171,28 @@ const formatUserStatus = (s?: string) => {
     }
 };
 
-const goDetail = (id: number) => router.push(`/question-bank/detail/${id}`);
+const syncQuery = () => {
+    const q: Record<string, string> = {};
+    if (page.value > 1) q.page = String(page.value);
+    if (sort.value !== 'latest_desc') q.sort = sort.value;
+    if (selectedPlatforms.value.length) q.platforms = selectedPlatforms.value.join(',');
+    if (tagInput.value.trim()) q.tags = tagInput.value.trim();
+    if (userStatus.value) q.userStatus = userStatus.value;
+    router.replace({ path: '/question-bank', query: q });
+};
+
+const readQuery = () => {
+    const q = route.query;
+    const p = Number(q.page);
+    page.value = p > 0 ? p : 1;
+    jumpPage.value = page.value;
+    sort.value = typeof q.sort === 'string' && q.sort ? q.sort : 'latest_desc';
+    selectedPlatforms.value = typeof q.platforms === 'string' && q.platforms
+        ? q.platforms.split(',').filter(Boolean)
+        : [];
+    tagInput.value = typeof q.tags === 'string' ? q.tags : '';
+    userStatus.value = typeof q.userStatus === 'string' ? q.userStatus : '';
+};
 
 const load = async () => {
     loading.value = true;
@@ -139,12 +210,65 @@ const load = async () => {
     if (res.success) {
         list.value = res.data.data;
         total.value = res.data.total;
-        page.value = res.data.page;
+        // 校正越界页
+        if (page.value > totalPages.value) {
+            page.value = totalPages.value;
+            jumpPage.value = page.value;
+            syncQuery();
+            loading.value = false;
+            if (total.value > 0) await load();
+            return;
+        }
+        jumpPage.value = page.value;
     }
     loading.value = false;
 };
 
-onMounted(load);
+const goPage = (p: number) => {
+    const next = Math.min(Math.max(1, p), totalPages.value);
+    if (next === page.value) return;
+    page.value = next;
+    jumpPage.value = next;
+    syncQuery();
+    load();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+const jumpTo = () => {
+    const p = Number(jumpPage.value);
+    if (!p || p < 1) return;
+    goPage(p);
+};
+
+const toggleSort = () => {
+    sort.value = sort.value === 'latest_desc' ? 'latest_asc' : 'latest_desc';
+    page.value = 1;
+    syncQuery();
+    load();
+};
+
+const applyFilter = () => {
+    page.value = 1;
+    syncQuery();
+    load();
+};
+
+const goDetail = (id: number) => {
+    // 详情返回时依靠 query 恢复页码
+    router.push(`/question-bank/detail/${id}`);
+};
+
+onMounted(() => {
+    readQuery();
+    load();
+});
+
+// 浏览器前进/后退时恢复
+watch(() => route.query, () => {
+    if (route.path !== '/question-bank') return;
+    readQuery();
+    load();
+});
 </script>
 
 <style scoped>
@@ -170,9 +294,85 @@ th { opacity: 0.75; font-weight: 500; }
 .diff.easy, .diff.简单 { background: #2ecc7133; }
 .diff.medium, .diff.中等 { background: #f1c40f33; }
 .diff.hard, .diff.困难 { background: #e74c3c33; }
-.pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; }
 .empty { text-align: center; padding: 40px; opacity: 0.7; }
 .btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--divider-color); background: transparent; color: inherit; cursor: pointer; }
 .btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .btn.def:hover:not(:disabled) { border-color: var(--primary-color, #4f8cff); }
+
+.pageNavigation {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 8px 0;
+}
+.pageNavigation .group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.pageButtons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.pageButtons button {
+    min-width: 36px;
+    height: 34px;
+    padding: 0 10px;
+    border-radius: 6px;
+    border: 1px solid var(--divider-color);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    font-size: 0.9rem;
+}
+.pageButtons button:hover:not(:disabled):not(.ellipsis) {
+    border-color: var(--primary-color, #4f8cff);
+}
+.pageButtons button.active {
+    background: color-mix(in srgb, var(--primary-color, #4f8cff) 22%, transparent);
+    border-color: var(--primary-color, #4f8cff);
+    font-weight: 600;
+}
+.pageButtons button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.pageButtons button.ellipsis {
+    border: none;
+    min-width: 20px;
+    cursor: default;
+    opacity: 0.6;
+}
+.pageInput {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.pageInput input {
+    width: 64px;
+    height: 32px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: 1px solid var(--divider-color);
+    background: transparent;
+    color: inherit;
+}
+.pageInput button {
+    height: 34px;
+    padding: 0 12px;
+    border-radius: 6px;
+    border: 1px solid var(--divider-color);
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+}
+.pageSum {
+    font-size: 0.85rem;
+    opacity: 0.75;
+}
 </style>

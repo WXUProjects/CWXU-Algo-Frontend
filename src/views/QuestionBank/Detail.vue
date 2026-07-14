@@ -3,7 +3,7 @@
         <div class="container" style="position: relative;">
             <LoadingOverlay :show="loading" />
             <div class="top-bar">
-                <button class="btn def" @click="router.push('/question-bank')">← 返回题库</button>
+                <button class="btn def" @click="goBack">← 返回题库</button>
             </div>
             <div v-if="problem" class="detail">
                 <div class="meta">
@@ -22,7 +22,7 @@
 
                 <div class="section">
                     <div class="section-title">题面</div>
-                    <div class="content-md" v-if="problem.contentMd">{{ problem.contentMd }}</div>
+                    <div class="content-md markdown-body" v-if="problem.contentMd" v-html="renderedMd"></div>
                     <div class="empty" v-else>题面准备中，请稍后刷新</div>
                 </div>
 
@@ -69,14 +69,38 @@ import BaseLayout from '@/components/BaseLayout.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import API, { type ProblemInfo } from '@/utils/api';
 import Toast from '@/utils/toast';
-import { onMounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { marked } from 'marked';
 
 const route = useRoute();
 const router = useRouter();
 const loading = ref(true);
 const problem = ref<ProblemInfo | null>(null);
 const subs = ref<any[]>([]);
+
+marked.setOptions({ gfm: true, breaks: true });
+
+const sanitizeHtml = (html: string) => {
+    // 基础消毒：去掉 script/iframe/on* 事件
+    return html
+        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
+        .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, '')
+        .replace(/\son\w+\s*=\s*(['"]).*?\1/gi, '')
+        .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
+        .replace(/javascript:/gi, '');
+};
+
+const renderedMd = computed(() => {
+    const raw = problem.value?.contentMd || '';
+    if (!raw) return '';
+    try {
+        const html = marked.parse(raw, { async: false }) as string;
+        return sanitizeHtml(html);
+    } catch {
+        return sanitizeHtml(raw.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>'));
+    }
+});
 
 const formatTime = (ts: number) => {
     if (!ts) return '-';
@@ -94,6 +118,12 @@ const load = async () => {
     loading.value = false;
 };
 
+// 返回题库时尽量带上列表 query（若 history 里有）
+const goBack = () => {
+    if (window.history.length > 1) router.back();
+    else router.push('/question-bank');
+};
+
 onMounted(load);
 watch(() => route.params.id, load);
 </script>
@@ -109,7 +139,66 @@ h1 { margin: 0 0 10px; font-size: 1.4rem; }
 .ext { font-size: 0.9rem; }
 .section { margin-top: 20px; border-top: 1px solid var(--divider-color); padding-top: 14px; }
 .section-title { font-weight: 600; margin-bottom: 10px; }
-.content-md { white-space: pre-wrap; line-height: 1.6; font-family: inherit; font-size: 0.95rem; }
+.content-md { line-height: 1.7; font-size: 0.95rem; overflow-wrap: anywhere; }
+.content-md :deep(h1),
+.content-md :deep(h2),
+.content-md :deep(h3),
+.content-md :deep(h4) {
+    margin: 1.1em 0 0.5em;
+    font-weight: 650;
+    line-height: 1.3;
+}
+.content-md :deep(h1) { font-size: 1.25rem; }
+.content-md :deep(h2) { font-size: 1.12rem; }
+.content-md :deep(h3) { font-size: 1.02rem; }
+.content-md :deep(p) { margin: 0.55em 0; }
+.content-md :deep(ul),
+.content-md :deep(ol) { margin: 0.5em 0; padding-left: 1.4em; }
+.content-md :deep(li) { margin: 0.25em 0; }
+.content-md :deep(blockquote) {
+    margin: 0.8em 0;
+    padding: 0.4em 0.9em;
+    border-left: 3px solid var(--divider-color);
+    opacity: 0.92;
+}
+.content-md :deep(code) {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--divider-color) 45%, transparent);
+}
+.content-md :deep(pre) {
+    margin: 0.8em 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--divider-color);
+    overflow: auto;
+    background: color-mix(in srgb, var(--divider-color) 25%, transparent);
+}
+.content-md :deep(pre code) {
+    padding: 0;
+    background: transparent;
+    font-size: 0.86rem;
+}
+.content-md :deep(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.8em 0;
+}
+.content-md :deep(th),
+.content-md :deep(td) {
+    border: 1px solid var(--divider-color);
+    padding: 6px 8px;
+    text-align: left;
+}
+.content-md :deep(a) { color: var(--neon-cyan, #4f8cff); }
+.content-md :deep(hr) {
+    border: none;
+    border-top: 1px solid var(--divider-color);
+    margin: 1em 0;
+}
+.content-md :deep(img) { max-width: 100%; height: auto; }
 .sol { border: 1px solid var(--divider-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
 .sol-name { font-weight: 600; }
 .sol-meta { font-size: 0.85rem; opacity: 0.7; margin: 4px 0; }

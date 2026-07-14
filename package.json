@@ -22,6 +22,7 @@
     "crypto-js": "^4.2.0",
     "echarts": "^6.0.0",
     "jwt-decode": "^4.0.0",
+    "marked": "^18.0.6",
     "pinia": "^3.0.4",
     "vue": "^3.5.26",
     "vue-echarts": "^8.0.1",
@@ -30,6 +31,7 @@
   "devDependencies": {
     "@tsconfig/node24": "^24.0.3",
     "@types/crypto-js": "^4.2.2",
+    "@types/marked": "^5.0.2",
     "@types/node": "^24.10.4",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/tsconfig": "^0.8.1",
