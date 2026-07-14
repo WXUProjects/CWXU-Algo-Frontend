@@ -58,7 +58,7 @@
                         <tbody>
                             <tr v-for="s in subs" :key="s.id">
                                 <td>
-                                    <router-link :to="`/profile?id=${s.userId}`">#{{ s.userId }}</router-link>
+                                    <router-link :to="`/profile?id=${s.userId}`">{{ s.userName || ('#' + s.userId) }}</router-link>
                                 </td>
                                 <td>{{ s.lang }}</td>
                                 <td>{{ s.status }}</td>

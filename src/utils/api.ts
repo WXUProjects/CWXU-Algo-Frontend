@@ -132,8 +132,12 @@ export interface ProblemUserProfile {
 
 export interface ProblemProgress {
     items: { status: string; count: number }[];
-    recentFailed: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number }[];
+    recentFailed: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
     total: number;
+    paused?: boolean;
+    activeJobs?: { problemId: number; platform: string; externalId: string; title: string; stage: string; startedAt: number }[];
+    queues?: { name: string; messages: number; consumers: number; concurrency: number }[];
+    inProgress?: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
 }
 
 export interface CodeSpiderSetRequest {
@@ -1100,15 +1104,19 @@ export default class API {
                                 items: response.data.items || [],
                                 recentFailed: response.data.recentFailed || [],
                                 total: Number(response.data.total) || 0,
+                                paused: !!response.data.paused,
+                                activeJobs: response.data.activeJobs || [],
+                                queues: response.data.queues || [],
+                                inProgress: response.data.inProgress || [],
                             },
                             message: "获取进度成功",
                         };
                     },
                     "获取进度失败",
-                    { items: [], recentFailed: [], total: 0 }
+                    { items: [], recentFailed: [], total: 0, paused: false, activeJobs: [], queues: [], inProgress: [] }
                 );
             },
-            backfill: async (limit = 500) => {
+            backfill: async (limit = 0) => {
                 return apiCall(
                     () => axios.post('/api/core/problem/backfill', { limit }, {
                         headers: { Authorization: `Bearer ${JWT.token}` },
@@ -1118,6 +1126,45 @@ export default class API {
                         return { data: response.data, message: response.data.message || "回填成功" };
                     },
                     "回填失败",
+                    null
+                );
+            },
+            emergencyStop: async () => {
+                return apiCall(
+                    () => axios.post('/api/core/problem/emergency-stop', {}, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "紧急停止失败" };
+                        return { data: response.data, message: response.data.message || "已紧急停止" };
+                    },
+                    "紧急停止失败",
+                    null
+                );
+            },
+            resume: async () => {
+                return apiCall(
+                    () => axios.post('/api/core/problem/resume', {}, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "恢复失败" };
+                        return { data: response.data, message: response.data.message || "已恢复" };
+                    },
+                    "恢复失败",
+                    null
+                );
+            },
+            resetAll: async (requeue = true) => {
+                return apiCall(
+                    () => axios.post('/api/core/problem/reset-all', { requeue, requeueSet: true }, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "重置失败" };
+                        return { data: response.data, message: response.data.message || "已重置" };
+                    },
+                    "重置失败",
                     null
                 );
             },
