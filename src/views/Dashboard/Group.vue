@@ -640,7 +640,7 @@ th, td {
 
 .modal {
     width: min(420px, 100%);
-    background: var(--background-color);
+    background: var(--background-color-1);
     border: 1px solid var(--divider-color);
     border-radius: 12px;
     overflow: hidden;
