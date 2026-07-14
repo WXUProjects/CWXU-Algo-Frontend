@@ -167,9 +167,9 @@ th { opacity: 0.75; font-weight: 500; }
 .sub { font-size: 0.8rem; opacity: 0.6; margin-top: 2px; }
 .tag { display: inline-block; margin: 2px 4px 2px 0; padding: 2px 8px; border-radius: 999px; font-size: 0.75rem; background: color-mix(in srgb, var(--primary-color, #4f8cff) 15%, transparent); }
 .diff { padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
-.diff.easy { background: #2ecc7133; }
-.diff.medium { background: #f1c40f33; }
-.diff.hard { background: #e74c3c33; }
+.diff.easy, .diff.简单 { background: #2ecc7133; }
+.diff.medium, .diff.中等 { background: #f1c40f33; }
+.diff.hard, .diff.困难 { background: #e74c3c33; }
 .pager { display: flex; justify-content: center; align-items: center; gap: 16px; margin-top: 16px; }
 .empty { text-align: center; padding: 40px; opacity: 0.7; }
 .btn { padding: 6px 12px; border-radius: 6px; border: 1px solid var(--divider-color); background: transparent; color: inherit; cursor: pointer; }
