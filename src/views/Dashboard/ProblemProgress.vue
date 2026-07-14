@@ -3,9 +3,9 @@
         <div class="page-header">
             <h2>题库识别进度</h2>
             <div class="header-actions" v-if="userStore.isAdmin">
-                <button class="btn danger" @click="doStop" :disabled="busy">紧急停止</button>
-                <button class="btn" @click="doResume" :disabled="busy">恢复流水线</button>
-                <button class="btn" @click="doReset" :disabled="busy">全部重置</button>
+                <button class="btn danger" @click="doStop" :disabled="busy">停止 AI 分析</button>
+                <button class="btn" @click="doResume" :disabled="busy">恢复 AI 分析</button>
+                <button class="btn" @click="doReset" :disabled="busy">重置 AI 分析</button>
                 <button class="btn btn-primary" @click="doBackfill" :disabled="busy">
                     {{ acting === 'backfill' ? '回填中...' : '历史回填（全量入队）' }}
                 </button>
@@ -14,8 +14,8 @@
         </div>
 
         <div class="banner" :class="paused ? 'paused' : 'running'">
-            流水线状态：{{ paused ? '已暂停（紧急停止）' : '运行中' }}
-            <span class="hint">不合适就点紧急停止，会暂停消费并清空 MQ</span>
+            AI 分析：{{ paused ? '已暂停' : '运行中' }}
+            <span class="hint">停止/重置只影响 AI 队列与标签，已落库题面不会删除；题面爬取照常进行</span>
         </div>
 
         <div style="position: relative;">
@@ -201,7 +201,7 @@ const doBackfill = async () => {
 
 const doStop = async () => {
     if (acting.value) return;
-    if (!confirm('紧急停止：暂停消费并清空 MQ 队列？')) return;
+    if (!confirm('停止 AI 分析：暂停分析并清空 problem_analyze 队列？题面不会删除。')) return;
     acting.value = 'stop';
     try {
         const res = await API.core.problem.emergencyStop();
@@ -226,7 +226,7 @@ const doResume = async () => {
 
 const doReset = async () => {
     if (acting.value) return;
-    if (!confirm('全部重置：清空队列，非 COMPLETED 重置为 PENDING 并重新入队？')) return;
+    if (!confirm('重置 AI 分析：清除标签/难度/解法，保留题面，并重新入队 AI？')) return;
     acting.value = 'reset';
     try {
         const res = await API.core.problem.resetAll(true);
