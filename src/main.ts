@@ -21,6 +21,8 @@ import { faUser, faHome, faSun, faMoon, faTrophy, faCrosshairs, faGlobe, faGauge
 import './assets/css/theme.css'
 // 字号
 import './assets/css/fontsize.css'
+// KaTeX（题库公式）
+import 'katex/dist/katex.min.css'
 
 library.add(
     faUser,

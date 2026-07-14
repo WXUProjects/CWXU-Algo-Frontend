@@ -71,7 +71,7 @@ import API, { type ProblemInfo } from '@/utils/api';
 import Toast from '@/utils/toast';
 import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { marked } from 'marked';
+import { renderMarkdown } from '@/utils/markdown';
 
 const route = useRoute();
 const router = useRouter();
@@ -79,28 +79,7 @@ const loading = ref(true);
 const problem = ref<ProblemInfo | null>(null);
 const subs = ref<any[]>([]);
 
-marked.setOptions({ gfm: true, breaks: true });
-
-const sanitizeHtml = (html: string) => {
-    // 基础消毒：去掉 script/iframe/on* 事件
-    return html
-        .replace(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '')
-        .replace(/<iframe[\s\S]*?>[\s\S]*?<\/iframe>/gi, '')
-        .replace(/\son\w+\s*=\s*(['"]).*?\1/gi, '')
-        .replace(/\son\w+\s*=\s*[^\s>]+/gi, '')
-        .replace(/javascript:/gi, '');
-};
-
-const renderedMd = computed(() => {
-    const raw = problem.value?.contentMd || '';
-    if (!raw) return '';
-    try {
-        const html = marked.parse(raw, { async: false }) as string;
-        return sanitizeHtml(html);
-    } catch {
-        return sanitizeHtml(raw.replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>'));
-    }
-});
+const renderedMd = computed(() => renderMarkdown(problem.value?.contentMd || ''));
 
 const formatTime = (ts: number) => {
     if (!ts) return '-';
@@ -199,6 +178,17 @@ h1 { margin: 0 0 10px; font-size: 1.4rem; }
     margin: 1em 0;
 }
 .content-md :deep(img) { max-width: 100%; height: auto; }
+.content-md :deep(.katex) { font-size: 1.05em; }
+.content-md :deep(.katex-display) {
+    margin: 0.8em 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
+.content-md :deep(.math-fallback) {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 0.88em;
+    opacity: 0.9;
+}
 .sol { border: 1px solid var(--divider-color); border-radius: 8px; padding: 10px; margin-bottom: 8px; }
 .sol-name { font-weight: 600; }
 .sol-meta { font-size: 0.85rem; opacity: 0.7; margin: 4px 0; }

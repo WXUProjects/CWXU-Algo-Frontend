@@ -1020,6 +1020,8 @@ export default class API {
                 tags?: string;
                 userStatus?: string;
                 userId?: number;
+                keyword?: string;
+                difficulty?: string;
             } = {}): Promise<stdResponse<ProblemListResponse>> => {
                 return apiCall<ProblemListResponse>(
                     () => axios.get('/api/core/problem/list', { params }),
