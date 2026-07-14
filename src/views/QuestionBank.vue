@@ -48,8 +48,7 @@
                             <th style="width: 110px;">平台</th>
                             <th style="width: 80px;">难度</th>
                             <th>标签</th>
-                            <th style="width: 90px;">状态</th>
-                            <th style="width: 90px;">识别</th>
+                            <th style="width: 90px;">我的状态</th>
                             <th style="width: 160px;">最近提交</th>
                         </tr>
                     </thead>
@@ -66,13 +65,12 @@
                             <td>
                                 <span v-for="t in (item.tags || []).slice(0, 4)" :key="t" class="tag">{{ t }}</span>
                             </td>
-                            <td>{{ item.userStatus || '-' }}</td>
-                            <td>{{ item.status }}</td>
+                            <td>{{ formatUserStatus(item.userStatus) }}</td>
                             <td>{{ formatTime(item.lastSubmittedAt) }}</td>
                         </tr>
                     </tbody>
                 </table>
-                <div v-if="!loading && list.length === 0" class="empty">暂无题目，等待提交沉淀或管理员回填</div>
+                <div v-if="!loading && list.length === 0" class="empty">暂无题目</div>
                 <div class="pager">
                     <button class="btn def" :disabled="page <= 1" @click="page--; load()">上一页</button>
                     <span>{{ page }} / {{ totalPages }}</span>
@@ -112,6 +110,15 @@ const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize))
 const formatTime = (ts: number) => {
     if (!ts) return '-';
     return new Date(ts * 1000).toLocaleString('sv-SE', { hour12: false });
+};
+
+const formatUserStatus = (s?: string) => {
+    switch ((s || '').toUpperCase()) {
+        case 'AC': return '已通过';
+        case 'TRIED': return '尝试过';
+        case 'NONE': return '未做';
+        default: return s || '-';
+    }
 };
 
 const goDetail = (id: number) => router.push(`/question-bank/detail/${id}`);

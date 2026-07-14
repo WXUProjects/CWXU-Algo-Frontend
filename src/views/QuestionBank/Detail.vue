@@ -12,7 +12,6 @@
                         <span class="chip">{{ problem.platform }}</span>
                         <span class="chip">{{ problem.externalId }}</span>
                         <span class="chip" v-if="problem.difficulty">{{ problem.difficulty }}</span>
-                        <span class="chip">{{ problem.status }}</span>
                         <span class="chip" v-if="problem.problemType">{{ problem.problemType }}</span>
                     </div>
                     <div class="tags">
@@ -24,15 +23,7 @@
                 <div class="section">
                     <div class="section-title">题面</div>
                     <div class="content-md" v-if="problem.contentMd">{{ problem.contentMd }}</div>
-                    <div class="empty" v-else-if="problem.status === 'PENDING' || problem.status === 'FETCHING'">
-                        题面爬取中，请稍后刷新…
-                    </div>
-                    <div class="empty" v-else-if="problem.status === 'SKIPPED'">
-                        该平台（如 LeetCode）暂不支持爬取题面
-                    </div>
-                    <div class="empty" v-else>
-                        暂无题面{{ problem.errorMsg ? '：' + problem.errorMsg : '' }}
-                    </div>
+                    <div class="empty" v-else>题面准备中，请稍后刷新</div>
                 </div>
 
                 <div class="section" v-if="problem.solutions?.length">
