@@ -22,7 +22,7 @@
 
         <div class="banner" :class="(analyzePaused || fetchPaused) ? 'paused' : 'running'">
             AI：{{ analyzePaused ? '已暂停' : '运行中' }} · 题面爬取：{{ fetchPaused ? '已暂停' : '运行中' }}
-            <span class="hint">暂停会清空对应 MQ 队列；出错会自动重入队；历史回填仅近 6 个月，已识别/已有题面会跳过爬取</span>
+            <span class="hint">暂停会清空对应 MQ 队列；出错会自动重入队；待分析/永久失败仅统计近 6 个月，爬取与已完成全量</span>
         </div>
 
         <div style="position: relative;">
@@ -123,7 +123,7 @@
         </div>
 
         <div class="section">
-            <h3>最近失败</h3>
+            <h3>最近失败（可重试）</h3>
             <table v-if="failed.length">
                 <thead>
                     <tr>
@@ -131,6 +131,7 @@
                         <th>平台</th>
                         <th>题号</th>
                         <th>标题</th>
+                        <th>爬取次数</th>
                         <th>错误</th>
                         <th>时间</th>
                     </tr>
@@ -143,12 +144,44 @@
                         <td>{{ f.platform }}</td>
                         <td>{{ f.externalId }}</td>
                         <td>{{ f.title }}</td>
+                        <td>{{ f.fetchAttempts ?? 0 }}/3</td>
                         <td class="err">{{ f.errorMsg }}</td>
                         <td>{{ formatTime(f.updatedAt) }}</td>
                     </tr>
                 </tbody>
             </table>
             <div v-else class="empty">暂无失败记录</div>
+        </div>
+
+        <div class="section">
+            <h3>永久失败</h3>
+            <table v-if="failedPerm.length">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>平台</th>
+                        <th>题号</th>
+                        <th>标题</th>
+                        <th>爬取次数</th>
+                        <th>错误</th>
+                        <th>时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="f in failedPerm" :key="'perm-'+f.id">
+                        <td>
+                            <router-link :to="`/question-bank/detail/${f.id}`">{{ f.id }}</router-link>
+                        </td>
+                        <td>{{ f.platform }}</td>
+                        <td>{{ f.externalId }}</td>
+                        <td>{{ f.title }}</td>
+                        <td>{{ f.fetchAttempts ?? 0 }}</td>
+                        <td class="err">{{ f.errorMsg }}</td>
+                        <td>{{ formatTime(f.updatedAt) }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div v-else class="empty">暂无永久失败记录</div>
         </div>
     </div>
 </template>
@@ -166,6 +199,7 @@ const acting = ref('');
 const busy = computed(() => acting.value !== '');
 const items = ref<{ status: string; count: number }[]>([]);
 const failed = ref<any[]>([]);
+const failedPerm = ref<any[]>([]);
 const inProgress = ref<any[]>([]);
 const activeJobs = ref<any[]>([]);
 const queues = ref<any[]>([]);
@@ -177,11 +211,11 @@ let timer: number | undefined;
 const statusLabelMap: Record<string, string> = {
     PENDING: '待爬取',
     FETCHING: '爬取中',
-    TAGGING: '待分析',
+    TAGGING: '待分析(近6月)',
     COMPLETED: '已完成',
-    FAILED: '失败(可重试)',
-    FAILED_PERM: '永久失败',
-    SKIPPED: '已跳过',
+    FAILED: '失败(可重试·近6月)',
+    FAILED_PERM: '永久失败(近6月)',
+    SKIPPED: '已跳过(近6月)',
 };
 
 const statusLabel = (s?: string) => {
@@ -207,6 +241,7 @@ const load = async () => {
     if (res.success) {
         items.value = res.data.items || [];
         failed.value = res.data.recentFailed || [];
+        failedPerm.value = res.data.recentFailedPerm || [];
         total.value = res.data.total || 0;
         analyzePaused.value = !!(res.data.analyzePaused ?? res.data.paused);
         fetchPaused.value = !!res.data.fetchPaused;

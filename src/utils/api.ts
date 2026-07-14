@@ -130,16 +130,28 @@ export interface ProblemUserProfile {
     totalAc: number;
 }
 
+export interface ProblemProgressItem {
+    id: number;
+    platform: string;
+    externalId: string;
+    title: string;
+    errorMsg: string;
+    updatedAt: number;
+    status?: string;
+    fetchAttempts?: number;
+}
+
 export interface ProblemProgress {
     items: { status: string; count: number }[];
-    recentFailed: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
+    recentFailed: ProblemProgressItem[];
+    recentFailedPerm?: ProblemProgressItem[];
     total: number;
     paused?: boolean;
     fetchPaused?: boolean;
     analyzePaused?: boolean;
     activeJobs?: { problemId: number; platform: string; externalId: string; title: string; stage: string; startedAt: number }[];
     queues?: { name: string; messages: number; consumers: number; concurrency: number }[];
-    inProgress?: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
+    inProgress?: ProblemProgressItem[];
 }
 
 export interface CodeSpiderSetRequest {
@@ -1097,7 +1109,7 @@ export default class API {
                 );
             },
             progress: async (): Promise<stdResponse<ProblemProgress>> => {
-                const empty: ProblemProgress = { items: [], recentFailed: [], total: 0, paused: false, fetchPaused: false, analyzePaused: false, activeJobs: [], queues: [], inProgress: [] };
+                const empty: ProblemProgress = { items: [], recentFailed: [], recentFailedPerm: [], total: 0, paused: false, fetchPaused: false, analyzePaused: false, activeJobs: [], queues: [], inProgress: [] };
                 const stdRes: stdResponse<ProblemProgress> = { message: "", success: false, data: empty };
                 try {
                     const response = await axios.get('/api/core/problem/progress', {
@@ -1112,6 +1124,7 @@ export default class API {
                     stdRes.data = {
                         items: response.data.items || [],
                         recentFailed: response.data.recentFailed || [],
+                        recentFailedPerm: response.data.recentFailedPerm || [],
                         total: Number(response.data.total) || 0,
                         paused: !!response.data.paused,
                         fetchPaused: !!response.data.fetchPaused,
