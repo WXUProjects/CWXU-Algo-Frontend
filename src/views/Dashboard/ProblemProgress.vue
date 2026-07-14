@@ -3,19 +3,26 @@
         <div class="page-header">
             <h2>题库识别进度</h2>
             <div class="header-actions" v-if="userStore.isAdmin">
-                <button class="btn danger" @click="doStop" :disabled="busy">停止 AI 分析</button>
-                <button class="btn" @click="doResume" :disabled="busy">恢复 AI 分析</button>
+                <button class="btn" :class="analyzePaused ? '' : 'danger'" @click="doToggleAnalyze" :disabled="busy">
+                    {{ analyzePaused ? '恢复 AI 分析' : '暂停 AI 分析' }}
+                </button>
+                <button class="btn" :class="fetchPaused ? '' : 'danger'" @click="doToggleFetch" :disabled="busy">
+                    {{ fetchPaused ? '恢复题面爬取' : '暂停题面爬取' }}
+                </button>
                 <button class="btn" @click="doReset" :disabled="busy">重置 AI 分析</button>
                 <button class="btn btn-primary" @click="doBackfill" :disabled="busy">
-                    {{ acting === 'backfill' ? '回填中...' : '历史回填（全量入队）' }}
+                    {{ acting === 'backfill' ? '回填中...' : '历史回填（近6月）' }}
+                </button>
+                <button class="btn btn-primary" @click="doRetryFailed" :disabled="busy">
+                    {{ acting === 'retry' ? '重试中...' : '重试错误队列' }}
                 </button>
                 <button class="btn" @click="load" :disabled="busy">刷新</button>
             </div>
         </div>
 
-        <div class="banner" :class="paused ? 'paused' : 'running'">
-            AI 分析：{{ paused ? '已暂停' : '运行中' }}
-            <span class="hint">停止/重置只影响 AI 队列与标签，已落库题面不会删除；题面爬取照常进行</span>
+        <div class="banner" :class="(analyzePaused || fetchPaused) ? 'paused' : 'running'">
+            AI：{{ analyzePaused ? '已暂停' : '运行中' }} · 题面爬取：{{ fetchPaused ? '已暂停' : '运行中' }}
+            <span class="hint">暂停会清空对应 MQ 队列；出错会自动重入队；历史回填仅近 6 个月，已识别/已有题面会跳过爬取</span>
         </div>
 
         <div style="position: relative;">
@@ -163,7 +170,8 @@ const inProgress = ref<any[]>([]);
 const activeJobs = ref<any[]>([]);
 const queues = ref<any[]>([]);
 const total = ref(0);
-const paused = ref(false);
+const analyzePaused = ref(false);
+const fetchPaused = ref(false);
 let timer: number | undefined;
 
 const formatTime = (ts: number) => {
@@ -179,7 +187,8 @@ const load = async () => {
         items.value = res.data.items || [];
         failed.value = res.data.recentFailed || [];
         total.value = res.data.total || 0;
-        paused.value = !!res.data.paused;
+        analyzePaused.value = !!(res.data.analyzePaused ?? res.data.paused);
+        fetchPaused.value = !!res.data.fetchPaused;
         activeJobs.value = res.data.activeJobs || [];
         queues.value = res.data.queues || [];
         inProgress.value = res.data.inProgress || [];
@@ -189,6 +198,7 @@ const load = async () => {
 
 const doBackfill = async () => {
     if (acting.value) return;
+    if (!confirm('历史回填：仅近 6 个月；已识别跳过；有题面直接进 AI，无题面进爬取？')) return;
     acting.value = 'backfill';
     try {
         const res = await API.core.problem.backfill(0);
@@ -199,12 +209,26 @@ const doBackfill = async () => {
     }
 };
 
-const doStop = async () => {
+const doRetryFailed = async () => {
     if (acting.value) return;
-    if (!confirm('停止 AI 分析：暂停分析并清空 problem_analyze 队列？题面不会删除。')) return;
-    acting.value = 'stop';
+    if (!confirm('重试错误队列：仅重入 FAILED（可重试），排除 FAILED_PERM 黑名单？')) return;
+    acting.value = 'retry';
     try {
-        const res = await API.core.problem.emergencyStop();
+        const res = await API.core.problem.retryFailed(0);
+        Toast.stdResponse(res);
+        if (res.success) await load();
+    } finally {
+        acting.value = '';
+    }
+};
+
+const doToggleAnalyze = async () => {
+    if (acting.value) return;
+    const nextPause = !analyzePaused.value;
+    if (nextPause && !confirm('暂停 AI 分析并清空 problem_analyze 队列？')) return;
+    acting.value = 'toggle-analyze';
+    try {
+        const res = await API.core.problem.toggleAnalyze(nextPause);
         Toast.stdResponse(res);
         await load();
     } finally {
@@ -212,11 +236,13 @@ const doStop = async () => {
     }
 };
 
-const doResume = async () => {
+const doToggleFetch = async () => {
     if (acting.value) return;
-    acting.value = 'resume';
+    const nextPause = !fetchPaused.value;
+    if (nextPause && !confirm('暂停题面爬取并清空 problem_fetch 队列？')) return;
+    acting.value = 'toggle-fetch';
     try {
-        const res = await API.core.problem.resume();
+        const res = await API.core.problem.toggleFetch(nextPause);
         Toast.stdResponse(res);
         await load();
     } finally {

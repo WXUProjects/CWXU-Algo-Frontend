@@ -135,6 +135,8 @@ export interface ProblemProgress {
     recentFailed: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
     total: number;
     paused?: boolean;
+    fetchPaused?: boolean;
+    analyzePaused?: boolean;
     activeJobs?: { problemId: number; platform: string; externalId: string; title: string; stage: string; startedAt: number }[];
     queues?: { name: string; messages: number; consumers: number; concurrency: number }[];
     inProgress?: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number; status?: string }[];
@@ -1095,7 +1097,7 @@ export default class API {
                 );
             },
             progress: async (): Promise<stdResponse<ProblemProgress>> => {
-                const empty: ProblemProgress = { items: [], recentFailed: [], total: 0, paused: false, activeJobs: [], queues: [], inProgress: [] };
+                const empty: ProblemProgress = { items: [], recentFailed: [], total: 0, paused: false, fetchPaused: false, analyzePaused: false, activeJobs: [], queues: [], inProgress: [] };
                 const stdRes: stdResponse<ProblemProgress> = { message: "", success: false, data: empty };
                 try {
                     const response = await axios.get('/api/core/problem/progress', {
@@ -1112,6 +1114,8 @@ export default class API {
                         recentFailed: response.data.recentFailed || [],
                         total: Number(response.data.total) || 0,
                         paused: !!response.data.paused,
+                        fetchPaused: !!response.data.fetchPaused,
+                        analyzePaused: !!response.data.analyzePaused || !!response.data.paused,
                         activeJobs: response.data.activeJobs || [],
                         queues: response.data.queues || [],
                         inProgress: response.data.inProgress || [],
@@ -1173,6 +1177,51 @@ export default class API {
                         return { data: response.data, message: response.data.message || "已重置" };
                     },
                     "重置失败",
+                    null
+                );
+            },
+            retryFailed: async (limit = 0) => {
+                return apiCall(
+                    () => axios.post('/api/core/problem/retry-failed', { limit }, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "重试失败" };
+                        const d = response.data;
+                        return {
+                            data: d,
+                            message: d.message || `已重试：扫描 ${d.scanned || 0}，入队 ${d.enqueued || 0}，黑名单 ${d.blacklisted || 0}`,
+                        };
+                    },
+                    "重试错误队列失败",
+                    null
+                );
+            },
+            toggleAnalyze: async (pause?: boolean) => {
+                const body = pause === undefined ? {} : { pause, pauseSet: true };
+                return apiCall(
+                    () => axios.post('/api/core/problem/toggle-analyze', body, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "操作失败" };
+                        return { data: response.data, message: response.data.message || "已切换 AI 分析" };
+                    },
+                    "切换 AI 分析失败",
+                    null
+                );
+            },
+            toggleFetch: async (pause?: boolean) => {
+                const body = pause === undefined ? {} : { pause, pauseSet: true };
+                return apiCall(
+                    () => axios.post('/api/core/problem/toggle-fetch', body, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "操作失败" };
+                        return { data: response.data, message: response.data.message || "已切换题面爬取" };
+                    },
+                    "切换题面爬取失败",
                     null
                 );
             },
