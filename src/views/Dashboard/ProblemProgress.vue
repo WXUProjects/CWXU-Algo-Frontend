@@ -31,7 +31,7 @@
                 <div class="stat-card" v-for="it in items" :key="it.status">
                     <div class="card-header">
                         <div class="card-title">
-                            <div class="title-main">{{ it.status }}</div>
+                            <div class="title-main">{{ statusLabel(it.status) }}</div>
                         </div>
                     </div>
                     <div class="card-data">
@@ -41,7 +41,7 @@
                 <div class="stat-card">
                     <div class="card-header">
                         <div class="card-title">
-                            <div class="title-main">TOTAL</div>
+                            <div class="title-main">合计</div>
                         </div>
                     </div>
                     <div class="card-data">
@@ -79,7 +79,7 @@
                 </thead>
                 <tbody>
                     <tr v-for="j in activeJobs" :key="j.stage + '-' + j.problemId">
-                        <td><span class="stage" :class="j.stage">{{ j.stage }}</span></td>
+                        <td><span class="stage" :class="j.stage">{{ stageLabel(j.stage) }}</span></td>
                         <td>
                             <router-link :to="`/question-bank/detail/${j.problemId}`">{{ j.problemId }}</router-link>
                         </td>
@@ -94,7 +94,7 @@
         </div>
 
         <div class="section">
-            <h3>DB 中 FETCHING / TAGGING</h3>
+            <h3>DB 中爬取中 / 待分析</h3>
             <table v-if="inProgress.length">
                 <thead>
                     <tr>
@@ -114,7 +114,7 @@
                         <td>{{ f.platform }}</td>
                         <td>{{ f.externalId }}</td>
                         <td>{{ f.title }}</td>
-                        <td>{{ f.status || f.errorMsg || '-' }}</td>
+                        <td>{{ statusLabel(f.status) || f.errorMsg || '-' }}</td>
                         <td>{{ formatTime(f.updatedAt) }}</td>
                     </tr>
                 </tbody>
@@ -173,6 +173,27 @@ const total = ref(0);
 const analyzePaused = ref(false);
 const fetchPaused = ref(false);
 let timer: number | undefined;
+
+const statusLabelMap: Record<string, string> = {
+    PENDING: '待爬取',
+    FETCHING: '爬取中',
+    TAGGING: '待分析',
+    COMPLETED: '已完成',
+    FAILED: '失败(可重试)',
+    FAILED_PERM: '永久失败',
+    SKIPPED: '已跳过',
+};
+
+const statusLabel = (s?: string) => {
+    if (!s) return '';
+    return statusLabelMap[s] || s;
+};
+
+const stageLabel = (s?: string) => {
+    if (s === 'fetch') return '爬取';
+    if (s === 'analyze') return '分析';
+    return s || '-';
+};
 
 const formatTime = (ts: number) => {
     if (!ts) return '-';
