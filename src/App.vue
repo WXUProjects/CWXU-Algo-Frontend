@@ -70,6 +70,18 @@
           <div class="item-indicator">▶</div>
         </router-link>
 
+        <router-link to="/question-bank" class="section navigation-item" active-class="active">
+          <font-awesome-icon icon="fa-solid fa-book" class="item-icon" />
+          <div class="item-content">
+            <div class="item-title">
+              <span class="zh">题库</span>
+              <span class="en">Question Bank</span>
+            </div>
+            <div class="item-description">沉淀题目与标签</div>
+          </div>
+          <div class="item-indicator">▶</div>
+        </router-link>
+
         <router-link to="/profile" class="section navigation-item" active-class="active" v-if="isLogin">
           <font-awesome-icon icon="fa-solid fa-user" class="item-icon" />
           <div class="item-content">

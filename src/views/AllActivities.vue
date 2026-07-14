@@ -22,7 +22,10 @@
                                 @click="router.push('profile?id=' + activity.userId)" class="avatar"> -->
                             <span>
                                 <router-link :to="`/profile?id=${activity.userId}`" class="name-link">{{ activity.name }}</router-link>
-                                {{ activity.title }}
+                                {{ activity.prefix }}
+                                <router-link v-if="activity.problemId" :to="`/question-bank/detail/${activity.problemId}`" class="problem-link">{{ activity.problemTitle }}</router-link>
+                                <template v-else>{{ activity.problemTitle }}</template>
+                                {{ activity.suffix }}
                             </span>
                             <a :href="activity.link" target="_blank">{{ activity.status }}</a>
                         </div>
@@ -93,7 +96,10 @@ const users = ref<User[]>([]);
 
 interface ActivityItem {
     name: string;
-    title: string;
+    prefix: string;
+    problemTitle: string;
+    problemId: number;
+    suffix: string;
     status: string;
     link: string;
     time: string;
@@ -144,7 +150,10 @@ const getNewSubmit = async (currentCursor: number) => {
 
             newActivities.push({
                 name: user.name,
-                title: ` 在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
+                prefix: ` 在 ${platform} 使用 ${lang} 解决了 `,
+                problemTitle: problem || contest || '未知题目',
+                problemId: Number(item.problemId) || 0,
+                suffix: '：',
                 status: status,
                 link: Link.getSubmitLink(platform, contest, item.submitId),
                 time: time,
@@ -344,7 +353,8 @@ onUnmounted(() => {
             width: 80%;
             font-size: var(--text-sm);
 
-            .name-link {
+            .name-link,
+            .problem-link {
                 color: var(--neon-cyan);
                 text-decoration: none;
 

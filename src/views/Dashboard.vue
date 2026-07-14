@@ -24,6 +24,13 @@ TODO:
                         <div class="en">Bulletin</div>
                     </div>
                 </router-link>
+                <router-link to="/dashboard/problem-progress" class="section" active-class="active">
+                    <font-awesome-icon icon="fa-solid fa-database" class="section-icon" />
+                    <div class="title">
+                        <div class="zh">题库识别</div>
+                        <div class="en">Problem AI</div>
+                    </div>
+                </router-link>
                 <router-link to="/dashboard/group" class="section" active-class="active">
                     <font-awesome-icon icon="fa-solid fa-people-group" class="section-icon" />
                     <div class="title">

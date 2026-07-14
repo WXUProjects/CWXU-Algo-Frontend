@@ -95,7 +95,45 @@ export interface CoreSubmitLogGetByIdData {
     submitId: string;
     time: string;
     userId: number;
+    problemId?: number;
     [property: string]: any;
+}
+
+export interface ProblemInfo {
+    id: number;
+    platform: string;
+    externalId: string;
+    title: string;
+    url: string;
+    contentMd: string;
+    problemType: string;
+    tags: string[];
+    solutions: { name: string; timeComplexity: string; spaceComplexity: string; briefExplanation: string }[];
+    difficulty: string;
+    status: string;
+    errorMsg: string;
+    lastSubmittedAt: number;
+    userStatus: string;
+}
+
+export interface ProblemListResponse {
+    data: ProblemInfo[];
+    total: number;
+    page: number;
+    pageSize: number;
+}
+
+export interface ProblemUserProfile {
+    radar: { tag: string; score: number; acCount: number }[];
+    platforms: { name: string; count: number }[];
+    difficulties: { name: string; count: number }[];
+    totalAc: number;
+}
+
+export interface ProblemProgress {
+    items: { status: string; count: number }[];
+    recentFailed: { id: number; platform: string; externalId: string; title: string; errorMsg: string; updatedAt: number }[];
+    total: number;
 }
 
 export interface CodeSpiderSetRequest {
@@ -968,6 +1006,121 @@ export default class API {
                     null
                 )
             }
+        },
+        problem: {
+            list: async (params: {
+                page?: number;
+                pageSize?: number;
+                sort?: string;
+                platforms?: string;
+                tags?: string;
+                userStatus?: string;
+                userId?: number;
+            } = {}): Promise<stdResponse<ProblemListResponse>> => {
+                return apiCall<ProblemListResponse>(
+                    () => axios.get('/api/core/problem/list', { params }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取题库失败" };
+                        return {
+                            data: {
+                                data: response.data.data || [],
+                                total: Number(response.data.total) || 0,
+                                page: Number(response.data.page) || 1,
+                                pageSize: Number(response.data.pageSize) || 20,
+                            },
+                            message: "获取题库成功",
+                        };
+                    },
+                    "获取题库失败",
+                    { data: [], total: 0, page: 1, pageSize: 20 }
+                );
+            },
+            get: async (id: number): Promise<stdResponse<ProblemInfo>> => {
+                return apiCall<ProblemInfo>(
+                    () => axios.get('/api/core/problem/get', { params: { id } }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取题目失败" };
+                        return { data: response.data.data, message: "获取题目成功" };
+                    },
+                    "获取题目失败",
+                    {
+                        id: 0, platform: "", externalId: "", title: "", url: "", contentMd: "",
+                        problemType: "", tags: [], solutions: [], difficulty: "", status: "",
+                        errorMsg: "", lastSubmittedAt: 0, userStatus: "",
+                    }
+                );
+            },
+            submissions: async (problemId: number, page = 1, pageSize = 20, userId?: number) => {
+                return apiCall(
+                    () => axios.get('/api/core/problem/submissions', {
+                        params: { problemId, page, pageSize, userId },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取提交失败" };
+                        return {
+                            data: {
+                                data: response.data.data || [],
+                                total: Number(response.data.total) || 0,
+                            },
+                            message: "获取提交成功",
+                        };
+                    },
+                    "获取提交失败",
+                    { data: [], total: 0 }
+                );
+            },
+            userProfile: async (userId: number): Promise<stdResponse<ProblemUserProfile>> => {
+                return apiCall<ProblemUserProfile>(
+                    () => axios.get('/api/core/problem/user-profile', { params: { userId } }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取画像失败" };
+                        return {
+                            data: {
+                                radar: response.data.radar || [],
+                                platforms: response.data.platforms || [],
+                                difficulties: response.data.difficulties || [],
+                                totalAc: Number(response.data.totalAc) || 0,
+                            },
+                            message: "获取画像成功",
+                        };
+                    },
+                    "获取画像失败",
+                    { radar: [], platforms: [], difficulties: [], totalAc: 0 }
+                );
+            },
+            progress: async (): Promise<stdResponse<ProblemProgress>> => {
+                return apiCall<ProblemProgress>(
+                    () => axios.get('/api/core/problem/progress', {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "获取进度失败" };
+                        return {
+                            data: {
+                                items: response.data.items || [],
+                                recentFailed: response.data.recentFailed || [],
+                                total: Number(response.data.total) || 0,
+                            },
+                            message: "获取进度成功",
+                        };
+                    },
+                    "获取进度失败",
+                    { items: [], recentFailed: [], total: 0 }
+                );
+            },
+            backfill: async (limit = 500) => {
+                return apiCall(
+                    () => axios.post('/api/core/problem/backfill', { limit }, {
+                        headers: { Authorization: `Bearer ${JWT.token}` },
+                    }),
+                    (response) => {
+                        if (String(response.data.code) !== "0") return { message: response.data.message || "回填失败" };
+                        return { data: response.data, message: response.data.message || "回填成功" };
+                    },
+                    "回填失败",
+                    null
+                );
+            },
         }
     }
 

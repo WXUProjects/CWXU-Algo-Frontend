@@ -42,4 +42,9 @@ export default class Link {
                 return "";
         }
     }
+
+    /** 系统内部题库详情页 */
+    static getProblemInternalLink = (problemId: number | string) => {
+        return `/question-bank/detail/${problemId}`;
+    }
 }

@@ -155,7 +155,12 @@
                             <div v-if="activities.length != 0" class="activities">
                                 <div class="activity" v-for="activity in activities">
                                     <div class="title">
-                                        <span>{{ activity.title }}</span>
+                                        <span>
+                                            {{ activity.prefix }}
+                                            <router-link v-if="activity.problemId" :to="`/question-bank/detail/${activity.problemId}`" class="problem-link">{{ activity.problemTitle }}</router-link>
+                                            <template v-else>{{ activity.problemTitle }}</template>
+                                            {{ activity.suffix }}
+                                        </span>
                                         <a :href="activity.link" target="_blank">{{ activity.status }}</a>
                                     </div>
                                     <div class="time">{{ activity.time }}</div>
@@ -163,6 +168,9 @@
                             </div>
                             <div v-else>暂无近期动态</div>
                         </div>
+                    </div>
+                    <div class="section" style="position: relative;">
+                        <AlgoProfileCharts v-if="user.userId" :user-id="user.userId" />
                     </div>
                     <div class="section" style="position: relative;">
                         <LoadingOverlay :show="loadingContests" />
@@ -209,6 +217,7 @@
 <script setup lang="ts">
 import BaseLayout from '@/components/BaseLayout.vue'
 import Calendar from '@/components/Calendar.vue';
+import AlgoProfileCharts from '@/components/AlgoProfileCharts.vue';
 import { ref, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import JWT from '../utils/jwt';
@@ -269,7 +278,10 @@ const ojPlatforms = [
 ]
 
 interface ActivityItem {
-    title: string;
+    prefix: string;
+    problemTitle: string;
+    problemId: number;
+    suffix: string;
     status: string;
     link: string;
     time: string;
@@ -278,52 +290,26 @@ interface ActivityItem {
 // 增加占位数据，保证刷新时页面变化小
 const activities = ref<ActivityItem[]>([
     {
-        title: "-",
+        prefix: "-",
+        problemTitle: "",
+        problemId: 0,
+        suffix: "",
         status: "",
         link: "",
         time: ""
     }, {
-        title: "-",
+        prefix: "-",
+        problemTitle: "",
+        problemId: 0,
+        suffix: "",
         status: "",
         link: "",
         time: ""
     }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
-        status: "",
-        link: "",
-        time: ""
-    }, {
-        title: "-",
+        prefix: "-",
+        problemTitle: "",
+        problemId: 0,
+        suffix: "",
         status: "",
         link: "",
         time: ""
@@ -354,7 +340,10 @@ const getSubmitInfo = async () => {
             });
 
             activities.value.push({
-                title: `在 ${platform} 使用 ${lang} 解决 ${problem || contest}：`,
+                prefix: `在 ${platform} 使用 ${lang} 解决了 `,
+                problemTitle: problem || contest || '未知题目',
+                problemId: Number(item.problemId) || 0,
+                suffix: '：',
                 status: status,
                 link: Link.getSubmitLink(platform, contest, item.submitId),
                 time: time,
@@ -922,6 +911,14 @@ onMounted(() => {
         >.title {
             width: 80%;
             font-size: var(--text-sm);
+
+            .problem-link {
+                color: var(--neon-cyan);
+                text-decoration: none;
+            }
+            .problem-link:hover {
+                text-decoration: underline;
+            }
         }
 
         >.time {

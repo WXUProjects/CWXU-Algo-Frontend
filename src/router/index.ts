@@ -103,6 +103,11 @@ const routes = [
       path: 'bulletin',
       name: 'BulletinManage',
       component: () => import('@/views/Dashboard/Bulletin.vue')
+    },
+    {
+      path: 'problem-progress',
+      name: 'ProblemProgress',
+      component: () => import('@/views/Dashboard/ProblemProgress.vue')
     }]
   },
   {
@@ -127,9 +132,18 @@ const routes = [
     beforeEnter: loginGuard
   },
   {
+    path: '/question-bank',
+    name: 'QuestionBank',
+    component: () => import("@/views/QuestionBank.vue")
+  },
+  {
+    path: '/question-bank/detail/:id',
+    name: 'QuestionBankDetail',
+    component: () => import("@/views/QuestionBank/Detail.vue")
+  },
+  {
     path: '/problem',
-    name: 'Problem',
-    component: () => import("@/views/Problem.vue")
+    redirect: '/question-bank'
   },
   {
     path: '/problem/upload',

@@ -172,6 +172,9 @@
               </Calendar>
             </div>
           </div>
+          <div class="section-secondary" v-if="isLogin && profileUserId > 0">
+            <AlgoProfileCharts :user-id="profileUserId" />
+          </div>
           <div class="section-secondary">
             <div class="section-header">
               <div class="header-title">
@@ -314,6 +317,7 @@
 import { computed, onMounted, ref } from 'vue'
 import BaseLayout from '@/components/BaseLayout.vue';
 import Calendar from '@/components/Calendar.vue';
+import AlgoProfileCharts from '@/components/AlgoProfileCharts.vue';
 // import Rank from '@/components/Rank.vue';
 import JWT from '@/utils/jwt';
 import API, { type CoreStatisticHeatmapRequest, type CoreStatisticPeriodData, type CoreStatisticPeriodItem } from '@/utils/api';
@@ -323,6 +327,8 @@ import { useUserStore } from '@/stores/user';
 import Stars from '@/components/Stars.vue';
 import LoadingOverlay from '@/components/LoadingOverlay.vue';
 import BulletinBoard from '@/components/BulletinBoard.vue';
+
+const profileUserId = computed(() => Number(JWT.getUserInfo()?.userId) || 0)
 
 const userStore = useUserStore()
 const isLogin = computed(() => userStore.isLogin)
